@@ -84,7 +84,7 @@ class MagicItem {
         this.name = item.name;
         this.enabled = item.flags.magicitems.enabled;
         this.charges = parseInt(item.flags.magicitems.charges);
-        this.uses = actor.data.flags.magicitems[this.id] ? 
+        this.uses = actor.data.flags.magicitems && actor.data.flags.magicitems[this.id] ?
                     parseInt(actor.data.flags.magicitems[this.id].uses) : this.charges;
         this.recharge = item.flags.magicitems.recharge;
         this.rechargeUnit = item.flags.magicitems.rechargeUnit;
