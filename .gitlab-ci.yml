@@ -1,0 +1,22 @@
+image: python:3-alpine
+
+before_script:
+  - apk update
+  - apk add zip
+
+stages:
+  - build
+
+build:
+  stage: build
+  script:
+    - zip magic-items.zip -r module -x ".*"
+  artifacts:
+    name: magic-items
+    when: on_success
+    paths:
+      - magic-items.zip
+  when: on_success
+  only:
+    - tags
+    - master

@@ -1,0 +1,109 @@
+
+.dnd5e.sheet.item .magic-item-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 5px;
+    overflow-y: auto;
+}
+
+.dnd5e.sheet.item .magic-item-list .item {
+    line-height: 30px;
+    padding: 0 2px;
+    border-bottom: 1px solid #c9c7b8;
+}
+
+.dnd5e.sheet.item .magic-item-list .inventory-header {
+    margin: 2px 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.05);
+    border: 2px groove #eeede0;
+    font-weight: bold;
+    line-height: 24px;
+}
+
+.dnd5e.sheet.item .magic-item-list .inventory-header h3 {
+    margin: 0 -5px 0 0;
+    padding-left: 5px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.dnd5e.sheet.item .magic-item-list .item .item-name {
+    cursor: pointer;
+}
+
+.dnd5e.sheet.item .magic-item-list .item:last-child {
+    border-bottom: none;
+}
+
+.dnd5e.sheet.item .magic-item-list .item-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dnd5e.sheet.item .spell-slots, .dnd5e.sheet.item .spell-comps {
+    flex: 0 0 60px;
+    font-size: 12px;
+    text-align: center;
+    color: #7a7971;
+    border-right: 1px solid #c9c7b8;
+}
+
+.dnd5e.sheet.item .spell-level-head, .dnd5e.sheet.item .spell-consumption-head {
+    flex: 0.2;
+    font-size: 12px;
+    color: #7a7971;
+    text-align: left;
+    border-right: 1px solid #c9c7b8;
+}
+
+.dnd5e.sheet.item .spell-controls-head {
+	flex: 0.1;		
+}
+
+.dnd5e.sheet.item .magic-item-list .item .item-name .item-image {
+    flex: 0 0 30px;
+    background-size: 30px;
+    margin-right: 5px;
+}
+
+.dnd5e.sheet.item .magic-item-list .item .item-name h4 {
+    margin: 0;
+}
+
+.dnd5e.sheet.item .magic-item-list .item-controls {
+	text-align: right;
+	flex: 0.1;	
+}
+
+.dnd5e.sheet.item .magic-item-list .item-controls a {
+    flex: 0 0 22px;
+    font-size: 10px;
+    text-align: center;
+    color: #666;
+    margin-right: 10px;
+}
+
+.dnd5e.sheet.item .magic-item-list .item .spell-level {
+    flex: 0.2;
+    margin-right: 5px;
+}
+
+.dnd5e.sheet.item .magic-item-list .item .spell-consumption {
+    flex: 0.2;
+}
+
+.dnd5e.sheet.item .magic-items-content input[type="text"], .dnd5e.sheet.item .magic-items-content select {
+    height: 24px;
+    border: 1px solid #7a7971;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.dnd5e.sheet.item .magic-items-content .magic-item-charges {
+    flex: 0.5;
+}
+
+.dnd5e.sheet.actor .magic-items-head {
+	margin-top: 10px;
+}

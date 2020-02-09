@@ -1,0 +1,31 @@
+<div class="magic-items-content">
+	<div class="inventory-filters spellbook-filters magic-items-head">
+	    <label><h3>Magic Items</h3></label>
+	</div>
+	{{#each items as |item i|}}
+	<li class="item flexrow inventory-header spellbook-header">
+	    <div class="item-name flexrow">
+	        <h3>{{name}}</h3>
+	    </div>
+	    <div class="spell-slots">
+	        <input name="flags.magicitems.{{id}}.uses" type="text" value="{{uses}}" placeholder="0"/>
+	        <span class="sep"> / </span>
+	        <input type="text" value="{{charges}}" placeholder="0"/>
+	    </div>
+	    <div class="spell-school">consumo</div>
+	    <div class="spell-school">Livello</div>
+	</li>
+	<ol class="item-list">
+	    {{#each spells as |spell|}}
+	        <li class="item flexrow" data-magic-item="{{../name}}" data-item-id="{{spell.id}}" data-item-consumption="{{spell.consumption}}">
+	            <div class="item-name flexrow rollable">
+	                <div class="item-image magic-item" style="background-image: url({{spell.img}})"></div>
+	                <h4>{{spell.name}}</h4>
+	            </div>
+	            <div class="spell-school">{{spell.consumption}}</div>
+	            <div class="spell-school">{{spell.level}}</div>
+	        </li>
+	    {{/each}}
+	</ol>
+	{{/each}}
+</div>
