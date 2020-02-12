@@ -18,6 +18,7 @@
     "MAGICITEMS.SheetConsumption": "Consumo",
     "MAGICITEMS.SheetNoRecharge": "Non Ricaricabile",
     "MAGICITEMS.SheetNoChargesMessage": "Non ci sono cariche sufficienti per lanciare l'incantesimo.",
+    "MAGICITEMS.SheetDragContent": "Trascina qui gli incantesimi",
 
     "MAGICITEMS.SheetSpellLevel0": "-",
     "MAGICITEMS.SheetSpellLevel1": "1°",

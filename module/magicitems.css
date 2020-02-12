@@ -104,6 +104,14 @@
     flex: 0.5;
 }
 
+.dnd5e.sheet.item .magic-item-list .spell-drag-content {
+    height: 80px;
+    text-align: center;
+    color: #828180;
+    line-height: 6;
+    border: 2px #828180 dashed;
+}
+
 .dnd5e.sheet.actor .magic-items-head {
 	margin-top: 10px;
 }

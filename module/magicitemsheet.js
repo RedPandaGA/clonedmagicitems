@@ -15,10 +15,6 @@ export class MagicItemSheet {
         this.render();
     }
 
-    dispose() {
-
-    }
-
     buildItems() {
         return new Promise((resolve, reject) => {
             Promise.all(
@@ -40,11 +36,13 @@ export class MagicItemSheet {
         const parentFn = actor.getOwnedItem.bind(actor);
         actor.getOwnedItem = function(id) {
             let item = null;
-            this.items.forEach(mi => {
-                if(mi.hasSpell(id)) {
-                    item = mi.ownedItem(id);
-                }
-            });
+            if(this && this.items) {
+                this.items.forEach(mi => {
+                    if(mi.hasSpell(id)) {
+                        item = mi.ownedItem(id);
+                    }
+                });
+            }
             if(item) {
                 return item;
             }
@@ -54,14 +52,18 @@ export class MagicItemSheet {
         const shortRest = actor.shortRest.bind(actor);
         actor.shortRest = async function () {
             let result = await shortRest(arguments);
-            this.onShortRest(result);
+            if(this) {
+                this.onShortRest(result);
+            }
             return result;
         }.bind(this);
 
         const longRest = actor.longRest.bind(actor);
         actor.longRest = async function () {
             let result = await longRest(arguments);
-            this.onLongRest(result);
+            if(this) {
+                this.onLongRest(result);
+            }
             return result;
         }.bind(this);
     }

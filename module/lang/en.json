@@ -18,6 +18,7 @@
     "MAGICITEMS.SheetConsumption": "Consumption",
     "MAGICITEMS.SheetNoRecharge": "Not Rechargeable",
     "MAGICITEMS.SheetNoChargesMessage": "Not enough charges to cast the spell.",
+    "MAGICITEMS.SheetDragContent": "Drag spells here",
 
     "MAGICITEMS.SheetSpellLevel0": "-",
     "MAGICITEMS.SheetSpellLevel1": "1st",

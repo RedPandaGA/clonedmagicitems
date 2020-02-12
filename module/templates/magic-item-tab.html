@@ -69,6 +69,10 @@
                     </a>
                 </div>
             </li>
+        {{else}}
+            <li class="item flexrow">
+                <div class="spell-drag-content">{{localize "MAGICITEMS.SheetDragContent"}}</div>
+            </li>
         {{/each}}
         {{#each garbage as |index i|}}
             <input type="hidden" name="flags.magicitems.spells.-={{index}}" value="null">    

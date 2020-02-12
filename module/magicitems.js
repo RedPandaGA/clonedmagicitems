@@ -4,7 +4,7 @@ import {MagicItemTab} from "./magicItemtab.js";
 const magicItemTabs = [];
 
 Hooks.on(`renderItemSheet5e`, (app, html, data) => {
-    let acceptedTypes = ['weapon', 'equipment'];
+    let acceptedTypes = ['weapon', 'equipment', 'consumable'];
     if(acceptedTypes.includes(data.entity.type)) {
         let tab = magicItemTabs[app.id];
         if(!tab) {
