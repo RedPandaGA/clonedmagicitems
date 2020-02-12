@@ -12,18 +12,19 @@
 	        <span class="sep"> / </span>
 	        <input type="text" value="{{charges}}" placeholder="0"/>
 	    </div>
-	    <div class="spell-school">consumo</div>
-	    <div class="spell-school">Livello</div>
+		<div class="spell-rechargeable">{{rechargeableLabel}}</div>
+		<div class="spell-level">{{localize "MAGICITEMS.SheetLevel"}}</div>
+	    <div class="spell-consumption">{{localize "MAGICITEMS.SheetConsumption"}}</div>
 	</li>
 	<ol class="item-list">
 	    {{#each spells as |spell|}}
 	        <li class="item flexrow" data-magic-item="{{../name}}" data-item-id="{{spell.id}}" data-item-consumption="{{spell.consumption}}">
 	            <div class="item-name flexrow rollable">
 	                <div class="item-image magic-item" style="background-image: url({{spell.img}})"></div>
-	                <h4>{{spell.name}}</h4>
+	                <h4 class="spell-name">{{spell.name}}</h4>
 	            </div>
-	            <div class="spell-school">{{spell.consumption}}</div>
-	            <div class="spell-school">{{spell.level}}</div>
+				<div class="spell-level">{{spell.level}}</div>
+	            <div class="spell-consumption">{{spell.consumption}}</div>
 	        </li>
 	    {{/each}}
 	</ol>

@@ -1,0 +1,33 @@
+{
+    "MAGICITEMS.RechargeUnitDaily": "Daily",
+    "MAGICITEMS.RechargeUnitDawn": "At Dawn",
+    "MAGICITEMS.RechargeUnitSunset": "At Sunset",
+    "MAGICITEMS.RechargeUnitShortRest": "After Short Rest",
+    "MAGICITEMS.RechargeUnitLongRest": "After Long Rest",
+
+    "MAGICITEMS.RechargeTypeNumeric": "Numeric",
+    "MAGICITEMS.RechargeTypeFormula": "Formula",
+
+    "MAGICITEMS.SheetEnabled": "Is a Magic Item?",
+    "MAGICITEMS.SheetCharges": "Max Number of Charges",
+    "MAGICITEMS.SheetDestroy": "Destroy At 0 Charges",
+    "MAGICITEMS.SheetRechargeable": "Rechargeable",
+    "MAGICITEMS.SheetRecharge": "Recharge",
+    "MAGICITEMS.SheetSpell": "Spell",
+    "MAGICITEMS.SheetLevel": "Level",
+    "MAGICITEMS.SheetConsumption": "Consumption",
+    "MAGICITEMS.SheetNoRecharge": "Not Rechargeable",
+    "MAGICITEMS.SheetNoChargesMessage": "Not enough charges to cast the spell.",
+
+    "MAGICITEMS.SheetSpellLevel0": "-",
+    "MAGICITEMS.SheetSpellLevel1": "1st",
+    "MAGICITEMS.SheetSpellLevel2": "2nd",
+    "MAGICITEMS.SheetSpellLevel3": "3rd",
+    "MAGICITEMS.SheetSpellLevel4": "4th",
+    "MAGICITEMS.SheetSpellLevel5": "5th",
+    "MAGICITEMS.SheetSpellLevel6": "6th",
+    "MAGICITEMS.SheetSpellLevel7": "7th",
+    "MAGICITEMS.SheetSpellLevel8": "8th",
+    "MAGICITEMS.SheetSpellLevel9": "9th",
+    "MAGICITEMS.SheetSpellLevel10": "10th"
+}

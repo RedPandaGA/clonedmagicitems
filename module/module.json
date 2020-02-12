@@ -1,15 +1,24 @@
 {
-	"name": "magic-items",
+	"name": "magicitems",
 	"title": "Magic Items",
 	"description": "",
 	"version": "1.0",
 	"minimumCoreVersion" : "0.4.5",
 	"author": "Simone",
-	"esmodules": ["magic-items.js"],
+	"esmodules": ["magicitems.js"],
 	"scripts": [],
 	"styles": [
-		"./magic-items.css"
+		"./magicitems.css"
 	],
+	"languages": [{
+		"lang": "en",
+		"name": "English",
+		"path": "./lang/en.json"
+	}, {
+		"lang": "it",
+		"name": "Italian",
+		"path": "./lang/it.json"
+	}],
 	"url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
 	"manifest": "https://gitlab.com/riccisi/foundryvtt-magic-items/raw/master/module/module.json",
 	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/master/raw/magic-items.zip?job=build"

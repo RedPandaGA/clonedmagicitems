@@ -1,0 +1,33 @@
+{
+    "MAGICITEMS.RechargeUnitDaily": "Giornaliero",
+    "MAGICITEMS.RechargeUnitDawn": "All'Alba",
+    "MAGICITEMS.RechargeUnitSunset": "Al Tramonto",
+    "MAGICITEMS.RechargeUnitShortRest": "Riposo Breve",
+    "MAGICITEMS.RechargeUnitLongRest": "Riposo Lungo",
+
+    "MAGICITEMS.RechargeTypeNumeric": "Numerico",
+    "MAGICITEMS.RechargeTypeFormula": "Formula",
+
+    "MAGICITEMS.SheetEnabled": "E' un Oggetto Magico?",
+    "MAGICITEMS.SheetCharges": "Numero di Cariche Massime",
+    "MAGICITEMS.SheetDestroy": "Distruggi a 0 cariche",
+    "MAGICITEMS.SheetRechargeable": "Ricaricable",
+    "MAGICITEMS.SheetRecharge": "Ricarica",
+    "MAGICITEMS.SheetSpell": "Incantesimo",
+    "MAGICITEMS.SheetLevel": "Livello",
+    "MAGICITEMS.SheetConsumption": "Consumo",
+    "MAGICITEMS.SheetNoRecharge": "Non Ricaricabile",
+    "MAGICITEMS.SheetNoChargesMessage": "Non ci sono cariche sufficienti per lanciare l'incantesimo.",
+
+    "MAGICITEMS.SheetSpellLevel0": "-",
+    "MAGICITEMS.SheetSpellLevel1": "1°",
+    "MAGICITEMS.SheetSpellLevel2": "2°",
+    "MAGICITEMS.SheetSpellLevel3": "3°",
+    "MAGICITEMS.SheetSpellLevel4": "4°",
+    "MAGICITEMS.SheetSpellLevel5": "5°",
+    "MAGICITEMS.SheetSpellLevel6": "6°",
+    "MAGICITEMS.SheetSpellLevel7": "7°",
+    "MAGICITEMS.SheetSpellLevel8": "8°",
+    "MAGICITEMS.SheetSpellLevel9": "9°",
+    "MAGICITEMS.SheetSpellLevel10": "10°"
+}
