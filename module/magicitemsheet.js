@@ -8,11 +8,13 @@ export class MagicItemSheet {
         this.hack(this.actor);
     }
 
-    async init(html, data) {
+    init(html, data) {
         this.html = html;
         this.data = data;
-        this.items = await this.buildItems();
-        this.render();
+        this.buildItems().then(items => {
+            this.items = items;
+            this.render();
+        });
     }
 
     buildItems() {

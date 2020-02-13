@@ -13,27 +13,28 @@ export class MagicItemTab {
         this.hack(this.app);
     }
 
-    async init(html, data) {
-
-        if (html[0].localName !== "div") {
-            this.html = $(html[0].parentElement.parentElement);
-        } else {
-            this.html = html;
-        }
+    init(html) {
 
         this.magicItem = new MagicItem(this.item.data.flags.magicitems);
-        await this.magicItem.init();
+        this.magicItem.init().then(() => {
 
-        let tabs = this.html.find(`form nav.sheet-navigation.tabs`);
-        tabs.append($(
-            '<a class="item" data-tab="magicitems">Magic Item</a>'
-        ));
+            if (html[0].localName !== "div") {
+                this.html = $(html[0].parentElement.parentElement);
+            } else {
+                this.html = html;
+            }
 
-        $(this.html.find(`.sheet-body`)).append($(
-            '<div class="tab magic-items" data-group="primary" data-tab="magicitems"></div>'
-        ));
+            let tabs = this.html.find(`form nav.sheet-navigation.tabs`);
+            tabs.append($(
+                '<a class="item" data-tab="magicitems">Magic Item</a>'
+            ));
 
-        this.render();
+            $(this.html.find(`.sheet-body`)).append($(
+                '<div class="tab magic-items" data-group="primary" data-tab="magicitems"></div>'
+            ));
+
+            this.render();
+        });
     }
 
     hack(app) {

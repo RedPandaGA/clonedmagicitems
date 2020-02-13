@@ -13,11 +13,12 @@ To install, follow these instructions:
 
 ## Usage Instructions
 
-Once activated, a new tab named 'Magic Item' will be available in each items of type 'weapon', 'equipment' or 'consumable'. 
-In this tab, you can drag spells from a compendium and configure its consumption which will be subtracted from the total number of charges each time the spell is used.
-You can also configure the max number of charges, if that charges can be recharged and how and if the item will be destroyed when the charges reach 0.
+Once activated, a new tab named 'Magic Item' will be available for each items of type 'weapon', 'equipment' or 'consumable'.  
+In this tab, you can drag spells from a compendium and configure its consumption which will be subtracted from the total number of charges each time the spell is used.  
+It is also possible to configure the max number of charges, if they can be can be recharged and when, and if the item will be destroyed when the charges reach 0.
 
-in this way it is possible to obtain combinations capable of creating for example:
+Using combinations of these parameters you can create for example:
+
 * A legendary staff equipped with great thaumaturgical spells:
 * A globe with a perennial light spell.
 * A scroll with a powerful necromantic spell that dissolves once pronounced.
