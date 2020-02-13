@@ -172,7 +172,7 @@ export class OwnedMagicItem extends MagicItem {
         this.uses = this.actorFlags && this.actorFlags[this.id] ? parseInt(this.actorFlags[this.id].uses) : this.charges;
         this.rechargeableLabel = this.rechargeable ?
             `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.recharge} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
-            game.i18n.localize("MAGICITEMS.NoRecharge");
+            game.i18n.localize("MAGICITEMS.SheetNoRecharge");
     }
 
     setUses(uses) {

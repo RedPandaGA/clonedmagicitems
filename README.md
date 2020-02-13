@@ -1,7 +1,7 @@
 # FoundryVTT - Magic Items
 
-This module for Foundry VTT adds the ability to create magical items containing powers or spells, such as staffs or 
-magic wands, which can be cast using the charge that the object itself makes available.
+This module for Foundry VTT adds the ability to create magical items with spells that belong to the item itself, such as staffs or 
+magic wands, which will be automatically inherited from the character who owns the item.
 
 ## Installation
 
@@ -13,15 +13,24 @@ To install, follow these instructions:
 
 ## Usage Instructions
 
-Once activated, in every items of type 'weapon' or 'equipment', a new tab named 'Magic Item' will be available. 
-Within this tab it will be possible to add the spells that the object contains, the consumption necessary for their activation, 
-the maximum number of charges available and whether these charges can be restored through some kind of recharging.
+Once activated, a new tab named 'Magic Item' will be available in each items of type 'weapon', 'equipment' or 'consumable'. 
+In this tab, you can drag spells from a compendium and configure its consumption which will be subtracted from the total number of charges each time the spell is used.
+You can also configure the max number of charges, if that charges can be recharged and how and if the item will be destroyed when the charges reach 0.
+
+in this way it is possible to obtain combinations capable of creating for example:
+* A legendary staff equipped with great thaumaturgical spells:
+* A globe with a perennial light spell.
+* A scroll with a powerful necromantic spell that dissolves once pronounced.
+
+When a character is equipped with one or more magical objects, within his sheet in the spellbook section, 
+a set of inherited spells divided by item will be displayed after his owned spells.
+
 
 
 
 ## Compatibility
 
-Tested on 0.4.5 version.
+Tested on 0.4.7 version.
 
 ## Feedback
 
