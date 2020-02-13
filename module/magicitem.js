@@ -16,10 +16,10 @@ export class MagicItem {
         this.rechargeType = this.data.rechargeType;
         this.rechargeUnit = this.data.rechargeUnit;
         this.destroy = this.data.destroy;
-    }
+        this.spells = Object.values(this.data.spells ? this.data.spells : {})
+            .filter(spell => spell !== 'null')
+            .map(spell => new MagicItemSpell(spell));
 
-    async init() {
-        this.spells = await this.buildSpells();
         this.garbage = [];
         this.savedSpells = this.spells.length;
     }
@@ -35,34 +35,6 @@ export class MagicItem {
             destroy: false,
             spells: {}
         }
-    }
-
-    buildSpells() {
-        const data = this.data;
-        return new Promise(function(resolve, reject) {
-            let spells = [];
-            let spellsData = Object.values(data.spells ? data.spells : {}).filter(spell => spell !== 'null');
-            var p = Promise.resolve();
-            for (let i=0; i<=spellsData.length; i++) {
-                p = p.then((spell) => {
-                    if(spell) {
-                        spells.push(
-                            new MagicItemSpell(
-                                spell,
-                                spellsData[i-1].level,
-                                spellsData[i-1].consumption
-                            )
-                        );
-                    }
-                    if(i < spellsData.length) {
-                        const pack = game.packs.find(p => p.collection === spellsData[i].pack);
-                        return pack.getEntity(spellsData[i].id);
-                    } else {
-                        resolve(spells);
-                    }
-                });
-            }
-        });
     }
 
     get rechargeUnits() {
@@ -126,45 +98,43 @@ export class MagicItem {
 
 class MagicItemSpell {
 
-    constructor(spell, level, consumption) {
-        this.spell = spell;
-        this.level = level ? level : this.spell.data.data.level;
-        this.consumption = consumption ? consumption : this.level;
-    }
-
-    get id() {
-        return this.spell.id;
-    }
-
-    get name() {
-        return this.spell.name;
-    }
-
-    get img() {
-        return this.spell.img;
-    }
-
-    get pack() {
-        return this.spell.compendium.collection;
+    constructor(spellData) {
+        mergeObject(this, spellData);
     }
 
     get levels() {
         let levels = {};
-        for(let i = this.spell.data.data.level; i <= 10; i++) {
+        for(let i = this.baseLevel; i <= 10; i++) {
             levels[i] = game.i18n.localize(`MAGICITEMS.SheetSpellLevel${i}`);
         }
         return levels;
     }
 
-    get data() {
-        return mergeObject(this.spell.data, { data: { level: parseInt(this.level) }});
+    renderSheet() {
+        this.entity().then(entity => {
+            const sheet = entity.sheet;
+            sheet.options.editable = false;
+            sheet.options.compendium = this.pack;
+            sheet.render(true);
+        });
     }
 
-    renderSheet() {
-        const sheet = this.spell.sheet;
-        sheet.options.editable = false;
-        sheet.options.compendium = this.pack;
-        sheet.render(true);
+    entity() {
+        return new Promise((resolve, reject) => {
+            const pack = game.packs.find(p => p.collection === this.pack);
+            pack.getEntity(this.id).then(entity => {
+                resolve(entity);
+            });
+        });
+    }
+
+    data() {
+        return new Promise((resolve, reject) => {
+            this.entity().then(entity => {
+                let data = mergeObject(entity.data, { data: { level: parseInt(this.level) }});
+                resolve(data);
+            })
+        });
     }
 }
 
@@ -189,14 +159,16 @@ export class OwnedMagicItem extends MagicItem {
 
     roll(spellId, consumption) {
         let uses = this.uses - consumption;
+        let spell = this.spells.filter(spell => spell.id === spellId)[0];
         if(uses >= 0) {
-            this.ownedItem(spellId).roll();
             this.uses = uses;
-            if(this.uses === 0 && this.destroy) {
-                this.actor.deleteOwnedItem(this.id);
-            }
+            spell.data().then(data => {
+                new Item5e(data, { actor: this.actor }).roll();
+                if(this.uses === 0 && this.destroy) {
+                    this.actor.deleteOwnedItem(this.id);
+                }
+            });
         } else {
-            let spell = this.spells.filter(spell => spell.id === spellId)[0];
             let dialog = new Dialog({
                 title: this.name + ': ' + spell.name,
                 content: game.i18n.localize("MAGICITEMS.SheetNoChargesMessage"),
@@ -204,11 +176,6 @@ export class OwnedMagicItem extends MagicItem {
             });
             dialog.render(true);
         }
-    }
-
-    ownedItem(spellId) {
-        let spell = this.spells.filter(spell => spell.id === spellId)[0];
-        return new Item5e(spell.data, { actor: this.actor })
     }
 
     onShortRest() {

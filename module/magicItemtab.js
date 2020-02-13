@@ -16,25 +16,23 @@ export class MagicItemTab {
     init(html) {
 
         this.magicItem = new MagicItem(this.item.data.flags.magicitems);
-        this.magicItem.init().then(() => {
 
-            if (html[0].localName !== "div") {
-                this.html = $(html[0].parentElement.parentElement);
-            } else {
-                this.html = html;
-            }
+        if (html[0].localName !== "div") {
+            this.html = $(html[0].parentElement.parentElement);
+        } else {
+            this.html = html;
+        }
 
-            let tabs = this.html.find(`form nav.sheet-navigation.tabs`);
-            tabs.append($(
-                '<a class="item" data-tab="magicitems">Magic Item</a>'
-            ));
+        let tabs = this.html.find(`form nav.sheet-navigation.tabs`);
+        tabs.append($(
+            '<a class="item" data-tab="magicitems">Magic Item</a>'
+        ));
 
-            $(this.html.find(`.sheet-body`)).append($(
-                '<div class="tab magic-items" data-group="primary" data-tab="magicitems"></div>'
-            ));
+        $(this.html.find(`.sheet-body`)).append($(
+            '<div class="tab magic-items" data-group="primary" data-tab="magicitems"></div>'
+        ));
 
-            this.render();
-        });
+        this.render();
     }
 
     hack(app) {
@@ -146,7 +144,15 @@ export class MagicItemTab {
                 return;
             }
 
-            this.magicItem.addSpell(entity);
+            this.magicItem.addSpell({
+                id: entity.id,
+                name: entity.name,
+                img: entity.img,
+                pack: entity.compendium.collection,
+                baseLevel: entity.data.data.level,
+                level: entity.data.data.level,
+                consumption: entity.data.data.level
+            });
             this.render();
         }
     }

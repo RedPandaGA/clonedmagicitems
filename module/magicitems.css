@@ -105,10 +105,10 @@
 }
 
 .dnd5e.sheet.item .magic-item-list .spell-drag-content {
-    height: 80px;
+    height: 70px;
     text-align: center;
     color: #828180;
-    line-height: 6;
+    line-height: 5;
     border: 2px #828180 dashed;
 }
 

@@ -53,7 +53,10 @@
                     <div class="item-image" style="background-image: url({{item.img}})"></div>
                     <h4><a data-item-idx="{{i}}">{{item.name}}</a></h4>
                     <input type="hidden" name="flags.magicitems.spells.{{i}}.id" value="{{item.id}}">
+                    <input type="hidden" name="flags.magicitems.spells.{{i}}.name" value="{{item.name}}">
                     <input type="hidden" name="flags.magicitems.spells.{{i}}.pack" value="{{item.pack}}">
+                    <input type="hidden" name="flags.magicitems.spells.{{i}}.img" value="{{item.img}}">
+                    <input type="hidden" name="flags.magicitems.spells.{{i}}.baseLevel" value="{{item.baseLevel}}">
                 </div>
                 <select class="spell-level" name="flags.magicitems.spells.{{i}}.level">
                     {{#select item.level}}

@@ -11,27 +11,14 @@ export class MagicItemSheet {
     init(html, data) {
         this.html = html;
         this.data = data;
-        this.buildItems().then(items => {
-            this.items = items;
+
+        this.items = this.data.items
+            .filter(item => typeof item.flags.magicitems !== 'undefined')
+            .map(item => new OwnedMagicItem(item, this.actor));
+
+        if(this.items.length > 0) {
             this.render();
-        });
-    }
-
-    buildItems() {
-        return new Promise((resolve, reject) => {
-            Promise.all(
-                this.data.items
-                    .filter(item => typeof item.flags.magicitems !== 'undefined')
-                    .map(item => this.buildItem(item))
-            ).then(magicItems => resolve(magicItems))
-        });
-    }
-
-    buildItem(item) {
-        return new Promise((resolve, reject) => {
-            let magicItem = new OwnedMagicItem(item, this.actor);
-            magicItem.init().then(() => resolve(magicItem));
-        })
+        }
     }
 
     hack(actor) {
