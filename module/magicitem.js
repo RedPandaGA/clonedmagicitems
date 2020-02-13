@@ -38,22 +38,30 @@ export class MagicItem {
     }
 
     buildSpells() {
-        return new Promise((resolve, reject) => {
-            Promise.all(
-                Object.values(this.data.spells ? this.data.spells : {})
-                    .filter(spell => spell !== 'null') // garbage...
-                    .map(spellData => MAGICITEMS.fromCollection(spellData.pack, spellData.id))
-            ).then(spells => {
-                resolve(
-                    spells.map(
-                        (spell, i) => new MagicItemSpell(
-                            spell,
-                            this.data.spells[i].level,
-                            this.data.spells[i].consumption
-                        )
-                    )
-                );
-            })
+        const data = this.data;
+        return new Promise(function(resolve, reject) {
+            let spells = [];
+            let spellsData = Object.values(data.spells ? data.spells : {}).filter(spell => spell !== 'null');
+            var p = Promise.resolve();
+            for (let i=0; i<=spellsData.length; i++) {
+                p = p.then((spell) => {
+                    if(spell) {
+                        spells.push(
+                            new MagicItemSpell(
+                                spell,
+                                spellsData[i-1].level,
+                                spellsData[i-1].consumption
+                            )
+                        );
+                    }
+                    if(i < spellsData.length) {
+                        const pack = game.packs.find(p => p.collection === spellsData[i].pack);
+                        return pack.getEntity(spellsData[i].id);
+                    } else {
+                        resolve(spells);
+                    }
+                });
+            }
         });
     }
 
