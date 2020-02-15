@@ -17,26 +17,41 @@ Once activated, a new tab named 'Magic Item' will be available for each items of
 In this tab, you can drag spells from a compendium and configure its consumption which will be subtracted from the total number of charges each time the spell is used.  
 It is also possible to configure the max number of charges, if they can be can be recharged and when, and if the item will be destroyed when the charges reach 0.
 
-<img src="/example0.png" align="center" width="150" >
+<div align="center">
+
+![example0](/example0.png?raw=true)
+</div>
 
 Using combinations of these parameters is possible to create, for example:
 
 * A legendary staff equipped with great thaumaturgical spells
 
-![example1|small](/example1.png?raw=true)
+<div align="center">
+
+![example1](/example1.png?raw=true)
+</div>
 
 * A globe with a perennial light spell.
 
-![example2|small](/example2.png?raw=true)
+<div align="center">
+
+![example2](/example2.png?raw=true)
+</div>
 
 * A scroll with a powerful necromantic spell that dissolves once pronounced.
 
-![example3|small](/example3.png?raw=true)
+<div align="center">
+
+![example3](/example3.png?raw=true)
+</div>
 
 When a character is equipped with one or more magical objects, within his sheet in the spellbook section, 
 a set of inherited spells divided by item will be displayed after his owned spells:
 
-![example4|small](/example4.png?raw=true)
+<div align="center">
+
+![example4](/example4.png?raw=true)
+</div>
 
 From here you can cast the spell provided by the items and monitor the consumption/recharges.
 
