@@ -45,6 +45,13 @@ Using combinations of these parameters is possible to create, for example:
 ![example3](/example3.png?raw=true)
 </div>
 
+In addition to spells, it is also possible to assign feats to the items, or combinations of both:
+
+<div align="center">
+
+![example5](/example5.png?raw=true)
+</div>
+
 When a character is equipped with one or more magical objects, within his sheet in the spellbook/features section, 
 a set of inherited spells/feats divided by item will be displayed after his owned items:
 
@@ -55,10 +62,10 @@ a set of inherited spells/feats divided by item will be displayed after his owne
 
 <div align="center">
 
-![example5](/example4.png?raw=true)
+![example6](/example6.png?raw=true)
 </div>
 
-From here you can cast the spell provided by the items and monitor the consumption/recharges.
+From here you can cast spells or use feats provided by the items and monitor the consumption/recharges.
 
 ## Compatibility
 
