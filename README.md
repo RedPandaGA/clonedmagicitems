@@ -17,7 +17,7 @@ Once activated, a new tab named 'Magic Item' will be available for each items of
 In this tab, you can drag spells from a compendium and configure its consumption which will be subtracted from the total number of charges each time the spell is used.  
 It is also possible to configure the max number of charges, if they can be can be recharged and when, and if the item will be destroyed when the charges reach 0.
 
-![example0|small](/example0.png?raw=true)
+<img src="/example0.png" align="center" width="150" >
 
 Using combinations of these parameters is possible to create, for example:
 

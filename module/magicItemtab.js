@@ -137,23 +137,30 @@ export class MagicItemTab {
         }
 
         let pack = data.pack;
-        let id = data.id;
+        let entity;
         if (pack) {
-            let entity = await MAGICITEMS.fromCollection(pack, id);
-            if(entity.type !== "spell") {
-                return;
-            }
+            entity = await MAGICITEMS.fromCollection(pack, data.id);
 
-            this.magicItem.addSpell({
-                id: entity.id,
-                name: entity.name,
-                img: entity.img,
-                pack: entity.compendium.collection,
-                baseLevel: entity.data.data.level,
-                level: entity.data.data.level,
-                consumption: entity.data.data.level
-            });
-            this.render();
+        } else {
+            pack = 'world';
+            const cls = CONFIG[data.type].entityClass;
+            entity = cls.collection.get(data.id);
         }
+
+        if(entity.type !== "spell") {
+            return;
+        }
+
+        this.magicItem.addSpell({
+            id: entity.id,
+            name: entity.name,
+            img: entity.img,
+            pack: pack,
+            baseLevel: entity.data.data.level,
+            level: entity.data.data.level,
+            consumption: entity.data.data.level
+        });
+
+        this.render();
     }
 }
