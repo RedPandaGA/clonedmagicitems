@@ -36,51 +36,95 @@
             </select>
         </div>
     </div>
-    <ol class="magic-item-list">
-        <li class="item flexrow inventory-header spellbook-header">
-            <div class="item-name flexrow">
-                <h3>{{localize "MAGICITEMS.SheetSpell"}}</h3>
-            </div>
-            <div class="spell-level-head">{{localize "MAGICITEMS.SheetLevel"}}</div>
-            <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
-            <div class="spell-controls-head">&nbsp;</div>
-        </li>
 
-        <ol class="item-list">
-        {{#each spells as |item i|}}
-            <li class="item flexrow">
+    {{#if spells.length}}
+        <ol class="magic-item-list">
+            <li class="item flexrow inventory-header spellbook-header">
                 <div class="item-name flexrow">
-                    <div class="item-image" style="background-image: url({{item.img}})"></div>
-                    <h4><a data-item-idx="{{i}}">{{item.name}}</a></h4>
-                    <input type="hidden" name="flags.magicitems.spells.{{i}}.id" value="{{item.id}}">
-                    <input type="hidden" name="flags.magicitems.spells.{{i}}.name" value="{{item.name}}">
-                    <input type="hidden" name="flags.magicitems.spells.{{i}}.pack" value="{{item.pack}}">
-                    <input type="hidden" name="flags.magicitems.spells.{{i}}.img" value="{{item.img}}">
-                    <input type="hidden" name="flags.magicitems.spells.{{i}}.baseLevel" value="{{item.baseLevel}}">
+                    <h3>{{localize "MAGICITEMS.SheetSpell"}}</h3>
                 </div>
-                <select class="spell-level" name="flags.magicitems.spells.{{i}}.level">
-                    {{#select item.level}}
-                    {{#each item.levels as |name key|}}
-                    <option value="{{key}}">{{name}}</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
-                <input class="spell-consumption" type="text" name="flags.magicitems.spells.{{i}}.consumption" value="{{item.consumption}}">
-                <div class="item-controls">
-                    <a class="item-control item-delete" title="Delete Item">
-                        <i class="fas fa-trash" data-item-name="{{i}}"></i>
-                    </a>
-                </div>
+                <div class="spell-level-head">{{localize "MAGICITEMS.SheetLevel"}}</div>
+                <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
+                <div class="spell-controls-head">&nbsp;</div>
             </li>
-        {{else}}
-            <li class="item flexrow">
-                <div class="spell-drag-content">{{localize "MAGICITEMS.SheetDragContent"}}</div>
-            </li>
-        {{/each}}
-        {{#each garbage as |index i|}}
-            <input type="hidden" name="flags.magicitems.spells.-={{index}}" value="null">    
-        {{/each}}
+
+            <ol class="item-list">
+                {{#each spells as |item i|}}
+                <li class="item flexrow">
+                    <div class="item-name flexrow">
+                        <div class="item-image" style="background-image: url({{item.img}})"></div>
+                        <h4><a data-spell-idx="{{i}}">{{item.name}}</a></h4>
+                        <input type="hidden" name="flags.magicitems.spells.{{i}}.id" value="{{item.id}}">
+                        <input type="hidden" name="flags.magicitems.spells.{{i}}.name" value="{{item.name}}">
+                        <input type="hidden" name="flags.magicitems.spells.{{i}}.pack" value="{{item.pack}}">
+                        <input type="hidden" name="flags.magicitems.spells.{{i}}.img" value="{{item.img}}">
+                        <input type="hidden" name="flags.magicitems.spells.{{i}}.baseLevel" value="{{item.baseLevel}}">
+                    </div>
+                    <select class="spell-level" name="flags.magicitems.spells.{{i}}.level">
+                        {{#select item.level}}
+                        {{#each item.levels as |name key|}}
+                        <option value="{{key}}">{{name}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    <input class="spell-consumption" type="text" name="flags.magicitems.spells.{{i}}.consumption" value="{{item.consumption}}">
+                    <div class="item-controls">
+                        <a class="item-control item-delete item-spell" title="Delete Item">
+                            <i class="fas fa-trash" data-spell-idx="{{i}}"></i>
+                        </a>
+                    </div>
+                </li>
+                {{/each}}
+            </ol>
         </ol>
-    </ol>
+    {{/if}}
+
+    {{#if feats.length}}
+        <ol class="magic-item-list">
+            <li class="item flexrow inventory-header spellbook-header">
+                <div class="item-name flexrow">
+                    <h3>{{localize "MAGICITEMS.SheetFeat"}}</h3>
+                </div>
+                <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
+                <div class="spell-controls-head">&nbsp;</div>
+            </li>
+
+            <ol class="item-list">
+                {{#each feats as |item i|}}
+                <li class="item flexrow">
+                    <div class="item-name flexrow">
+                        <div class="item-image" style="background-image: url({{item.img}})"></div>
+                        <h4><a data-feat-idx="{{i}}">{{item.name}}</a></h4>
+                        <input type="hidden" name="flags.magicitems.feats.{{i}}.id" value="{{item.id}}">
+                        <input type="hidden" name="flags.magicitems.feats.{{i}}.name" value="{{item.name}}">
+                        <input type="hidden" name="flags.magicitems.feats.{{i}}.pack" value="{{item.pack}}">
+                        <input type="hidden" name="flags.magicitems.feats.{{i}}.img" value="{{item.img}}">
+                    </div>
+                    <input class="feat-consumption" type="text" name="flags.magicitems.feats.{{i}}.consumption" value="{{item.consumption}}">
+                    <div class="item-controls">
+                        <a class="item-control item-delete item-feat" title="Delete Item">
+                            <i class="fas fa-trash" data-feat-idx="{{i}}"></i>
+                        </a>
+                    </div>
+                </li>
+                {{/each}}
+            </ol>
+        </ol>
+    {{/if}}
+
+    {{#each spellsGarbage as |index i|}}
+    <input type="hidden" name="flags.magicitems.spells.-={{index}}" value="null">
+    {{/each}}
+
+    {{#each featsGarbage as |index i|}}
+    <input type="hidden" name="flags.magicitems.feats.-={{index}}" value="null">
+    {{/each}}
+
+    {{#if empty}}
+        <li class="item flexrow">
+            <div class="spell-drag-content">{{localize "MAGICITEMS.SheetDragContent"}}</div>
+        </li>
+    {{/if}}
+
     </div>    
 </div>    

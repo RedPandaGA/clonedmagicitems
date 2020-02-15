@@ -1,8 +1,9 @@
-<div class="magic-items-content">
+<div class="magic-items-spells-content">
 	<div class="inventory-filters spellbook-filters magic-items-head">
 	    <label><h3>Magic Items</h3></label>
 	</div>
 	{{#each items as |item i|}}
+	{{#if hasSpells}}
 	<li class="item flexrow inventory-header spellbook-header">
 	    <div class="item-name flexrow">
 	        <h3>{{name}}</h3>
@@ -28,5 +29,6 @@
 	        </li>
 	    {{/each}}
 	</ol>
+	{{/if}}
 	{{/each}}
 </div>

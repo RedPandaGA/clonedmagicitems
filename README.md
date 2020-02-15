@@ -1,6 +1,6 @@
 # FoundryVTT - Magic Items
 
-This module for Foundry VTT adds the ability to create magical items with spells that belong to the item itself, such as staffs or 
+This module for Foundry VTT adds the ability to create magical items with spells or feats that belong to the item itself, such as staffs or 
 magic wands, which will be automatically inherited from the character who owns the item.
 
 ## Installation
@@ -45,12 +45,17 @@ Using combinations of these parameters is possible to create, for example:
 ![example3](/example3.png?raw=true)
 </div>
 
-When a character is equipped with one or more magical objects, within his sheet in the spellbook section, 
-a set of inherited spells divided by item will be displayed after his owned spells:
+When a character is equipped with one or more magical objects, within his sheet in the spellbook/features section, 
+a set of inherited spells/feats divided by item will be displayed after his owned items:
 
 <div align="center">
 
 ![example4](/example4.png?raw=true)
+</div>
+
+<div align="center">
+
+![example5](/example4.png?raw=true)
 </div>
 
 From here you can cast the spell provided by the items and monitor the consumption/recharges.

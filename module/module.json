@@ -3,7 +3,7 @@
 	"title": "Magic Items",
 	"description": "",
 	"version": "1.0",
-	"minimumCoreVersion" : "0.4.5",
+	"minimumCoreVersion" : "0.4.7",
 	"systems": ["dnd5e"],
 	"author": "Simone",
 	"esmodules": ["magicitems.js"],

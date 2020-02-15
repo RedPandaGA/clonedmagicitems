@@ -94,6 +94,10 @@
     flex: 0.2;
 }
 
+.dnd5e.sheet.item .magic-item-list .item .feat-consumption {
+    flex: 0.2;
+}
+
 .dnd5e.sheet.item .magic-items-content input[type="text"], .dnd5e.sheet.item .magic-items-content select {
     height: 24px;
     border: 1px solid #7a7971;
@@ -104,7 +108,7 @@
     flex: 0.5;
 }
 
-.dnd5e.sheet.item .magic-item-list .spell-drag-content {
+.dnd5e.sheet.item .spell-drag-content {
     height: 70px;
     text-align: center;
     color: #828180;

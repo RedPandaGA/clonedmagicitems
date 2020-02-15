@@ -16,12 +16,20 @@ export class MagicItem {
         this.rechargeType = this.data.rechargeType;
         this.rechargeUnit = this.data.rechargeUnit;
         this.destroy = this.data.destroy;
+
         this.spells = Object.values(this.data.spells ? this.data.spells : {})
             .filter(spell => spell !== 'null')
             .map(spell => new MagicItemSpell(spell));
 
-        this.garbage = [];
+        this.feats = Object.values(this.data.feats ? this.data.feats : {})
+            .filter(feat => feat !== 'null')
+            .map(spell => new MagicItemFeat(spell));
+
+        this.spellsGarbage = [];
+        this.featsGarbage = [];
+
         this.savedSpells = this.spells.length;
+        this.savedFeats = this.feats.length;
     }
 
     defaultData() {
@@ -33,7 +41,8 @@ export class MagicItem {
             rechargeType: 't1',
             rechargeUnit: '',
             destroy: false,
-            spells: {}
+            spells: {},
+            feats: {}
         }
     }
 
@@ -43,6 +52,10 @@ export class MagicItem {
 
     get rechargeTypes() {
         return MAGICITEMS.localized(MAGICITEMS.rechargeTypes);
+    }
+
+    get empty() {
+        return this.spells.length === 0 && this.feats.length === 0;
     }
 
     toggleEnabled(enabled) {
@@ -64,11 +77,12 @@ export class MagicItem {
     clear() {
         mergeObject(this, this.defaultData());
         this.spells = [];
+        this.feats = [];
         this.cleanup();
     }
 
-    addSpell(spell) {
-        this.spells.push(new MagicItemSpell(spell));
+    addSpell(data) {
+        this.spells.push(new MagicItemSpell(data));
         this.cleanup();
     }
 
@@ -77,54 +91,87 @@ export class MagicItem {
         this.cleanup();
     }
 
+    get hasSpells() {
+        return this.spells.length > 0;
+    }
+
     hasSpell(spellId) {
         return this.spells.filter(spell => spell.id === spellId).length === 1;
     }
 
+    addFeat(data) {
+        this.feats.push(new MagicItemFeat(data));
+        this.cleanup();
+    }
+
+    removeFeat(idx) {
+        this.feats.splice(idx, 1);
+        this.cleanup();
+    }
+
+    get hasFeats() {
+        return this.feats.length > 0;
+    }
+
+    hasFeat(featId) {
+        return this.feats.filter(feat => feat.id === featId).length === 1;
+    }
+
+    findById(itemId) {
+        let items = this.spells.concat(this.feats);
+        return items.filter(item => item.id === itemId)[0];
+    }
+
     renderSheet(spellId) {
-        this.spells.filter(spell => spell.id === spellId)[0].renderSheet();
+        this.findById(spellId).renderSheet();
     }
 
     cleanup() {
-        this.garbage = [];
+        this.spellsGarbage = [];
+        this.featsGarbage = [];
         if(this.savedSpells > this.spells.length) {
             for(let i = this.spells.length; i < this.savedSpells; i++) {
-                this.garbage.push(i);
+                this.spellsGarbage.push(i);
+            }
+        }
+        if(this.savedFeats > this.feats.length) {
+            for(let i = this.feats.length; i < this.savedFeats; i++) {
+                this.featsGarbage.push(i);
             }
         }
     }
 
 }
 
-class MagicItemSpell {
+class MagicItemEntry {
 
-    constructor(spellData) {
-        mergeObject(this, spellData);
-    }
-
-    get levels() {
-        let levels = {};
-        for(let i = this.baseLevel; i <= 10; i++) {
-            levels[i] = game.i18n.localize(`MAGICITEMS.SheetSpellLevel${i}`);
-        }
-        return levels;
+    constructor(data) {
+        mergeObject(this, data);
     }
 
     renderSheet() {
         this.entity().then(entity => {
             const sheet = entity.sheet;
             sheet.options.editable = false;
-            sheet.options.compendium = this.pack;
+            if(this.pack === 'world') {
+                sheet.options.compendium = this.pack;
+            }
             sheet.render(true);
         });
     }
 
     entity() {
         return new Promise((resolve, reject) => {
-            const pack = game.packs.find(p => p.collection === this.pack);
-            pack.getEntity(this.id).then(entity => {
+            if(this.pack === 'world') {
+                const cls = CONFIG['Item'].entityClass;
+                let entity = cls.collection.get(this.id);
                 resolve(entity);
-            });
+            } else {
+                const pack = game.packs.find(p => p.collection === this.pack);
+                pack.getEntity(this.id).then(entity => {
+                    resolve(entity);
+                });
+            }
         });
     }
 
@@ -136,6 +183,21 @@ class MagicItemSpell {
             })
         });
     }
+}
+
+class MagicItemSpell extends MagicItemEntry {
+
+    get levels() {
+        let levels = {};
+        for(let i = this.baseLevel; i <= 10; i++) {
+            levels[i] = game.i18n.localize(`MAGICITEMS.SheetSpellLevel${i}`);
+        }
+        return levels;
+    }
+}
+
+class MagicItemFeat extends MagicItemEntry {
+
 }
 
 export class OwnedMagicItem extends MagicItem {
@@ -151,26 +213,29 @@ export class OwnedMagicItem extends MagicItem {
         this.rechargeableLabel = this.rechargeable ?
             `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.recharge} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
             game.i18n.localize("MAGICITEMS.SheetNoRecharge");
+
+        this.ownedItems = [];
     }
 
     setUses(uses) {
         this.uses = uses;
     }
 
-    roll(spellId, consumption) {
+    roll(itemId, consumption) {
         let uses = this.uses - consumption;
-        let spell = this.spells.filter(spell => spell.id === spellId)[0];
+        let item = this.findById(itemId);
         if(uses >= 0) {
             this.uses = uses;
-            spell.data().then(data => {
-                new Item5e(data, { actor: this.actor }).roll();
+            item.data().then(data => {
+                this.ownedItems[itemId] = new Item5e(data, { actor: this.actor });
+                this.ownedItems[itemId].roll();
                 if(this.uses === 0 && this.destroy) {
                     this.actor.deleteOwnedItem(this.id);
                 }
             });
         } else {
             let dialog = new Dialog({
-                title: this.name + ': ' + spell.name,
+                title: this.name + ': ' + item.name,
                 content: game.i18n.localize("MAGICITEMS.SheetNoChargesMessage"),
                 buttons: {}
             });

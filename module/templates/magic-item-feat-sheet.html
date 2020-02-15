@@ -1,0 +1,32 @@
+<div class="magic-items-feats-content">
+	<div class="inventory-filters spellbook-filters magic-items-head">
+	    <label><h3>Magic Items</h3></label>
+	</div>
+	{{#each items as |item i|}}
+	{{#if hasFeats}}
+	<li class="item flexrow inventory-header spellbook-header">
+	    <div class="item-name flexrow">
+	        <h3>{{name}}</h3>
+	    </div>
+	    <div class="spell-slots">
+	        <input name="flags.magicitems.{{id}}.uses" type="text" value="{{uses}}" placeholder="0"/>
+	        <span class="sep"> / </span>
+	        <input type="text" value="{{charges}}" placeholder="0"/>
+	    </div>
+		<div class="spell-rechargeable">{{rechargeableLabel}}</div>
+	    <div class="spell-consumption">{{localize "MAGICITEMS.SheetConsumption"}}</div>
+	</li>
+	<ol class="item-list">
+	    {{#each feats as |feat|}}
+	        <li class="item flexrow" data-magic-item="{{../name}}" data-item-id="{{feat.id}}" data-item-consumption="{{feat.consumption}}">
+	            <div class="item-name flexrow rollable">
+	                <div class="item-image magic-item" style="background-image: url({{feat.img}})"></div>
+	                <h4 class="spell-name">{{feat.name}}</h4>
+	            </div>
+	            <div class="spell-consumption">{{feat.consumption}}</div>
+	        </li>
+	    {{/each}}
+	</ol>
+	{{/if}}
+	{{/each}}
+</div>

@@ -27,8 +27,8 @@ export class MagicItemSheet {
             let item = null;
             if(this && this.items) {
                 this.items.forEach(mi => {
-                    if(mi.hasSpell(id)) {
-                        item = mi.ownedItem(id);
+                    if(mi.hasSpell(id) || mi.hasFeat(id)) {
+                        item = mi.ownedItems[id];
                     }
                 });
             }
@@ -58,16 +58,26 @@ export class MagicItemSheet {
     }
 
     async render() {
-        let template = await renderTemplate('modules/magicitems/templates/magic-item-sheet.html', this);
+        let hasFeats = this.items.reduce((hasFeats, item) => hasFeats || item.hasFeats, false);
+        let hasSpells = this.items.reduce((hasSpells, item) => hasSpells || item.hasSpells, false);
+        if(hasFeats) {
+            await this.renderTemplate('magic-item-feat-sheet', 'magic-items-feats-content', 'features');
+        }
+        if(hasSpells) {
+            await this.renderTemplate('magic-item-spell-sheet', 'magic-items-spells-content', 'spellbook');
+        }
+        this.handleEvents();
+    }
 
-        let el = this.html.find(`.magic-items-content`);
+    async renderTemplate(name, cls, tab) {
+        let template = await renderTemplate(`modules/magicitems/templates/${name}.html`, this);
+
+        let el = this.html.find(`.${cls}`);
         if(el.length) {
             el.replaceWith(template);
         } else {
-            this.html.find(`.spellbook .inventory-list`).append(template);
+            this.html.find(`.${tab} .inventory-list`).append(template);
         }
-
-        this.handleEvents();
     }
 
     handleEvents() {
@@ -84,9 +94,9 @@ export class MagicItemSheet {
         evt.preventDefault();
         const dataset = evt.currentTarget.closest(".item").dataset;
         const magicItem = dataset.magicItem;
-        const spellId = dataset.itemId;
+        const itemId = dataset.itemId;
         const consumption = parseInt(dataset.itemConsumption);
-        this.items.filter(item => item.name === magicItem)[0].roll(spellId, consumption);
+        this.items.filter(item => item.name === magicItem)[0].roll(itemId, consumption);
         this.render();
     }
 

@@ -77,7 +77,6 @@ export class MagicItemTab {
         });
         this.html.find('input[name="flags.magicitems.charges"]').change(evt => {
             this.magicItem.charges = MAGICITEMS.numeric(evt.target.value, this.magicItem.charges);
-            this.render();
         });
         this.html.find('input[name="flags.magicitems.rechargeable"]').change(evt => {
             this.magicItem.toggleRechargeable(evt.target.checked);
@@ -85,35 +84,41 @@ export class MagicItemTab {
         });
         this.html.find('input[name="flags.magicitems.recharge"]').change(evt => {
             this.magicItem.recharge = evt.target.value;
-            this.render();
         });
         this.html.find('select[name="flags.magicitems.rechargeType"]').change(evt => {
             this.magicItem.rechargeType = evt.target.value;
-            this.render();
         });
         this.html.find('select[name="flags.magicitems.rechargeUnit"]').change(evt => {
             this.magicItem.rechargeUnit = evt.target.value;
-            this.render();
         });
         this.html.find('input[name="flags.magicitems.destroy"]').change(evt => {
             this.magicItem.destroy = evt.target.checked;
+        });
+        this.html.find('.item-delete.item-spell').click(evt => {
+            this.magicItem.removeSpell(evt.target.getAttribute("data-spell-idx"));
             this.render();
         });
-        this.html.find('.item-delete').click(evt => {
-            this.magicItem.removeSpell(evt.target.getAttribute("data-item-name"));
+        this.html.find('.item-delete.item-feat').click(evt => {
+            this.magicItem.removeFeat(evt.target.getAttribute("data-feat-idx"));
             this.render();
         });
         this.magicItem.spells.forEach((spell, idx) => {
             this.html.find(`select[name="flags.magicitems.spells.${idx}.level"]`).change(evt => {
                 spell.level = parseInt(evt.target.value);
-                this.render();
             });
             this.html.find(`input[name="flags.magicitems.spells.${idx}.consumption"]`).change(evt => {
                 spell.consumption = MAGICITEMS.numeric(evt.target.value, spell.consumption);
-                this.render();
             });
-            this.html.find(`a[data-item-idx="${idx}"]`).click(evt => {
+            this.html.find(`a[data-spell-idx="${idx}"]`).click(evt => {
                 spell.renderSheet();
+            });
+        });
+        this.magicItem.feats.forEach((feat, idx) => {
+            this.html.find(`input[name="flags.magicitems.feats.${idx}.consumption"]`).change(evt => {
+                feat.consumption = MAGICITEMS.numeric(evt.target.value, feat.consumption);
+            });
+            this.html.find(`a[data-feat-idx="${idx}"]`).click(evt => {
+                feat.renderSheet();
             });
         });
     }
@@ -147,20 +152,29 @@ export class MagicItemTab {
             entity = cls.collection.get(data.id);
         }
 
-        if(entity.type !== "spell") {
-            return;
+        if(entity.type === "spell") {
+            this.magicItem.addSpell({
+                id: entity.id,
+                name: entity.name,
+                img: entity.img,
+                pack: pack,
+                baseLevel: entity.data.data.level,
+                level: entity.data.data.level,
+                consumption: entity.data.data.level
+            });
+            this.render();
         }
 
-        this.magicItem.addSpell({
-            id: entity.id,
-            name: entity.name,
-            img: entity.img,
-            pack: pack,
-            baseLevel: entity.data.data.level,
-            level: entity.data.data.level,
-            consumption: entity.data.data.level
-        });
+        if(entity.type === "feat") {
+            this.magicItem.addFeat({
+                id: entity.id,
+                name: entity.name,
+                img: entity.img,
+                pack: pack,
+                consumption: entity.data.data.level
+            });
+            this.render();
+        }
 
-        this.render();
     }
 }
