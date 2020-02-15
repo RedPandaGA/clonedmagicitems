@@ -4,6 +4,7 @@
 	"description": "",
 	"version": "1.0",
 	"minimumCoreVersion" : "0.4.5",
+	"systems": ["dnd5e"],
 	"author": "Simone",
 	"esmodules": ["magicitems.js"],
 	"scripts": [],
