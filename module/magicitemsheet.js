@@ -1,7 +1,18 @@
 import {OwnedMagicItem} from "./magicitem.js";
 import {MAGICITEMS} from "./config.js";
 
+const magicItemSheets = [];
+
 export class MagicItemSheet {
+
+    static instrument(app, html, data) {
+        let sheet = magicItemSheets[app.id];
+        if(!sheet) {
+            sheet = new MagicItemSheet(app.actor);
+            magicItemSheets[app.id] = sheet;
+        }
+        sheet.init(html, data);
+    }
 
     constructor(actor) {
         this.actor = actor;
@@ -81,7 +92,7 @@ export class MagicItemSheet {
     }
 
     handleEvents() {
-        this.html.find('.item div.item-image.magic-item').click(evt => this.onItemRoll(evt));
+        this.html.find('.item div.magic-item-image').click(evt => this.onItemRoll(evt));
         this.html.find('.item h4.spell-name').click(evt => this.onItemShow(evt));
         this.items.forEach(item => {
             this.html.find(`input[name="flags.magicitems.${item.id}.uses"]`).change(evt => {

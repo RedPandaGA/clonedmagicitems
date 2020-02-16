@@ -270,4 +270,8 @@ export class OwnedMagicItem extends MagicItem {
         }
     }
 
+    betterRolls() {
+        return typeof BetterRolls !== 'undefined' && game.settings.get("betterrolls5e", "diceEnabled");
+    }
+
 }

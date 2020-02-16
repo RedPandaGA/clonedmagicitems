@@ -1,7 +1,20 @@
 import {MAGICITEMS} from "./config.js";
 import {MagicItem} from "./magicitem.js";
 
+const magicItemTabs = [];
+
 export class MagicItemTab {
+
+    static instrument(app, html, data) {
+        let acceptedTypes = ['weapon', 'equipment', 'consumable'];
+        if(acceptedTypes.includes(data.entity.type)) {
+            let tab = magicItemTabs[app.id];
+            if(!tab) {
+                tab = new MagicItemTab(app);
+            }
+            tab.init(html, data);
+        }
+    }
 
     constructor(app) {
         this.app = app;
@@ -38,6 +51,7 @@ export class MagicItemTab {
     hack(app) {
         app.setPosition = function(position={}) {
             position.height = this._sheetTab === "details" || "magicitems" ? "auto" : this.options.height;
+            position.width = 600;
             return this.__proto__.__proto__.setPosition.apply(this, [position])
         };
     }
