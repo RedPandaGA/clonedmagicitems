@@ -397,6 +397,7 @@ class OwnedMagicItemEntry {
     constructor(magicItem, item) {
         this.magicItem = magicItem;
         this.item = item;
+        this.ownedItem = null;
     }
 
     get id() {
@@ -412,6 +413,11 @@ class OwnedMagicItemEntry {
     }
 
     async roll() {
+        if(this.ownedItem) {
+            let data = await this.item.data();
+            this.ownedItem = new Item5e(data, { actor: this.magicItem.actor });
+        }
+
         let consumption = this.item.consumption;
         if(this.ownedItem.type === 'spell' && this.item.canUpcast()) {
             const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
