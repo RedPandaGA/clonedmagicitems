@@ -137,7 +137,7 @@ export class MagicItemSheet {
         let magicItemId = li.dataset.magicItemId;
         let itemId = li.dataset.itemId;
         let magicItem = this.actor.magicItem(magicItemId);
-        let item = magicItem.ownedItemBy(itemId);
+        let item = magicItem.entryBy(itemId);
 
         const dragData = {
             type: "MagicItem",

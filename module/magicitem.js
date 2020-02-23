@@ -271,32 +271,7 @@ export class OwnedMagicItem extends MagicItem {
             game.i18n.localize("MAGICITEMS.SheetNoRecharge");
         this.magicItemActor = magicItemActor;
 
-        this.allItems = this.spells.concat(this.feats);
-        this.ownedEntries = [];
-        this.sequentiallyBuildEntry(0);
-    }
-
-    /**
-     * Very bad. We need to fetch items data sequentially to avoid server read errors.
-     *
-     * @param idx
-     */
-    sequentiallyBuildEntry(idx) {
-        let item = this.allItems[idx];
-        OwnedMagicItemEntry.build(this, item).then(entry => {
-            console.log(`[magic item] item ${item.name} fetched`);
-            this.ownedEntries.push(entry);
-            setTimeout(() => {
-                if(this.allItems.length > idx + 1) {
-                    this.sequentiallyBuildEntry(idx + 1);
-                }
-            }, 300);
-        }, error => {
-            console.log(`[magic item] item ${item.name} fetch error, retry...`);
-            setTimeout(() => {
-                this.sequentiallyBuildEntry(idx);
-            }, 500);
-        });
+        this.ownedEntries = this.spells.concat(this.feats).map(item => new OwnedMagicItemEntry(this, item));
     }
 
     setUses(uses) {
@@ -372,8 +347,12 @@ export class OwnedMagicItem extends MagicItem {
         }
     }
 
+    entryBy(itemId) {
+        return this.ownedEntries.filter(entry => entry.id === itemId)[0];
+    }
+
     ownedItemBy(itemId) {
-        return this.ownedEntries.filter(entry => entry.id === itemId)[0].ownedItem;
+        return this.entryBy(itemId).ownedItem;
     }
 
     betterRolls() {
@@ -383,16 +362,6 @@ export class OwnedMagicItem extends MagicItem {
 }
 
 class OwnedMagicItemEntry {
-
-    static build(magicItem, item) {
-        return new Promise((resolve, reject) => {
-            let entry = new OwnedMagicItemEntry(magicItem, item);
-            item.data().then(data => {
-                entry.ownedItem = new Item5e(data, { actor: magicItem.actor });
-                resolve(entry);
-            })
-        });
-    }
 
     constructor(magicItem, item) {
         this.magicItem = magicItem;
@@ -413,7 +382,7 @@ class OwnedMagicItemEntry {
     }
 
     async roll() {
-        if(this.ownedItem) {
+        if(!this.ownedItem) {
             let data = await this.item.data();
             this.ownedItem = new Item5e(data, { actor: this.magicItem.actor });
         }
