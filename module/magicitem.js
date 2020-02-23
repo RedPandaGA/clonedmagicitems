@@ -284,12 +284,18 @@ export class OwnedMagicItem extends MagicItem {
     sequentiallyBuildEntry(idx) {
         let item = this.allItems[idx];
         OwnedMagicItemEntry.build(this, item).then(entry => {
+            console.log(`[magic item] item ${item.name} fetched`);
             this.ownedEntries.push(entry);
             setTimeout(() => {
                 if(this.allItems.length > idx + 1) {
                     this.sequentiallyBuildEntry(idx + 1);
                 }
-            }, 100);
+            }, 300);
+        }, error => {
+            console.log(`[magic item] item ${item.name} fetch error, retry...`);
+            setTimeout(() => {
+                this.sequentiallyBuildEntry(idx);
+            }, 500);
         });
     }
 
