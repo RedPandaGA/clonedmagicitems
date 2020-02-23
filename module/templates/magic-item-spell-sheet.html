@@ -16,16 +16,18 @@
 		<div class="spell-rechargeable">{{rechargeableLabel}}</div>
 		<div class="spell-level">{{localize "MAGICITEMS.SheetLevel"}}</div>
 	    <div class="spell-consumption">{{localize "MAGICITEMS.SheetConsumption"}}</div>
+	    <div class="spell-upcast">{{localize "MAGICITEMS.SheetCanUpcast"}}</div>
 	</li>
 	<ol class="item-list">
 	    {{#each spells as |spell|}}
-	        <li class="item flexrow" data-magic-item="{{../name}}" data-item-id="{{spell.id}}" data-item-consumption="{{spell.consumption}}">
+	        <li class="item flexrow magic-item" data-magic-item-id="{{../id}}" data-item-id="{{spell.id}}" draggable="true">
 	            <div class="item-name flexrow rollable">
 	                <div class="magic-item-image" style="background-image: url({{spell.img}})"></div>
 	                <h4 class="spell-name">{{spell.name}}</h4>
 	            </div>
 				<div class="spell-level">{{spell.level}}</div>
 	            <div class="spell-consumption">{{spell.consumption}}</div>
+	            <div class="spell-upcast">{{spell.canUpcastLabel}}</div>
 	        </li>
 	    {{/each}}
 	</ol>

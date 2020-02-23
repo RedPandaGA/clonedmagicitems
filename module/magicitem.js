@@ -1,5 +1,6 @@
 import {MAGICITEMS} from "./config.js";
 import { Item5e } from "../../systems/dnd5e/module/item/entity.js";
+import {MagicItemUpcastDialog} from "./magicitemupcastdialog.js";
 
 export class MagicItem {
 
@@ -16,6 +17,7 @@ export class MagicItem {
         this.rechargeType = this.data.rechargeType;
         this.rechargeUnit = this.data.rechargeUnit;
         this.destroy = this.data.destroy;
+        this.destroyCheck = this.data.destroyCheck;
 
         this.spells = Object.values(this.data.spells ? this.data.spells : {})
             .filter(spell => spell !== 'null')
@@ -41,9 +43,14 @@ export class MagicItem {
             rechargeType: 't1',
             rechargeUnit: '',
             destroy: false,
+            destroyCheck: 'd1',
             spells: {},
             feats: {}
         }
+    }
+
+    get destroyChecks() {
+        return MAGICITEMS.localized(MAGICITEMS.destroyChecks);
     }
 
     get rechargeUnits() {
@@ -185,62 +192,151 @@ class MagicItemEntry {
     }
 }
 
+class MagicItemFeat extends MagicItemEntry {
+}
+
 class MagicItemSpell extends MagicItemEntry {
+
+    constructor(data) {
+        super(data);
+        this.baseLevel = parseInt(this.baseLevel);
+        this.level = parseInt(this.level);
+        this.consumption = parseInt(this.consumption);
+        this.upcast = this.upcast ? parseInt(this.upcast) : this.level;
+        this.upcastCost = this.upcastCost ? parseInt(this.upcastCost) : 1;
+    }
 
     get levels() {
         let levels = {};
         for(let i = this.baseLevel; i <= 10; i++) {
             levels[i] = game.i18n.localize(`MAGICITEMS.SheetSpellLevel${i}`);
+            if(i === 0) {
+                break;
+            }
         }
         return levels;
     }
-}
 
-class MagicItemFeat extends MagicItemEntry {
+    get upcasts() {
+        let upcasts = {};
+        for(let i = this.level; i <= 10; i++) {
+            upcasts[i] = game.i18n.localize(`MAGICITEMS.SheetSpellUpcast${i}`);
+            if(i === 0) {
+                break;
+            }
+        }
+        return upcasts;
+    }
+
+    get allowedLevels() {
+        let levels = {};
+        for(let i = this.level; i <= this.upcast; i++) {
+            levels[i] = game.i18n.localize(`MAGICITEMS.SheetSpellLevel${i}`);
+            if(i === 0) {
+                break;
+            }
+        }
+        return levels;
+    }
+
+    canUpcast() {
+        return this.level < this.upcast;
+    }
+
+    canUpcastLabel() {
+        return this.canUpcast() ?
+            game.i18n.localize(`MAGICITEMS.SheetCanUpcastYes`) :
+            game.i18n.localize(`MAGICITEMS.SheetCanUpcastNo`)
+    }
+
+    consumptionAt(level) {
+        return this.consumption + this.upcastCost * (level - this.level);
+    }
 
 }
 
 export class OwnedMagicItem extends MagicItem {
 
-    constructor(item, actor) {
+    constructor(item, actor, magicItemActor) {
         super(item.flags.magicitems);
         this.actorFlags = actor.data.flags.magicitems;
         this.id = item._id;
         this.item = item;
         this.actor = actor;
         this.name = item.name;
+        this.img = item.img;
         this.uses = this.actorFlags && this.actorFlags[this.id] ? parseInt(this.actorFlags[this.id].uses) : this.charges;
         this.rechargeableLabel = this.rechargeable ?
             `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.recharge} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
             game.i18n.localize("MAGICITEMS.SheetNoRecharge");
+        this.magicItemActor = magicItemActor;
 
-        this.ownedItems = [];
+        this.allItems = this.spells.concat(this.feats);
+        this.ownedEntries = [];
+        this.sequentiallyBuildEntry(0);
+    }
+
+    /**
+     * Very bad. We need to fetch items data sequentially to avoid server read errors.
+     *
+     * @param idx
+     */
+    sequentiallyBuildEntry(idx) {
+        let item = this.allItems[idx];
+        OwnedMagicItemEntry.build(this, item).then(entry => {
+            this.ownedEntries.push(entry);
+            setTimeout(() => {
+                if(this.allItems.length > idx + 1) {
+                    this.sequentiallyBuildEntry(idx + 1);
+                }
+            }, 100);
+        });
     }
 
     setUses(uses) {
         this.uses = uses;
     }
 
-    roll(itemId, consumption) {
-        let uses = this.uses - consumption;
-        let item = this.findById(itemId);
-        if(uses >= 0) {
-            this.uses = uses;
-            item.data().then(data => {
-                this.ownedItems[itemId] = new Item5e(data, { actor: this.actor });
-                this.ownedItems[itemId].roll();
-                if(this.uses === 0 && this.destroy) {
-                    this.actor.deleteOwnedItem(this.id);
-                }
-            });
-        } else {
-            let dialog = new Dialog({
-                title: this.name + ': ' + item.name,
-                content: game.i18n.localize("MAGICITEMS.SheetNoChargesMessage"),
-                buttons: {}
-            });
-            dialog.render(true);
+    async roll(itemId) {
+        let ownedItem = this.ownedEntries.filter(entry => entry.id === itemId)[0];
+        await ownedItem.roll();
+    }
+
+    rollByName(itemName) {
+        let found = this.ownedEntries.filter(entry => entry.name === itemName);
+        if(!found.length) {
+            return ui.notifications.warn(game.i18n.localize("MAGICITEMS.WarnNoMagicItemSpell") + itemName);
         }
+        found[0].roll();
+    }
+
+    onRoll(consumption, item) {
+        this.uses = this.uses - consumption;
+        if(this.destroyed()) {
+            this.magicItemActor.destroyItem(this);
+        }
+    }
+
+    destroyed() {
+        let destroyed = this.uses === 0 && this.destroy;
+        if(destroyed && this.destroyCheck === 'd2') {
+            let r = new Roll('1d20');
+            r.roll();
+            destroyed = r.total === 1;
+            r.toMessage({
+                flavor: `<b>${this.name}</b>> ${game.i18n.localize("MAGICITEMS.MagicItemDestroyCheck")} 
+                        - ${destroyed ? "failure!" : "success!"}`,
+                speaker: ChatMessage.getSpeaker({actor: this.actor, token: this.actor.token})
+            });
+        }
+        if(destroyed) {
+            ChatMessage.create({
+                user: game.user._id,
+                speaker: ChatMessage.getSpeaker({actor: this.actor}),
+                content: `<b>${this.name}</b> ${game.i18n.localize("MAGICITEMS.MagicItemDestroy")}`
+            });
+        }
+        return destroyed;
     }
 
     onShortRest() {
@@ -270,8 +366,69 @@ export class OwnedMagicItem extends MagicItem {
         }
     }
 
+    ownedItemBy(itemId) {
+        return this.ownedEntries.filter(entry => entry.id === itemId)[0].ownedItem;
+    }
+
     betterRolls() {
         return typeof BetterRolls !== 'undefined' && game.settings.get("betterrolls5e", "diceEnabled");
     }
 
+}
+
+class OwnedMagicItemEntry {
+
+    static build(magicItem, item) {
+        return new Promise((resolve, reject) => {
+            let entry = new OwnedMagicItemEntry(magicItem, item);
+            item.data().then(data => {
+                entry.ownedItem = new Item5e(data, { actor: magicItem.actor });
+                resolve(entry);
+            })
+        });
+    }
+
+    constructor(magicItem, item) {
+        this.magicItem = magicItem;
+        this.item = item;
+    }
+
+    get id() {
+        return this.item.id;
+    }
+
+    get name() {
+        return this.item.name;
+    }
+
+    get img() {
+        return this.item.img;
+    }
+
+    async roll() {
+        let consumption = this.item.consumption;
+        if(this.ownedItem.type === 'spell' && this.item.canUpcast()) {
+            const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
+            let lvl = parseInt(spellFormData.get("level"));
+            if(lvl !== this.item.level) {
+                consumption = parseInt(spellFormData.get("consumption"));
+                this.ownedItem = new Item5e(
+                    mergeObject(this.ownedItem.data, {"data.level": lvl}, {inplace: false}),
+                    { actor: this.magicItem.actor }
+                );
+            }
+        }
+        let uses = this.magicItem.uses - consumption;
+        if(uses >= 0) {
+            this.ownedItem.roll();
+            this.magicItem.onRoll(consumption, this.ownedItem);
+        } else {
+            let dialog = new Dialog({
+                title: this.magicItem.name + ': ' + this.item.name,
+                content: game.i18n.localize("MAGICITEMS.SheetNoChargesMessage"),
+                buttons: {}
+            });
+            dialog.render(true);
+        }
+    }
 }

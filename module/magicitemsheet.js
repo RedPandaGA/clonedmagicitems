@@ -1,88 +1,85 @@
-import {OwnedMagicItem} from "./magicitem.js";
 import {MAGICITEMS} from "./config.js";
+import {MagicItemActor} from "./magicitemactor.js";
 
 const magicItemSheets = [];
 
 export class MagicItemSheet {
 
-    static instrument(app, html, data) {
+    /**
+     * Crete and register an instance of a MagicItemSheet, if not already present,
+     * bindings with the corresponding MagiItemActor and reinitialize with the new rendered html.
+     *
+     * @param app
+     * @param html
+     * @param data
+     */
+    static bind(app, html, data) {
         let sheet = magicItemSheets[app.id];
         if(!sheet) {
-            sheet = new MagicItemSheet(app.actor);
+            sheet = new MagicItemSheet(app.actor.id);
             magicItemSheets[app.id] = sheet;
         }
         sheet.init(html, data);
     }
 
-    constructor(actor) {
-        this.actor = actor;
-        this.hack(this.actor);
+    /**
+     * Ctor. builds a new MagicItemSheet with the required actorId.
+     *
+     * @param actorId
+     */
+    constructor(actorId) {
+        this.actor = MagicItemActor.get(actorId);
+        this.actor.onChange(() => this.render());
     }
 
+    /**
+     * Set the rendered html from the original sheet and render if the actor has magic items.
+     *
+     * @param html
+     * @param data
+     */
     init(html, data) {
         this.html = html;
         this.data = data;
 
-        this.items = this.data.items
-            .filter(item => typeof item.flags.magicitems !== 'undefined')
-            .map(item => new OwnedMagicItem(item, this.actor));
-
-        if(this.items.length > 0) {
+        if(this.actor.hasMagicItems()) {
             this.render();
         }
     }
 
-    hack(actor) {
-        const parentFn = actor.getOwnedItem.bind(actor);
-        actor.getOwnedItem = function(id) {
-            let item = null;
-            if(this && this.items) {
-                this.items.forEach(mi => {
-                    if(mi.hasSpell(id) || mi.hasFeat(id)) {
-                        item = mi.ownedItems[id];
-                    }
-                });
-            }
-            if(item) {
-                return item;
-            }
-            return parentFn(id);
-        }.bind(this);
-
-        const shortRest = actor.shortRest.bind(actor);
-        actor.shortRest = async function () {
-            let result = await shortRest(arguments);
-            if(this) {
-                this.onShortRest(result);
-            }
-            return result;
-        }.bind(this);
-
-        const longRest = actor.longRest.bind(actor);
-        actor.longRest = async function () {
-            let result = await longRest(arguments);
-            if(this) {
-                this.onLongRest(result);
-            }
-            return result;
-        }.bind(this);
-    }
-
+    /**
+     *
+     * @returns {Promise<void>}
+     */
     async render() {
-        let hasFeats = this.items.reduce((hasFeats, item) => hasFeats || item.hasFeats, false);
-        let hasSpells = this.items.reduce((hasSpells, item) => hasSpells || item.hasSpells, false);
-        if(hasFeats) {
+        if(this.actor.hasItemsFeats()) {
             await this.renderTemplate('magic-item-feat-sheet', 'magic-items-feats-content', 'features');
         }
-        if(hasSpells) {
+        if(this.actor.hasItemsSpells()) {
             await this.renderTemplate('magic-item-spell-sheet', 'magic-items-spells-content', 'spellbook');
         }
+
+        this.actor.items.forEach(item => {
+            let itemEl = this.html.find(`.inventory .inventory-list .item-list .item[data-item-id="${item.id}"]`);
+            let h4 = itemEl.find('h4');
+            if(!h4.find('i.fa-magic').length) {
+                h4.append('<i class="fas fa-magic attuned" title="Magic Item"></i>');
+            }
+        });
+
         this.handleEvents();
     }
 
+    /**
+     * Utility functions, render or replace the template by name in the passed tab.
+     *
+     * @param name
+     * @param cls
+     * @param tab
+     * @returns {Promise<void>}
+     */
     async renderTemplate(name, cls, tab) {
-        let template = await renderTemplate(`modules/magicitems/templates/${name}.html`, this);
-
+        let template = await renderTemplate(`modules/magicitems/templates/${name}.html`, this.actor);
         let el = this.html.find(`.${cls}`);
         if(el.length) {
             el.replaceWith(template);
@@ -91,67 +88,101 @@ export class MagicItemSheet {
         }
     }
 
+    /**
+     *
+     */
     handleEvents() {
         this.html.find('.item div.magic-item-image').click(evt => this.onItemRoll(evt));
         this.html.find('.item h4.spell-name').click(evt => this.onItemShow(evt));
-        this.items.forEach(item => {
+        this.actor.items.forEach(item => {
             this.html.find(`input[name="flags.magicitems.${item.id}.uses"]`).change(evt => {
                 item.setUses(MAGICITEMS.numeric(evt.currentTarget.value, item.uses));
             });
         });
+        this.html.find(`li.item.magic-item`).each((i, li) => {
+            li.addEventListener("dragstart", this.onDragItemStart.bind(this), false);
+        });
     }
 
+    /**
+     *
+     * @param evt
+     */
     onItemRoll(evt) {
         evt.preventDefault();
-        const dataset = evt.currentTarget.closest(".item").dataset;
-        const magicItem = dataset.magicItem;
-        const itemId = dataset.itemId;
-        const consumption = parseInt(dataset.itemConsumption);
-        this.items.filter(item => item.name === magicItem)[0].roll(itemId, consumption);
-        this.render();
+        let dataset = evt.currentTarget.closest(".item").dataset;
+        let magicItemId = dataset.magicItemId;
+        let itemId = dataset.itemId;
+        this.actor.roll(magicItemId, itemId).then(() => { this.render() });
     }
 
+    /**
+     *
+     * @param evt
+     */
     onItemShow(evt) {
         evt.preventDefault();
-        const dataset = evt.currentTarget.closest(".item").dataset;
-        const magicItem = dataset.magicItem;
-        const spellId = dataset.itemId;
-        this.items.filter(item => item.name === magicItem)[0].renderSheet(spellId);
+        let dataset = evt.currentTarget.closest(".item").dataset;
+        let magicItemId = dataset.magicItemId;
+        let itemId = dataset.itemId;
+        this.actor.renderSheet(magicItemId, itemId);
     }
 
-    onShortRest(result) {
-        if(result) {
-            this.items.forEach(item => {
-                let recharge = item.onShortRest();
-                if(recharge) {
-                    this.applyRecharge(item, recharge);
-                }
-            });
-            this.render();
-        }
+    /**
+     *
+     * @param evt
+     */
+    onDragItemStart(evt) {
+        const li = evt.currentTarget;
+        let magicItemId = li.dataset.magicItemId;
+        let itemId = li.dataset.itemId;
+        let magicItem = this.actor.magicItem(magicItemId);
+        let item = magicItem.ownedItemBy(itemId);
+
+        const dragData = {
+            type: "MagicItem",
+            name: `${magicItem.name} > ${item.name}`,
+            img: item.img,
+            magicItemName: magicItem.name,
+            itemName: item.name
+        };
+        evt.dataTransfer.setData("text/plain", JSON.stringify(dragData));
     }
 
-    onLongRest(result) {
-        if(result) {
-            this.items.forEach(item => {
-                let recharge = item.onLongRest();
-                if(recharge) {
-                    this.applyRecharge(item, recharge);
-                }
-            });
-            this.render();
-        }
-    }
-
-    applyRecharge(item, recharge) {
-        let msg = `<b>Magic Item: ${item.name}</b><br> 
-                    ${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${recharge.flavor}`;
-        ChatMessage.create({
-            user: this.actor.name,
-            type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-            content: msg
+    mergeImages(sources = []) {
+        const images = sources.map(source => {
+            const img = new Image();
+            img.src = source;
+            return img;
         });
-        this.actor.setFlag('magicitems', `${item.id}.uses`, recharge.uses);
+
+        const canvas = window.document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = 150;
+        canvas.height = 150;
+
+        let pattern1 = ctx.createPattern(images[0], "no-repeat");
+        let pattern2 = ctx.createPattern(images[1], "no-repeat");
+
+        ctx.fillStyle = pattern1;
+        ctx.beginPath();
+        ctx.moveTo(0, 0); // top left
+        ctx.lineTo(canvas.width, 0);  // top right
+        ctx.lineTo(canvas.width, canvas.height);  // bottom right
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = pattern2;
+        ctx.beginPath();
+        ctx.moveTo(0, 0); // top left
+        ctx.lineTo(0, canvas.height); //bottom left
+        ctx.lineTo(canvas.width, canvas.height); // bottom right
+
+        ctx.closePath();
+        ctx.fill();
+
+        return canvas.toDataURL('image/png', 0.92);
     }
 
 }

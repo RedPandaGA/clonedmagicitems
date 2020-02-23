@@ -1,6 +1,8 @@
 
 export const MAGICITEMS = {};
 
+MAGICITEMS.actors = [];
+
 MAGICITEMS.rechargeUnits = {
     "r1": "MAGICITEMS.RechargeUnitDaily",
     "r2": "MAGICITEMS.RechargeUnitDawn",
@@ -15,6 +17,11 @@ MAGICITEMS.LONG_REST = 'r5';
 MAGICITEMS.rechargeTypes = {
     "t1": "MAGICITEMS.RechargeTypeNumeric",
     "t2": "MAGICITEMS.RechargeTypeFormula"
+};
+
+MAGICITEMS.destroyChecks = {
+    "d1": "MAGICITEMS.DestroyCheckAlways",
+    "d2": "MAGICITEMS.DestroyCheck1D20"
 };
 
 MAGICITEMS.NUMERIC_RECHARGE = 't1';

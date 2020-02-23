@@ -8,6 +8,9 @@
     "MAGICITEMS.RechargeTypeNumeric": "Numerico",
     "MAGICITEMS.RechargeTypeFormula": "Formula",
 
+    "MAGICITEMS.DestroyCheckAlways": "Sempre",
+    "MAGICITEMS.DestroyCheck1D20":  "1 su d20",
+
     "MAGICITEMS.SheetEnabled": "E' un Oggetto Magico?",
     "MAGICITEMS.SheetCharges": "Numero di Cariche Massime",
     "MAGICITEMS.SheetDestroy": "Distruggi a 0 cariche",
@@ -17,11 +20,22 @@
     "MAGICITEMS.SheetFeat": "Privilegio",
     "MAGICITEMS.SheetLevel": "Livello",
     "MAGICITEMS.SheetConsumption": "Consumo",
+    "MAGICITEMS.SheetUpcast": "Upcast",
+    "MAGICITEMS.SheetCost": "Costo/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Non Ricaricabile",
     "MAGICITEMS.SheetNoChargesMessage": "Non ci sono cariche sufficienti.",
     "MAGICITEMS.SheetDragContent": "Trascina qui gli incantesimi/privilegi",
+    "MAGICITEMS.SheetCanUpcast": "Upcast",
+    "MAGICITEMS.SheetCanUpcastYes": "si",
+    "MAGICITEMS.SheetCanUpcastNo": "no",
 
-    "MAGICITEMS.SheetSpellLevel0": "-",
+    "MAGICITEMS.UpcastDialogLevel": "Lancia al livello",
+    "MAGICITEMS.UpcastDialogConsumption": "Consumo",
+
+    "MAGICITEMS.MagicItemDestroyCheck": "verifica autodistruzione",
+    "MAGICITEMS.MagicItemDestroy": "ha esaurito le cariche: si sbriciola in cenere e viene distrutto.",
+
+    "MAGICITEMS.SheetSpellLevel0": "trucchetto",
     "MAGICITEMS.SheetSpellLevel1": "1°",
     "MAGICITEMS.SheetSpellLevel2": "2°",
     "MAGICITEMS.SheetSpellLevel3": "3°",
@@ -31,5 +45,21 @@
     "MAGICITEMS.SheetSpellLevel7": "7°",
     "MAGICITEMS.SheetSpellLevel8": "8°",
     "MAGICITEMS.SheetSpellLevel9": "9°",
-    "MAGICITEMS.SheetSpellLevel10": "10°"
+    "MAGICITEMS.SheetSpellLevel10": "10°",
+
+    "MAGICITEMS.SheetSpellUpcast0": "trucchetto",
+    "MAGICITEMS.SheetSpellUpcast1": "fino al 1°",
+    "MAGICITEMS.SheetSpellUpcast2": "fino al 2°",
+    "MAGICITEMS.SheetSpellUpcast3": "fino al 3°",
+    "MAGICITEMS.SheetSpellUpcast4": "fino al 4°",
+    "MAGICITEMS.SheetSpellUpcast5": "fino al 5°",
+    "MAGICITEMS.SheetSpellUpcast6": "fino al 6°",
+    "MAGICITEMS.SheetSpellUpcast7": "fino al 7°",
+    "MAGICITEMS.SheetSpellUpcast8": "fino al 8°",
+    "MAGICITEMS.SheetSpellUpcast9": "fino al 9°",
+    "MAGICITEMS.SheetSpellUpcast10": "fino al 10°",
+
+    "MAGICITEMS.WarnNoActor": "you have no controlled actor, select an actor and retry.",
+    "MAGICITEMS.WarnNoMagicItem": "Your controlled Actor does not have an item named ",
+    "MAGICITEMS.WarnNoMagicItemSpell": "Your controlled Actor does not have a spell/feat named "
 }

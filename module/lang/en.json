@@ -8,6 +8,9 @@
     "MAGICITEMS.RechargeTypeNumeric": "Numeric",
     "MAGICITEMS.RechargeTypeFormula": "Formula",
 
+    "MAGICITEMS.DestroyCheckAlways": "Always",
+    "MAGICITEMS.DestroyCheck1D20":  "1 on d20",
+
     "MAGICITEMS.SheetEnabled": "Is a Magic Item?",
     "MAGICITEMS.SheetCharges": "Max Number of Charges",
     "MAGICITEMS.SheetDestroy": "Destroy At 0 Charges",
@@ -17,11 +20,22 @@
     "MAGICITEMS.SheetFeat": "Feat",
     "MAGICITEMS.SheetLevel": "Level",
     "MAGICITEMS.SheetConsumption": "Consumption",
+    "MAGICITEMS.SheetUpcast": "Upcast",
+    "MAGICITEMS.SheetCost": "Cost/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Not Rechargeable",
     "MAGICITEMS.SheetNoChargesMessage": "Not enough charges.",
     "MAGICITEMS.SheetDragContent": "Drag spells/feats here",
+    "MAGICITEMS.SheetCanUpcast": "Upcast",
+    "MAGICITEMS.SheetCanUpcastYes": "yes",
+    "MAGICITEMS.SheetCanUpcastNo": "no",
 
-    "MAGICITEMS.SheetSpellLevel0": "-",
+    "MAGICITEMS.UpcastDialogLevel": "Cast at Level",
+    "MAGICITEMS.UpcastDialogConsumption": "Consumption",
+
+    "MAGICITEMS.MagicItemDestroyCheck": "destroy check",
+    "MAGICITEMS.MagicItemDestroy": "reaches 0 charges: it crumbles into ashes and is destroyed.",
+
+    "MAGICITEMS.SheetSpellLevel0": "cantrip",
     "MAGICITEMS.SheetSpellLevel1": "1st",
     "MAGICITEMS.SheetSpellLevel2": "2nd",
     "MAGICITEMS.SheetSpellLevel3": "3rd",
@@ -31,5 +45,21 @@
     "MAGICITEMS.SheetSpellLevel7": "7th",
     "MAGICITEMS.SheetSpellLevel8": "8th",
     "MAGICITEMS.SheetSpellLevel9": "9th",
-    "MAGICITEMS.SheetSpellLevel10": "10th"
+    "MAGICITEMS.SheetSpellLevel10": "10th",
+
+    "MAGICITEMS.SheetSpellUpcast0": "no upcast",
+    "MAGICITEMS.SheetSpellUpcast1": "up to 1st",
+    "MAGICITEMS.SheetSpellUpcast2": "up to 2nd",
+    "MAGICITEMS.SheetSpellUpcast3": "up to 3rd",
+    "MAGICITEMS.SheetSpellUpcast4": "up to 4th",
+    "MAGICITEMS.SheetSpellUpcast5": "up to 5th",
+    "MAGICITEMS.SheetSpellUpcast6": "up to 6th",
+    "MAGICITEMS.SheetSpellUpcast7": "up to 7th",
+    "MAGICITEMS.SheetSpellUpcast8": "up to 8th",
+    "MAGICITEMS.SheetSpellUpcast9": "up to 9th",
+    "MAGICITEMS.SheetSpellUpcast10": "up to 10th",
+
+    "MAGICITEMS.WarnNoActor": "you have no controlled actor, select an actor and retry.",
+    "MAGICITEMS.WarnNoMagicItem": "Your controlled Actor does not have an item named ",
+    "MAGICITEMS.WarnNoMagicItemSpell": "Your controlled Actor does not have a spell/feat named "
 }

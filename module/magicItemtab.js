@@ -5,7 +5,7 @@ const magicItemTabs = [];
 
 export class MagicItemTab {
 
-    static instrument(app, html, data) {
+    static bind(app, html, data) {
         let acceptedTypes = ['weapon', 'equipment', 'consumable'];
         if(acceptedTypes.includes(data.entity.type)) {
             let tab = magicItemTabs[app.id];
@@ -72,6 +72,13 @@ export class MagicItemTab {
             magicItemEnabled.hide();
         }
 
+        let magicItemDestroyCheck = this.html.find('select[name="flags.magicitems.destroyCheck"]');
+        if(this.magicItem.destroy) {
+            magicItemDestroyCheck.prop("disabled", false);
+        } else {
+            magicItemDestroyCheck.prop("disabled", true);
+        }
+
         let magicItemRecharge = this.html.find('.form-group.magic-item-recharge');
         if(this.magicItem.rechargeable) {
             magicItemRecharge.show();
@@ -107,6 +114,7 @@ export class MagicItemTab {
         });
         this.html.find('input[name="flags.magicitems.destroy"]').change(evt => {
             this.magicItem.destroy = evt.target.checked;
+            this.render();
         });
         this.html.find('.item-delete.item-spell').click(evt => {
             this.magicItem.removeSpell(evt.target.getAttribute("data-spell-idx"));
@@ -119,9 +127,16 @@ export class MagicItemTab {
         this.magicItem.spells.forEach((spell, idx) => {
             this.html.find(`select[name="flags.magicitems.spells.${idx}.level"]`).change(evt => {
                 spell.level = parseInt(evt.target.value);
+                this.render();
             });
             this.html.find(`input[name="flags.magicitems.spells.${idx}.consumption"]`).change(evt => {
                 spell.consumption = MAGICITEMS.numeric(evt.target.value, spell.consumption);
+            });
+            this.html.find(`input[name="flags.magicitems.spells.${idx}.upcast"]`).change(evt => {
+                spell.upcast = parseInt(evt.target.value);
+            });
+            this.html.find(`input[name="flags.magicitems.spells.${idx}.cost"]`).change(evt => {
+                spell.cost = MAGICITEMS.numeric(evt.target.value, spell.cost);
             });
             this.html.find(`a[data-spell-idx="${idx}"]`).click(evt => {
                 spell.renderSheet();
@@ -159,11 +174,14 @@ export class MagicItemTab {
         let entity;
         if (pack) {
             entity = await MAGICITEMS.fromCollection(pack, data.id);
-
         } else {
             pack = 'world';
             const cls = CONFIG[data.type].entityClass;
             entity = cls.collection.get(data.id);
+        }
+
+        if(this.magicItem.hasSpell(entity.id) || this.magicItem.hasFeat(entity.id)) {
+            return;
         }
 
         if(entity.type === "spell") {
@@ -174,7 +192,9 @@ export class MagicItemTab {
                 pack: pack,
                 baseLevel: entity.data.data.level,
                 level: entity.data.data.level,
-                consumption: entity.data.data.level
+                consumption: entity.data.data.level,
+                upcast: entity.data.data.level,
+                upcastCost: 1
             });
             this.render();
         }

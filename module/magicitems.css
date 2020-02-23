@@ -50,11 +50,19 @@
     border-right: 1px solid #c9c7b8;
 }
 
-.dnd5e.sheet.item .spell-level-head, .dnd5e.sheet.item .spell-consumption-head {
-    flex: 0.2;
+.dnd5e.sheet.item .spell-level-head, .dnd5e.sheet.item .spell-consumption-head , .dnd5e.sheet.item .spell-upcast-head {
+    flex: 0.4;
     font-size: 12px;
     color: #7a7971;
-    text-align: left;
+    text-align: center;
+    border-right: 1px solid #c9c7b8;
+}
+
+.dnd5e.sheet.item .spell-cost-head {
+    flex: 0.3;
+    font-size: 12px;
+    color: #7a7971;
+    text-align: center;
     border-right: 1px solid #c9c7b8;
 }
 
@@ -86,11 +94,25 @@
 }
 
 .dnd5e.sheet.item .magic-item-list .item .spell-level {
-    flex: 0.2;
+    flex: 0.3;
     margin-right: 5px;
 }
 
+.dnd5e.sheet.item .magic-item-list .item .spell-upcast {
+    flex: 0.3;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
 .dnd5e.sheet.item .magic-item-list .item .spell-consumption {
+    flex: 0.3;
+}
+
+.dnd5e.sheet.item .magic-item-list .item .spell-cost {
+    flex: 0.2;
+}
+
+.dnd5e.sheet.item .magic-item-list .item .spell-upcast {
     flex: 0.2;
 }
 
@@ -120,7 +142,10 @@
 	margin-top: 10px;
 }
 
-.dnd5e.sheet.actor .spell-rechargeable, .dnd5e.sheet.actor .spell-level, .dnd5e.sheet.actor .spell-consumption {
+.dnd5e.sheet.actor .spell-rechargeable,
+.dnd5e.sheet.actor .spell-level,
+.dnd5e.sheet.actor .spell-consumption,
+.dnd5e.sheet.actor .spell-upcast {
     flex: 0 0 80px;
     font-size: 12px;
     color: #7a7971;
@@ -140,4 +165,12 @@
 
 .dnd5e.sheet.actor .inventory-list .item .magic-item-image:hover {
     background-image: url(/icons/svg/d20-black.svg) !important;
+}
+
+.dnd5e.sheet.item .magic-items-content select.magic-item-destroy-check {
+    flex: 0.4;
+}
+
+.dnd5e.sheet.item .magic-items-content select.magic-item-destroy-check:disabled {
+    color: #9a9a9a;
 }
