@@ -91,7 +91,7 @@ export class MagicItemActor {
      */
     shortRest(original, me) {
         return async function() {
-            let result = await original(arguments);
+            let result = await original.apply(me.actor, arguments);
             me.onShortRest(result);
             return result;
         }
@@ -105,7 +105,7 @@ export class MagicItemActor {
      */
     longRest(original, me) {
         return async function() {
-            let result = await original(arguments);
+            let result = await original.apply(me.actor, arguments);
             me.onLongRest(result);
             return result;
         }
