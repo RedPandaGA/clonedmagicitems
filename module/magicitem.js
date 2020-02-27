@@ -208,7 +208,7 @@ class MagicItemSpell extends MagicItemEntry {
 
     get levels() {
         let levels = {};
-        for(let i = this.baseLevel; i <= 10; i++) {
+        for(let i = this.baseLevel; i <= 9; i++) {
             levels[i] = game.i18n.localize(`MAGICITEMS.SheetSpellLevel${i}`);
             if(i === 0) {
                 break;
@@ -219,7 +219,7 @@ class MagicItemSpell extends MagicItemEntry {
 
     get upcasts() {
         let upcasts = {};
-        for(let i = this.level; i <= 10; i++) {
+        for(let i = this.level; i <= 9; i++) {
             upcasts[i] = game.i18n.localize(`MAGICITEMS.SheetSpellUpcast${i}`);
             if(i === 0) {
                 break;
@@ -230,7 +230,7 @@ class MagicItemSpell extends MagicItemEntry {
 
     get allowedLevels() {
         let levels = {};
-        for(let i = this.level; i <= this.upcast; i++) {
+        for(let i = this.level; i <= Math.min(this.upcast, 9); i++) {
             levels[i] = game.i18n.localize(`MAGICITEMS.SheetSpellLevel${i}`);
             if(i === 0) {
                 break;
@@ -387,13 +387,15 @@ class OwnedMagicItemEntry {
             this.ownedItem = new Item5e(data, { actor: this.magicItem.actor });
         }
 
+        let item = this.ownedItem;
+
         let consumption = this.item.consumption;
         if(this.ownedItem.type === 'spell' && this.item.canUpcast()) {
             const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
             let lvl = parseInt(spellFormData.get("level"));
             if(lvl !== this.item.level) {
                 consumption = parseInt(spellFormData.get("consumption"));
-                this.ownedItem = new Item5e(
+                item = new Item5e(
                     mergeObject(this.ownedItem.data, {"data.level": lvl}, {inplace: false}),
                     { actor: this.magicItem.actor }
                 );
@@ -401,8 +403,8 @@ class OwnedMagicItemEntry {
         }
         let uses = this.magicItem.uses - consumption;
         if(uses >= 0) {
-            this.ownedItem.roll();
-            this.magicItem.onRoll(consumption, this.ownedItem);
+            item.roll();
+            this.magicItem.onRoll(consumption, item);
         } else {
             let dialog = new Dialog({
                 title: this.magicItem.name + ': ' + this.item.name,
