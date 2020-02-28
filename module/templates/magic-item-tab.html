@@ -129,12 +129,57 @@
         </ol>
     {{/if}}
 
+    {{#if tables.length}}
+        <ol class="magic-item-list">
+            <li class="item flexrow inventory-header spellbook-header">
+                <div class="item-name flexrow">
+                    <h3>{{localize "MAGICITEMS.SheetTable"}}</h3>
+                </div>
+                <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetUsage"}}</div>
+                <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
+                <div class="spell-controls-head">&nbsp;</div>
+            </li>
+
+            <ol class="item-list">
+                {{#each tables as |item i|}}
+                <li class="item flexrow">
+                    <div class="item-name flexrow">
+                        <div class="item-image" style="background-image: url({{item.img}})"></div>
+                        <h4><a data-table-idx="{{i}}">{{item.name}}</a></h4>
+                        <input type="hidden" name="flags.magicitems.tables.{{i}}.id" value="{{item.id}}">
+                        <input type="hidden" name="flags.magicitems.tables.{{i}}.name" value="{{item.name}}">
+                        <input type="hidden" name="flags.magicitems.tables.{{i}}.pack" value="{{item.pack}}">
+                        <input type="hidden" name="flags.magicitems.tables.{{i}}.img" value="{{item.img}}">
+                    </div>
+                    <select class="spell-upcast" name="flags.magicitems.tables.{{i}}.usage">
+                        {{#select item.usage}}
+                        {{#each item.usages as |name key|}}
+                        <option value="{{key}}">{{name}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    <input class="feat-consumption" type="text" name="flags.magicitems.tables.{{i}}.consumption" value="{{item.consumption}}">
+                    <div class="item-controls">
+                        <a class="item-control item-delete item-table" title="Delete Roll Table">
+                            <i class="fas fa-trash" data-table-idx="{{i}}"></i>
+                        </a>
+                    </div>
+                </li>
+                {{/each}}
+            </ol>
+        </ol>
+    {{/if}}
+
     {{#each spellsGarbage as |index i|}}
     <input type="hidden" name="flags.magicitems.spells.-={{index}}" value="null">
     {{/each}}
 
     {{#each featsGarbage as |index i|}}
     <input type="hidden" name="flags.magicitems.feats.-={{index}}" value="null">
+    {{/each}}
+
+    {{#each tablesGarbage as |index i|}}
+    <input type="hidden" name="flags.magicitems.tables.-={{index}}" value="null">
     {{/each}}
 
     {{#if empty}}

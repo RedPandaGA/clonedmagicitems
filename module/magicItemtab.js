@@ -124,6 +124,10 @@ export class MagicItemTab {
             this.magicItem.removeFeat(evt.target.getAttribute("data-feat-idx"));
             this.render();
         });
+        this.html.find('.item-delete.item-table').click(evt => {
+            this.magicItem.removeTable(evt.target.getAttribute("data-table-idx"));
+            this.render();
+        });
         this.magicItem.spells.forEach((spell, idx) => {
             this.html.find(`select[name="flags.magicitems.spells.${idx}.level"]`).change(evt => {
                 spell.level = parseInt(evt.target.value);
@@ -150,6 +154,14 @@ export class MagicItemTab {
                 feat.renderSheet();
             });
         });
+        this.magicItem.tables.forEach((table, idx) => {
+            this.html.find(`input[name="flags.magicitems.tables.${idx}.consumption"]`).change(evt => {
+                table.consumption = MAGICITEMS.numeric(evt.target.value, table.consumption);
+            });
+            this.html.find(`a[data-table-idx="${idx}"]`).click(evt => {
+                table.renderSheet();
+            });
+        });
     }
 
     _onDragOver(evt) {
@@ -163,7 +175,7 @@ export class MagicItemTab {
         let data;
         try {
             data = JSON.parse(evt.dataTransfer.getData('text/plain'));
-            if (data.type !== "Item") {
+            if(!this.magicItem.support(data.type)) {
                 return;
             }
         } catch (err) {
@@ -180,35 +192,9 @@ export class MagicItemTab {
             entity = cls.collection.get(data.id);
         }
 
-        if(this.magicItem.hasSpell(entity.id) || this.magicItem.hasFeat(entity.id)) {
-            return;
-        }
-
-        if(entity.type === "spell") {
-            this.magicItem.addSpell({
-                id: entity.id,
-                name: entity.name,
-                img: entity.img,
-                pack: pack,
-                baseLevel: entity.data.data.level,
-                level: entity.data.data.level,
-                consumption: entity.data.data.level,
-                upcast: entity.data.data.level,
-                upcastCost: 1
-            });
+        if(this.magicItem.compatible(entity)) {
+            this.magicItem.addEntity(entity, pack);
             this.render();
         }
-
-        if(entity.type === "feat") {
-            this.magicItem.addFeat({
-                id: entity.id,
-                name: entity.name,
-                img: entity.img,
-                pack: pack,
-                consumption: entity.data.data.level
-            });
-            this.render();
-        }
-
     }
 }

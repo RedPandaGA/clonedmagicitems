@@ -27,6 +27,16 @@ MAGICITEMS.destroyChecks = {
 MAGICITEMS.NUMERIC_RECHARGE = 't1';
 MAGICITEMS.FORMULA_RECHARGE = 't2';
 
+MAGICITEMS.tableUsages = {
+    "u1": "MAGICITEMS.TableUsageAsSpell",
+    "u2": "MAGICITEMS.TableUsageAsFeat",
+    "u3": "MAGICITEMS.TableUsageTriggerOnUsage"
+};
+
+MAGICITEMS.TABLE_USAGE_AS_SPELL = "u1";
+MAGICITEMS.TABLE_USAGE_AS_FEAT = "u2";
+MAGICITEMS.TABLE_USAGE_TRIGGER = "u3";
+
 MAGICITEMS.localized = function (cfg) {
     return Object.keys(cfg).reduce((i18nCfg, key) => {
             i18nCfg[key] = game.i18n.localize(cfg[key]);

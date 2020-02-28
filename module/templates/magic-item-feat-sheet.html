@@ -26,6 +26,17 @@
 	            <div class="spell-consumption">{{feat.consumption}}</div>
 	        </li>
 	    {{/each}}
+		{{#if hasTableAsFeats}}
+		{{#each tableAsFeats as |table|}}
+		<li class="item flexrow magic-item" data-magic-item-id="{{../id}}" data-item-id="{{table.id}}" draggable="true">
+			<div class="item-name flexrow rollable">
+				<div class="magic-item-image" style="background-image: url({{table.img}})"></div>
+				<h4 class="spell-name">{{table.name}}</h4>
+			</div>
+			<div class="spell-consumption">{{table.consumption}}</div>
+		</li>
+		{{/each}}
+		{{/if}}
 	</ol>
 	{{/if}}
 	{{/each}}

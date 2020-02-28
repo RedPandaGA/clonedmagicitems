@@ -18,6 +18,7 @@
     "MAGICITEMS.SheetRecharge": "Recharge",
     "MAGICITEMS.SheetSpell": "Spell",
     "MAGICITEMS.SheetFeat": "Feat",
+    "MAGICITEMS.SheetTable": "Table",
     "MAGICITEMS.SheetLevel": "Level",
     "MAGICITEMS.SheetConsumption": "Consumption",
     "MAGICITEMS.SheetUpcast": "Upcast",
@@ -28,6 +29,7 @@
     "MAGICITEMS.SheetCanUpcast": "Upcast",
     "MAGICITEMS.SheetCanUpcastYes": "yes",
     "MAGICITEMS.SheetCanUpcastNo": "no",
+    "MAGICITEMS.SheetUsage": "Usage",
 
     "MAGICITEMS.UpcastDialogLevel": "Cast at Level",
     "MAGICITEMS.UpcastDialogConsumption": "Consumption",
@@ -56,6 +58,10 @@
     "MAGICITEMS.SheetSpellUpcast7": "up to 7th",
     "MAGICITEMS.SheetSpellUpcast8": "up to 8th",
     "MAGICITEMS.SheetSpellUpcast9": "up to 9th",
+
+    "MAGICITEMS.TableUsageAsSpell": "As spell",
+    "MAGICITEMS.TableUsageAsFeat": "As Feat",
+    "MAGICITEMS.TableUsageTriggerOnUsage": "Trigger on usage",
 
     "MAGICITEMS.WarnNoActor": "you have no controlled actor, select an actor and retry.",
     "MAGICITEMS.WarnNoMagicItem": "Your controlled Actor does not have an item named ",

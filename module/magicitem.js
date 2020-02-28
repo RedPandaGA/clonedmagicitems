@@ -27,11 +27,17 @@ export class MagicItem {
             .filter(feat => feat !== 'null')
             .map(spell => new MagicItemFeat(spell));
 
+        this.tables = Object.values(this.data.tables ? this.data.tables : {})
+            .filter(table => table !== 'null')
+            .map(table => new MagicItemTable(table));
+
         this.spellsGarbage = [];
         this.featsGarbage = [];
+        this.tablesGarbage = [];
 
         this.savedSpells = this.spells.length;
         this.savedFeats = this.feats.length;
+        this.savedTables = this.tables.length;
     }
 
     defaultData() {
@@ -45,7 +51,8 @@ export class MagicItem {
             destroy: false,
             destroyCheck: 'd1',
             spells: {},
-            feats: {}
+            feats: {},
+            tables: {}
         }
     }
 
@@ -85,7 +92,12 @@ export class MagicItem {
         mergeObject(this, this.defaultData());
         this.spells = [];
         this.feats = [];
+        this.tables = [];
         this.cleanup();
+    }
+
+    support(type) {
+        return ['Item', 'RollTable'].includes(type);
     }
 
     addSpell(data) {
@@ -99,7 +111,7 @@ export class MagicItem {
     }
 
     get hasSpells() {
-        return this.spells.length > 0;
+        return this.spells.length > 0 || this.hasTableAsSpells;
     }
 
     hasSpell(spellId) {
@@ -117,15 +129,100 @@ export class MagicItem {
     }
 
     get hasFeats() {
-        return this.feats.length > 0;
+        return this.feats.length > 0 || this.hasTableAsFeats;
     }
 
     hasFeat(featId) {
         return this.feats.filter(feat => feat.id === featId).length === 1;
     }
 
+    addTable(data) {
+        this.tables.push(new MagicItemTable(data));
+        this.cleanup();
+    }
+
+    removeTable(idx) {
+        this.tables.splice(idx, 1);
+        this.cleanup();
+    }
+
+    get hasTableAsSpells() {
+        return this.tableAsSpells.length === 1;
+    }
+
+    get hasTableAsFeats() {
+        return this.tableAsFeats.length === 1;
+    }
+
+    hasTable(tableId) {
+        return this.tables.filter(table => table.id === tableId).length === 1;
+    }
+
+    tablesByUsage(usage) {
+        return this.tables.filter(table => table.usage === usage);
+    }
+
+    get tableAsSpells() {
+        return this.tablesByUsage(MAGICITEMS.TABLE_USAGE_AS_SPELL);
+    }
+
+    get tableAsFeats() {
+        return this.tablesByUsage(MAGICITEMS.TABLE_USAGE_AS_FEAT);
+    }
+
+    get triggeredTables() {
+        return this.tablesByUsage(MAGICITEMS.TABLE_USAGE_TRIGGER);
+    }
+
+    compatible(entity) {
+        return (['spell', 'feat'].includes(entity.type) || entity.entity === 'RollTable')
+            && !this.hasItem(entity.id);
+    }
+
+    addEntity(entity, pack) {
+        if(entity.type === "spell") {
+            this.addSpell({
+                id: entity.id,
+                name: entity.name,
+                img: entity.img,
+                pack: pack,
+                baseLevel: entity.data.data.level,
+                level: entity.data.data.level,
+                consumption: entity.data.data.level,
+                upcast: entity.data.data.level,
+                upcastCost: 1
+            });
+            return true;
+        }
+        if(entity.type === "feat") {
+            this.addFeat({
+                id: entity.id,
+                name: entity.name,
+                img: entity.img,
+                pack: pack,
+                consumption: 1
+            });
+            return true;
+        }
+        if(entity.entity === "RollTable") {
+            this.addTable({
+                id: entity.id,
+                name: entity.name,
+                img: 'icons/svg/d20-grey.svg',
+                pack: pack,
+                consumption: 1
+            });
+            return true;
+        }
+        return false;
+    }
+
+    hasItem(itemId) {
+        return this.hasSpell(itemId) || this.hasFeat(itemId) || this.hasTable(itemId);
+    }
+
     findById(itemId) {
-        let items = this.spells.concat(this.feats);
+        let items = this.spells.concat(this.feats).concat(this.tables);
         return items.filter(item => item.id === itemId)[0];
     }
 
@@ -136,6 +233,7 @@ export class MagicItem {
     cleanup() {
         this.spellsGarbage = [];
         this.featsGarbage = [];
+        this.tablesGarbage = [];
         if(this.savedSpells > this.spells.length) {
             for(let i = this.spells.length; i < this.savedSpells; i++) {
                 this.spellsGarbage.push(i);
@@ -144,6 +242,11 @@ export class MagicItem {
         if(this.savedFeats > this.feats.length) {
             for(let i = this.feats.length; i < this.savedFeats; i++) {
                 this.featsGarbage.push(i);
+            }
+        }
+        if(this.savedTables > this.tables.length) {
+            for(let i = this.tables.length; i < this.savedTables; i++) {
+                this.tablesGarbage.push(i);
             }
         }
     }
@@ -159,9 +262,10 @@ class MagicItemEntry {
     renderSheet() {
         this.entity().then(entity => {
             const sheet = entity.sheet;
-            sheet.options.editable = false;
             if(this.pack === 'world') {
                 sheet.options.compendium = this.pack;
+            } else {
+                sheet.options.editable = false;
             }
             sheet.render(true);
         });
@@ -170,8 +274,7 @@ class MagicItemEntry {
     entity() {
         return new Promise((resolve, reject) => {
             if(this.pack === 'world') {
-                const cls = CONFIG['Item'].entityClass;
-                let entity = cls.collection.get(this.id);
+                let entity = this.entityCls().collection.get(this.id);
                 resolve(entity);
             } else {
                 const pack = game.packs.find(p => p.collection === this.pack);
@@ -180,6 +283,10 @@ class MagicItemEntry {
                 });
             }
         });
+    }
+
+    entityCls() {
+        return CONFIG['Item'].entityClass;
     }
 
     data() {
@@ -193,6 +300,22 @@ class MagicItemEntry {
 }
 
 class MagicItemFeat extends MagicItemEntry {
+}
+
+class MagicItemTable extends MagicItemEntry {
+
+    entityCls() {
+        return CONFIG['RollTable'].entityClass;
+    }
+
+    get usages() {
+        return MAGICITEMS.localized(MAGICITEMS.tableUsages);
+    }
+
+    async roll() {
+        let entity = await this.entity();
+        entity.draw();
+    }
 }
 
 class MagicItemSpell extends MagicItemEntry {
@@ -258,9 +381,9 @@ class MagicItemSpell extends MagicItemEntry {
 export class OwnedMagicItem extends MagicItem {
 
     constructor(item, actor, magicItemActor) {
-        super(item.flags.magicitems);
+        super(item.data.flags.magicitems);
         this.actorFlags = actor.data.flags.magicitems;
-        this.id = item._id;
+        this.id = item.id;
         this.item = item;
         this.actor = actor;
         this.name = item.name;
@@ -272,6 +395,20 @@ export class OwnedMagicItem extends MagicItem {
         this.magicItemActor = magicItemActor;
 
         this.ownedEntries = this.spells.concat(this.feats).map(item => new OwnedMagicItemEntry(this, item));
+        this.ownedEntries = this.ownedEntries.concat(this.tables.map(table => new OwnedMagicItemTable(this, table)));
+
+        this.instrument();
+    }
+
+    instrument() {
+        this.item.roll = this.itemRoll(this.item.roll, this);
+    }
+
+    itemRoll(original, me) {
+        return async function () {
+            me.triggerTables();
+            return await original.apply(me.item, arguments);
+        }
     }
 
     setUses(uses) {
@@ -291,7 +428,7 @@ export class OwnedMagicItem extends MagicItem {
         found[0].roll();
     }
 
-    onRoll(consumption, item) {
+    onRoll(consumption) {
         this.uses = this.uses - consumption;
         if(this.destroyed()) {
             this.magicItemActor.destroyItem(this);
@@ -355,9 +492,15 @@ export class OwnedMagicItem extends MagicItem {
         return this.entryBy(itemId).ownedItem;
     }
 
+    triggerTables() {
+        this.triggeredTables.forEach(table => table.roll());
+    }
+
+/*
     betterRolls() {
         return typeof BetterRolls !== 'undefined' && game.settings.get("betterrolls5e", "diceEnabled");
     }
+*/
 
 }
 
@@ -404,7 +547,7 @@ class OwnedMagicItemEntry {
         let uses = this.magicItem.uses - consumption;
         if(uses >= 0) {
             item.roll();
-            this.magicItem.onRoll(consumption, item);
+            this.magicItem.onRoll(consumption);
         } else {
             let dialog = new Dialog({
                 title: this.magicItem.name + ': ' + this.item.name,
@@ -414,4 +557,41 @@ class OwnedMagicItemEntry {
             dialog.render(true);
         }
     }
+}
+
+class OwnedMagicItemTable {
+
+    constructor(magicItem, table) {
+        this.magicItem = magicItem;
+        this.table = table;
+    }
+
+    get id() {
+        return this.table.id;
+    }
+
+    get name() {
+        return this.table.name;
+    }
+
+    get img() {
+        return this.table.img;
+    }
+
+    async roll() {
+        let consumption = this.table.consumption;
+        let uses = this.magicItem.uses - consumption;
+        if(uses >= 0) {
+            await this.table.roll();
+            this.magicItem.onRoll(consumption);
+        } else {
+            let dialog = new Dialog({
+                title: this.magicItem.name + ': ' + this.table.name,
+                content: game.i18n.localize("MAGICITEMS.SheetNoChargesMessage"),
+                buttons: {}
+            });
+            dialog.render(true);
+        }
+    }
+
 }

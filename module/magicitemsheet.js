@@ -148,41 +148,4 @@ export class MagicItemSheet {
         };
         evt.dataTransfer.setData("text/plain", JSON.stringify(dragData));
     }
-
-    mergeImages(sources = []) {
-        const images = sources.map(source => {
-            const img = new Image();
-            img.src = source;
-            return img;
-        });
-
-        const canvas = window.document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = 150;
-        canvas.height = 150;
-
-        let pattern1 = ctx.createPattern(images[0], "no-repeat");
-        let pattern2 = ctx.createPattern(images[1], "no-repeat");
-
-        ctx.fillStyle = pattern1;
-        ctx.beginPath();
-        ctx.moveTo(0, 0); // top left
-        ctx.lineTo(canvas.width, 0);  // top right
-        ctx.lineTo(canvas.width, canvas.height);  // bottom right
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.fillStyle = pattern2;
-        ctx.beginPath();
-        ctx.moveTo(0, 0); // top left
-        ctx.lineTo(0, canvas.height); //bottom left
-        ctx.lineTo(canvas.width, canvas.height); // bottom right
-
-        ctx.closePath();
-        ctx.fill();
-
-        return canvas.toDataURL('image/png', 0.92);
-    }
-
 }
