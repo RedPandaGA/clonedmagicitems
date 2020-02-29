@@ -11,6 +11,7 @@ MAGICITEMS.rechargeUnits = {
     "r5": "MAGICITEMS.RechargeUnitLongRest"
 };
 
+MAGICITEMS.DAILY = 'r1';
 MAGICITEMS.SHORT_REST = 'r4';
 MAGICITEMS.LONG_REST = 'r5';
 
@@ -23,6 +24,14 @@ MAGICITEMS.destroyChecks = {
     "d1": "MAGICITEMS.DestroyCheckAlways",
     "d2": "MAGICITEMS.DestroyCheck1D20"
 };
+
+MAGICITEMS.chargeTypes = {
+    "c1": "MAGICITEMS.ChargeTypeWholeItem",
+    "c2": "MAGICITEMS.ChargeTypePerSpells"
+};
+
+MAGICITEMS.CHARGE_TYPE_WHOLE_ITEM = "c1";
+MAGICITEMS.CHARGE_TYPE_PER_SPELL = "c2";
 
 MAGICITEMS.NUMERIC_RECHARGE = 't1';
 MAGICITEMS.FORMULA_RECHARGE = 't2';

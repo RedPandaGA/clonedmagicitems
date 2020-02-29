@@ -99,6 +99,9 @@ export class MagicItemTab {
         this.html.find('input[name="flags.magicitems.charges"]').change(evt => {
             this.magicItem.charges = MAGICITEMS.numeric(evt.target.value, this.magicItem.charges);
         });
+        this.html.find('input[name="flags.magicitems.chargeType"]').change(evt => {
+            this.magicItem.chargeType = MAGICITEMS.numeric(evt.target.value, this.magicItem.chargeType);
+        });
         this.html.find('input[name="flags.magicitems.rechargeable"]').change(evt => {
             this.magicItem.toggleRechargeable(evt.target.checked);
             this.render();

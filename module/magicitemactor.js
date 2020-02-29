@@ -120,18 +120,19 @@ export class MagicItemActor {
                 this.buildItems();
             }
         });
-        Hooks.on(`createOwnedItem`, (actor) => {
-            if(this.actor.id === actor.id) {
+        Hooks.on(`createOwnedItem`, (actor, actorId) => {
+            if(this.actor.id === actorId) {
                 this.buildItems();
             }
         });
-        Hooks.on(`updateOwnedItem`, (actor) => {
-            if(this.actor.id === actor.id) {
+        Hooks.on(`updateOwnedItem`, (actor, actorId, item) => {
+            if(this.actor.id === actorId) {
                 this.buildItems();
             }
         });
-        Hooks.on(`deleteOwnedItem`, (actor) => {
-            if(this.actor.id === actor.id) {
+        Hooks.on(`deleteOwnedItem`, (actor, actorId, itemId) => {
+            if(this.actor.id === actorId) {
+                this.actor.setFlag("magicitems", `-=${itemId}`, null);
                 this.buildItems();
             }
         });
@@ -156,10 +157,7 @@ export class MagicItemActor {
     onShortRest(result) {
         if(result) {
             this.items.forEach(item => {
-                let recharged = item.onShortRest();
-                if(recharged) {
-                    this.applyRecharge(item, recharged);
-                }
+                item.onShortRest();
             });
             this.fireChange();
         }
@@ -174,29 +172,10 @@ export class MagicItemActor {
     onLongRest(result) {
         if(result) {
             this.items.forEach(item => {
-                let recharged = item.onLongRest();
-                if(recharged) {
-                    this.applyRecharge(item, recharged);
-                }
+                item.onLongRest();
             });
             this.fireChange();
         }
-    }
-
-    /**
-     *
-     * @param item
-     * @param recharge
-     */
-    applyRecharge(item, recharge) {
-        let msg = `<b>Magic Item: ${item.name}</b><br> 
-                    ${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${recharge.flavor}`;
-        ChatMessage.create({
-            user: this.actor.name,
-            type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-            content: msg
-        });
-        this.actor.setFlag('magicitems', `${item.id}.uses`, recharge.uses);
     }
 
     /**

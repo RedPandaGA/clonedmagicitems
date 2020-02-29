@@ -6,7 +6,16 @@
     <div class="magic-item-enabled">
     <div class="form-group">
         <label>{{localize "MAGICITEMS.SheetCharges"}}</label>
-        <input class="magic-item-charges" type="text" name="flags.magicitems.charges" value="{{charges}}" >
+        <div class="form-fields" style="flex: 1">
+            <input class="magic-item-charges" type="text" name="flags.magicitems.charges" value="{{charges}}" >
+            <select name="flags.magicitems.chargeType" class="magic-item-charges-type">
+                {{#select chargeType}}
+                {{#each chargeTypes as |name key|}}
+                <option value="{{key}}">{{name}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
     </div>
     <div class="form-group">
         <label>{{localize "MAGICITEMS.SheetDestroy"}}</label>

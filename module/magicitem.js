@@ -5,13 +5,11 @@ import {MagicItemUpcastDialog} from "./magicitemupcastdialog.js";
 export class MagicItem {
 
     constructor(flags) {
-        this.data = this.defaultData();
-        if (typeof flags !== 'undefined') {
-            this.data = flags;
-        }
+        this.data = mergeObject(this.defaultData(), flags || {}, { inplace: false });
 
         this.enabled = this.data.enabled;
-        this.charges = this.data.charges;
+        this.charges = parseInt(this.data.charges);
+        this.chargeType = this.data.chargeType;
         this.rechargeable = this.data.rechargeable;
         this.recharge = this.data.recharge;
         this.rechargeType = this.data.rechargeType;
@@ -44,6 +42,7 @@ export class MagicItem {
         return {
             enabled: false,
             charges: 0,
+            chargeType: 'c1',
             rechargeable: false,
             recharge: 0,
             rechargeType: 't1',
@@ -54,6 +53,10 @@ export class MagicItem {
             feats: {},
             tables: {}
         }
+    }
+
+    get chargeTypes() {
+        return MAGICITEMS.localized(MAGICITEMS.chargeTypes);
     }
 
     get destroyChecks() {
@@ -70,6 +73,14 @@ export class MagicItem {
 
     get empty() {
         return this.spells.length === 0 && this.feats.length === 0;
+    }
+
+    get chargesOnWholeItem() {
+        return this.chargeType === MAGICITEMS.CHARGE_TYPE_WHOLE_ITEM;
+    }
+
+    get chargesPerSpell() {
+        return this.chargeType === MAGICITEMS.CHARGE_TYPE_PER_SPELL;
     }
 
     toggleEnabled(enabled) {
@@ -98,6 +109,10 @@ export class MagicItem {
 
     support(type) {
         return ['Item', 'RollTable'].includes(type);
+    }
+
+    get items() {
+        return this.spells.concat(this.feats).concat(this.tables);
     }
 
     addSpell(data) {
@@ -222,8 +237,7 @@ export class MagicItem {
     }
 
     findById(itemId) {
-        let items = this.spells.concat(this.feats).concat(this.tables);
-        return items.filter(item => item.id === itemId)[0];
+        return this.items.filter(item => item.id === itemId)[0];
     }
 
     renderSheet(spellId) {
@@ -382,13 +396,13 @@ export class OwnedMagicItem extends MagicItem {
 
     constructor(item, actor, magicItemActor) {
         super(item.data.flags.magicitems);
-        this.actorFlags = actor.data.flags.magicitems;
         this.id = item.id;
         this.item = item;
         this.actor = actor;
         this.name = item.name;
         this.img = item.img;
-        this.uses = this.actorFlags && this.actorFlags[this.id] ? parseInt(this.actorFlags[this.id].uses) : this.charges;
+        this.itemFlags = (actor.data.flags.magicitems || {})[item.id] || {};
+        this.uses = parseInt(this.itemFlags.uses || this.charges);
         this.rechargeableLabel = this.rechargeable ?
             `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.recharge} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
             game.i18n.localize("MAGICITEMS.SheetNoRecharge");
@@ -428,7 +442,7 @@ export class OwnedMagicItem extends MagicItem {
         found[0].roll();
     }
 
-    onRoll(consumption) {
+    consume(consumption) {
         this.uses = this.uses - consumption;
         if(this.destroyed()) {
             this.magicItemActor.destroyItem(this);
@@ -464,24 +478,41 @@ export class OwnedMagicItem extends MagicItem {
     }
 
     onLongRest() {
-        if(this.rechargeUnit === MAGICITEMS.LONG_REST || this.rechargeUnit === MAGICITEMS.SHORT_REST) {
+        if([MAGICITEMS.LONG_REST, MAGICITEMS.SHORT_REST, MAGICITEMS.DAILY].includes(this.rechargeUnit)) {
             return this.doRecharge();
         }
     }
 
     doRecharge() {
+        let amount = 0,
+            msg = `<b>Magic Item: ${this.name}</b><br>${game.i18n.localize("MAGICITEMS.SheetRecharge")}: `;
         if(this.rechargeType === MAGICITEMS.NUMERIC_RECHARGE) {
-            let tot = this.uses + parseInt(this.recharge);
-            this.uses = Math.min(tot, parseInt(this.charges));
-            return {"flavor": `${this.recharge}`, uses: this.uses };
+            amount = parseInt(this.recharge);
+            msg += `${this.recharge}`;
         }
         if(this.rechargeType === MAGICITEMS.FORMULA_RECHARGE) {
             let r = new Roll(this.recharge);
             r.roll();
-            let tot = this.uses + r.total;
-            this.uses = Math.min(tot, parseInt(this.charges));
-            return {"flavor": `${r.result} = ${r.total}`, uses: this.uses };
+            amount = r.total;
+            msg += `${r.result} = ${r.total}`;
         }
+
+        if(this.chargesOnWholeItem) {
+            let updated = Math.min(this.uses + amount, parseInt(this.charges));
+            this.setUses(updated);
+        } else {
+            this.ownedEntries.forEach(entry => {
+                entry.setUses(Math.min(entry.uses + amount, parseInt(this.charges)));
+            });
+        }
+
+        this.actor.sheet.render(true);
+
+        ChatMessage.create({
+            user: this.actor.name,
+            type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            content: msg
+        });
     }
 
     entryBy(itemId) {
@@ -496,20 +527,16 @@ export class OwnedMagicItem extends MagicItem {
         this.triggeredTables.forEach(table => table.roll());
     }
 
-/*
-    betterRolls() {
-        return typeof BetterRolls !== 'undefined' && game.settings.get("betterrolls5e", "diceEnabled");
-    }
-*/
-
 }
 
-class OwnedMagicItemEntry {
+class AbstractOwnedEntry {
 
     constructor(magicItem, item) {
         this.magicItem = magicItem;
         this.item = item;
         this.ownedItem = null;
+        this.entryFlags = this.magicItem.itemFlags[this.item.id] || {};
+        this.uses = parseInt(this.entryFlags.uses || this.magicItem.charges);
     }
 
     get id() {
@@ -524,6 +551,35 @@ class OwnedMagicItemEntry {
         return this.item.img;
     }
 
+    get uses() {
+        return this.item.uses;
+    }
+
+    set uses(uses) {
+        this.item.uses = uses;
+    }
+
+    hasCharges(consumption) {
+        let uses = this.magicItem.chargesOnWholeItem ? this.magicItem.uses : this.uses;
+        return uses - consumption >= 0;
+    }
+
+    consume(consumption) {
+        if(this.magicItem.chargesOnWholeItem) {
+            this.magicItem.consume(consumption);
+        } else {
+            this.uses = this.uses - consumption;
+        }
+    }
+
+    showNoChargesMessage() {
+        const message = game.i18n.localize("MAGICITEMS.SheetNoChargesMessage");
+        ui.notifications.warn(`<b>'${this.magicItem.name}'</b> ${message} <b>'${this.item.name}'</b>`);
+    }
+}
+
+class OwnedMagicItemEntry extends AbstractOwnedEntry {
+
     async roll() {
         if(!this.ownedItem) {
             let data = await this.item.data();
@@ -531,7 +587,6 @@ class OwnedMagicItemEntry {
         }
 
         let item = this.ownedItem;
-
         let consumption = this.item.consumption;
         if(this.ownedItem.type === 'spell' && this.item.canUpcast()) {
             const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
@@ -544,54 +599,25 @@ class OwnedMagicItemEntry {
                 );
             }
         }
-        let uses = this.magicItem.uses - consumption;
-        if(uses >= 0) {
+
+        if(this.hasCharges(consumption)) {
             item.roll();
-            this.magicItem.onRoll(consumption);
+            this.consume(consumption);
         } else {
-            let dialog = new Dialog({
-                title: this.magicItem.name + ': ' + this.item.name,
-                content: game.i18n.localize("MAGICITEMS.SheetNoChargesMessage"),
-                buttons: {}
-            });
-            dialog.render(true);
+            this.showNoChargesMessage();
         }
     }
 }
 
-class OwnedMagicItemTable {
-
-    constructor(magicItem, table) {
-        this.magicItem = magicItem;
-        this.table = table;
-    }
-
-    get id() {
-        return this.table.id;
-    }
-
-    get name() {
-        return this.table.name;
-    }
-
-    get img() {
-        return this.table.img;
-    }
+class OwnedMagicItemTable extends AbstractOwnedEntry {
 
     async roll() {
-        let consumption = this.table.consumption;
-        let uses = this.magicItem.uses - consumption;
-        if(uses >= 0) {
-            await this.table.roll();
-            this.magicItem.onRoll(consumption);
+        let consumption = this.item.consumption;
+        if(this.hasCharges(consumption)) {
+            await this.item.roll();
+            this.consume(consumption);
         } else {
-            let dialog = new Dialog({
-                title: this.magicItem.name + ': ' + this.table.name,
-                content: game.i18n.localize("MAGICITEMS.SheetNoChargesMessage"),
-                buttons: {}
-            });
-            dialog.render(true);
+            this.showNoChargesMessage();
         }
     }
-
 }

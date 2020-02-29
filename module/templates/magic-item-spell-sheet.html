@@ -8,12 +8,14 @@
 	    <div class="item-name flexrow">
 	        <h3>{{name}}</h3>
 	    </div>
+		{{#if chargesOnWholeItem}}
 	    <div class="spell-slots">
 	        <input name="flags.magicitems.{{id}}.uses" type="text" value="{{uses}}" placeholder="0"/>
 	        <span class="sep"> / </span>
 	        <input type="text" value="{{charges}}" placeholder="0"/>
 	    </div>
 		<div class="spell-rechargeable">{{rechargeableLabel}}</div>
+		{{/if}}
 		<div class="spell-level">{{localize "MAGICITEMS.SheetLevel"}}</div>
 	    <div class="spell-consumption">{{localize "MAGICITEMS.SheetConsumption"}}</div>
 	    <div class="spell-upcast">{{localize "MAGICITEMS.SheetCanUpcast"}}</div>
@@ -25,6 +27,14 @@
 	                <div class="magic-item-image" style="background-image: url({{spell.img}})"></div>
 	                <h4 class="spell-name">{{spell.name}}</h4>
 	            </div>
+				{{#if ../chargesPerSpell}}
+				<div class="spell-slots">
+					<input name="flags.magicitems.{{../id}}.{{spell.id}}.uses" type="text" value="{{spell.uses}}" placeholder="0"/>
+					<span class="sep"> / </span>
+					<input type="text" value="{{../charges}}" placeholder="0"/>
+				</div>
+				<div class="spell-rechargeable">{{../rechargeableLabel}}</div>
+				{{/if}}
 				<div class="spell-level">{{spell.level}}</div>
 	            <div class="spell-consumption">{{spell.consumption}}</div>
 	            <div class="spell-upcast">{{spell.canUpcastLabel}}</div>
@@ -38,6 +48,14 @@
 				<div class="magic-item-image" style="background-image: url({{table.img}})"></div>
 				<h4 class="spell-name">{{table.name}}</h4>
 			</div>
+			{{#if ../chargesPerSpell}}
+			<div class="spell-slots">
+				<input name="flags.magicitems.{{../id}}.{{table.id}}.uses" type="text" value="{{table.uses}}" placeholder="0"/>
+				<span class="sep"> / </span>
+				<input type="text" value="{{../charges}}" placeholder="0"/>
+			</div>
+			<div class="spell-rechargeable">{{../rechargeableLabel}}</div>
+			{{/if}}
 			<div class="spell-level"> - </div>
 			<div class="spell-consumption">{{table.consumption}}</div>
 			<div class="spell-upcast"> - </div>

@@ -2,8 +2,11 @@
     "MAGICITEMS.RechargeUnitDaily": "Giornaliero",
     "MAGICITEMS.RechargeUnitDawn": "All'Alba",
     "MAGICITEMS.RechargeUnitSunset": "Al Tramonto",
-    "MAGICITEMS.RechargeUnitShortRest": "Riposo Breve",
-    "MAGICITEMS.RechargeUnitLongRest": "Riposo Lungo",
+    "MAGICITEMS.RechargeUnitShortRest": "Dopo Rip. Breve",
+    "MAGICITEMS.RechargeUnitLongRest": "Dopo Rip. Lungo",
+
+    "MAGICITEMS.ChargeTypeWholeItem":  "Sull'oggetto",
+    "MAGICITEMS.ChargeTypePerSpells":  "Per incantesimo",
 
     "MAGICITEMS.RechargeTypeNumeric": "Numerico",
     "MAGICITEMS.RechargeTypeFormula": "Formula",
@@ -24,7 +27,7 @@
     "MAGICITEMS.SheetUpcast": "Upcast",
     "MAGICITEMS.SheetCost": "Costo/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Non Ricaricabile",
-    "MAGICITEMS.SheetNoChargesMessage": "Non ci sono cariche sufficienti.",
+    "MAGICITEMS.SheetNoChargesMessage": "Non ha sufficiente carica per",
     "MAGICITEMS.SheetDragContent": "Trascina qui gli incantesimi/privilegi",
     "MAGICITEMS.SheetCanUpcast": "Upcast",
     "MAGICITEMS.SheetCanUpcastYes": "si",

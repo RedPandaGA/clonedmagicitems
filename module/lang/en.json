@@ -2,8 +2,11 @@
     "MAGICITEMS.RechargeUnitDaily": "Daily",
     "MAGICITEMS.RechargeUnitDawn": "At Dawn",
     "MAGICITEMS.RechargeUnitSunset": "At Sunset",
-    "MAGICITEMS.RechargeUnitShortRest": "After Short Rest",
-    "MAGICITEMS.RechargeUnitLongRest": "After Long Rest",
+    "MAGICITEMS.RechargeUnitShortRest": "After S. Rest",
+    "MAGICITEMS.RechargeUnitLongRest": "After L. Rest",
+
+    "MAGICITEMS.ChargeTypeWholeItem":  "On item",
+    "MAGICITEMS.ChargeTypePerSpells":  "Per spell",
 
     "MAGICITEMS.RechargeTypeNumeric": "Numeric",
     "MAGICITEMS.RechargeTypeFormula": "Formula",
@@ -24,7 +27,7 @@
     "MAGICITEMS.SheetUpcast": "Upcast",
     "MAGICITEMS.SheetCost": "Cost/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Not Rechargeable",
-    "MAGICITEMS.SheetNoChargesMessage": "Not enough charges.",
+    "MAGICITEMS.SheetNoChargesMessage": "does not have enough charge for",
     "MAGICITEMS.SheetDragContent": "Drag spells/feats here",
     "MAGICITEMS.SheetCanUpcast": "Upcast",
     "MAGICITEMS.SheetCanUpcastYes": "yes",

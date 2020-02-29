@@ -97,6 +97,13 @@ export class MagicItemSheet {
         this.actor.items.forEach(item => {
             this.html.find(`input[name="flags.magicitems.${item.id}.uses"]`).change(evt => {
                 item.setUses(MAGICITEMS.numeric(evt.currentTarget.value, item.uses));
+                this.render();
+            });
+            item.ownedEntries.forEach(entry => {
+                this.html.find(`input[name="flags.magicitems.${item.id}.${entry.id}.uses"]`).change(evt => {
+                    entry.uses = MAGICITEMS.numeric(evt.currentTarget.value, entry.uses);
+                    this.render();
+                });
             });
         });
         this.html.find(`li.item.magic-item`).each((i, li) => {
