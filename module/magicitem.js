@@ -583,7 +583,10 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
     async roll() {
         if(!this.ownedItem) {
             let data = await this.item.data();
-            this.ownedItem = new Item5e(data, { actor: this.magicItem.actor });
+            if(data.type === 'spell' && typeof data.data.save.scaling === 'undefined') {
+                data = mergeObject(data, { "data.save.scaling" : "spell" } );
+            }
+            this.ownedItem = Item.createOwned(data, this.magicItem.actor);
         }
 
         let item = this.ownedItem;
@@ -593,9 +596,9 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
             let lvl = parseInt(spellFormData.get("level"));
             if(lvl !== this.item.level) {
                 consumption = parseInt(spellFormData.get("consumption"));
-                item = new Item5e(
+                item = Item.createOwned(
                     mergeObject(this.ownedItem.data, {"data.level": lvl}, {inplace: false}),
-                    { actor: this.magicItem.actor }
+                    this.magicItem.actor
                 );
             }
         }
