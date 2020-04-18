@@ -120,19 +120,19 @@ export class MagicItemActor {
                 this.buildItems();
             }
         });
-        Hooks.on(`createOwnedItem`, (actor, actorId) => {
-            if(this.actor.id === actorId) {
+        Hooks.on(`createOwnedItem`, (actor) => {
+            if(this.actor.id === actor.id) {
                 this.buildItems();
             }
         });
-        Hooks.on(`updateOwnedItem`, (actor, actorId, item) => {
-            if(this.actor.id === actorId) {
+        Hooks.on(`updateOwnedItem`, (actor) => {
+            if(this.actor.id === actor.id) {
                 this.buildItems();
             }
         });
-        Hooks.on(`deleteOwnedItem`, (actor, actorId, itemId) => {
-            if(this.actor.id === actorId) {
-                this.actor.setFlag("magicitems", `-=${itemId}`, null);
+        Hooks.on(`deleteOwnedItem`, (actor, item) => {
+            if(this.actor.id === actor.id) {
+                this.actor.setFlag("magicitems", `-=${item.id}`, null);
                 this.buildItems();
             }
         });
