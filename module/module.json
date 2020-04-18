@@ -22,5 +22,5 @@
 	}],
 	"url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
 	"manifest": "https://gitlab.com/riccisi/foundryvtt-magic-items/raw/master/module/module.json",
-	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/master/raw/magic-items.zip?job=build"
+	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/1.6/raw/magic-items.zip?job=build"
 }
