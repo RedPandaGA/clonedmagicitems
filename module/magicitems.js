@@ -10,8 +10,7 @@ Hooks.once('ready', () => {
     });
 });
 
-Hooks.once('createActor', (actors, data) => {
-    let actor = game.actors.entities.filter(actor => actor.id === data._id)[0];
+Hooks.once('createActor', (actor) => {
     MagicItemActor.bind(actor);
 });
 
