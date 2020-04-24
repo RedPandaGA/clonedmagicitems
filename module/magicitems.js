@@ -50,6 +50,10 @@ Hooks.on(`renderAlt5eSheet`, (app, html, data) => {
     MagicItemSheet.bind(app, html, data);
 });
 
+Hooks.on(`renderDNDBeyondCharacterSheet5e`, (app, html, data) => {
+    MagicItemSheet.bind(app, html, data);
+});
+
 Hooks.on("hotbarDrop", async (bar, data, slot) => {
     if ( data.type !== "MagicItem" ) return;
 
