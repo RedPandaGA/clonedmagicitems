@@ -1,5 +1,4 @@
 import {MAGICITEMS} from "./config.js";
-import { Item5e } from "../../systems/dnd5e/module/item/entity.js";
 import {MagicItemUpcastDialog} from "./magicitemupcastdialog.js";
 
 export class MagicItem {

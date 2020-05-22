@@ -1,0 +1,72 @@
+{
+    "MAGICITEMS.RechargeUnitDaily": "매일",
+    "MAGICITEMS.RechargeUnitDawn": "새벽녘",
+    "MAGICITEMS.RechargeUnitSunset": "해질녘",
+    "MAGICITEMS.RechargeUnitShortRest": "짧은 휴식 뒤",
+    "MAGICITEMS.RechargeUnitLongRest": "긴 휴식 뒤",
+
+    "MAGICITEMS.ChargeTypeWholeItem":  "물품별",
+    "MAGICITEMS.ChargeTypePerSpells":  "주문별",
+
+    "MAGICITEMS.RechargeTypeNumeric": "수",
+    "MAGICITEMS.RechargeTypeFormula": "공식",
+
+    "MAGICITEMS.DestroyCheckAlways": "항상",
+    "MAGICITEMS.DestroyCheck1D20":  "D20의 1",
+
+    "MAGICITEMS.SheetEnabled": "매직 아이템입니까?",
+    "MAGICITEMS.SheetCharges": "최대 차지 수",
+    "MAGICITEMS.SheetDestroy": "0 차지 시 파괴",
+    "MAGICITEMS.SheetRechargeable": "재충전 가능",
+    "MAGICITEMS.SheetRecharge": "재충전",
+    "MAGICITEMS.SheetSpell": "주문",
+    "MAGICITEMS.SheetFeat": "피트",
+    "MAGICITEMS.SheetTable": "표",
+    "MAGICITEMS.SheetLevel": "레벨",
+    "MAGICITEMS.SheetConsumption": "소모",
+    "MAGICITEMS.SheetUpcast": "고위 시전",
+    "MAGICITEMS.SheetCost": "비용/Lvl",
+    "MAGICITEMS.SheetNoRecharge": "재충전 불가능",
+    "MAGICITEMS.SheetNoChargesMessage": "아이템은 다음 기능을 위한 충분한 차지를 가지고 있지 않습니다. : ",
+    "MAGICITEMS.SheetDragContent": "주문/피트를 이곳에 드래그 하세요",
+    "MAGICITEMS.SheetCanUpcast": "고위 시전",
+    "MAGICITEMS.SheetCanUpcastYes": "예",
+    "MAGICITEMS.SheetCanUpcastNo": "아니오",
+    "MAGICITEMS.SheetUsage": "사용",
+
+    "MAGICITEMS.UpcastDialogLevel": "다음 레벨로 시전",
+    "MAGICITEMS.UpcastDialogConsumption": "소모",
+
+    "MAGICITEMS.MagicItemDestroyCheck": "파괴 확인",
+    "MAGICITEMS.MagicItemDestroy": "차지가 0에 도달했습니다 : 재로 변해 바스라져 파괴 되었습니다.",
+
+    "MAGICITEMS.SheetSpellLevel0": "캔트립",
+    "MAGICITEMS.SheetSpellLevel1": "1st",
+    "MAGICITEMS.SheetSpellLevel2": "2nd",
+    "MAGICITEMS.SheetSpellLevel3": "3rd",
+    "MAGICITEMS.SheetSpellLevel4": "4th",
+    "MAGICITEMS.SheetSpellLevel5": "5th",
+    "MAGICITEMS.SheetSpellLevel6": "6th",
+    "MAGICITEMS.SheetSpellLevel7": "7th",
+    "MAGICITEMS.SheetSpellLevel8": "8th",
+    "MAGICITEMS.SheetSpellLevel9": "9th",
+
+    "MAGICITEMS.SheetSpellUpcast0": "고위 시전",
+    "MAGICITEMS.SheetSpellUpcast1": "최대 1st",
+    "MAGICITEMS.SheetSpellUpcast2": "최대 2nd",
+    "MAGICITEMS.SheetSpellUpcast3": "최대 3rd",
+    "MAGICITEMS.SheetSpellUpcast4": "최대 4th",
+    "MAGICITEMS.SheetSpellUpcast5": "최대 5th",
+    "MAGICITEMS.SheetSpellUpcast6": "최대 6th",
+    "MAGICITEMS.SheetSpellUpcast7": "최대 7th",
+    "MAGICITEMS.SheetSpellUpcast8": "최대 8th",
+    "MAGICITEMS.SheetSpellUpcast9": "최대 9th",
+
+    "MAGICITEMS.TableUsageAsSpell": "주문",
+    "MAGICITEMS.TableUsageAsFeat": "피트",
+    "MAGICITEMS.TableUsageTriggerOnUsage": "사용 시 발동",
+
+    "MAGICITEMS.WarnNoActor": "제어 중인 액터가 없습니다. 액터를 선택하고 재시도 해주십시오.",
+    "MAGICITEMS.WarnNoMagicItem": "제어 중인 액터가 다음의 물품을 소지하고 있지 않습니다 : ",
+    "MAGICITEMS.WarnNoMagicItemSpell": "제어 중인 액터가 다음의 주문/피트를 소지하고 있지 않습니다 : "
+}
