@@ -501,14 +501,14 @@ export class OwnedMagicItem extends MagicItem {
             this.setUses(updated);
         } else {
             this.ownedEntries.forEach(entry => {
-                entry.setUses(Math.min(entry.uses + amount, parseInt(this.charges)));
+                entry.uses = Math.min(entry.uses + amount, parseInt(this.charges));
             });
         }
 
         this.actor.sheet.render(true);
 
         ChatMessage.create({
-            user: this.actor.name,
+            speaker: { actor: this.actor },
             type: CONST.CHAT_MESSAGE_TYPES.OTHER,
             content: msg
         });
