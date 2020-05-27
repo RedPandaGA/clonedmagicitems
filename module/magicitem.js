@@ -305,8 +305,7 @@ class MagicItemEntry {
     data() {
         return new Promise((resolve, reject) => {
             this.entity().then(entity => {
-                let data = mergeObject(entity.data, { data: { level: parseInt(this.level) }});
-                resolve(data);
+                resolve(entity.data);
             })
         });
     }
@@ -589,17 +588,19 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
         }
 
         let item = this.ownedItem;
+        let level = this.item.level;
         let consumption = this.item.consumption;
         if(this.ownedItem.type === 'spell' && this.item.canUpcast()) {
             const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
-            let lvl = parseInt(spellFormData.get("level"));
-            if(lvl !== this.item.level) {
-                consumption = parseInt(spellFormData.get("consumption"));
-                item = Item.createOwned(
-                    mergeObject(this.ownedItem.data, {"data.level": lvl}, {inplace: false}),
-                    this.magicItem.actor
-                );
-            }
+            level = parseInt(spellFormData.get("level"));
+            consumption = parseInt(spellFormData.get("consumption"));
+        }
+
+        if(level !== this.ownedItem.data.data.level) {
+            item = Item.createOwned(
+                mergeObject(this.ownedItem.data, {"data.level": level}, {inplace: false}),
+                this.magicItem.actor
+            );
         }
 
         if(this.hasCharges(consumption)) {
