@@ -11,6 +11,7 @@ export class MagicItemTab {
             let tab = magicItemTabs[app.id];
             if(!tab) {
                 tab = new MagicItemTab(app);
+                magicItemTabs[app.id] = tab;
             }
             tab.init(html, data);
         }
@@ -20,13 +21,15 @@ export class MagicItemTab {
         this.app = app;
         this.item = app.item;
 
-        this.app.form.ondragover = ev => this._onDragOver(ev);
-        this.app.form.ondrop = ev => this._onDrop(ev);
-
         this.hack(this.app);
+
+        this.activate = false;
     }
 
     init(html) {
+
+        this.app.form.ondragover = ev => this._onDragOver(ev);
+        this.app.form.ondrop = ev => this._onDrop(ev);
 
         this.magicItem = new MagicItem(this.item.data.flags.magicitems);
 
@@ -89,9 +92,22 @@ export class MagicItemTab {
         this.handleEvents();
 
         this.app.setPosition();
+
+        if(this.activate) {
+            this.app._tabs[0].activate("magicitems");
+            this.activate = false;
+        }
     }
 
     handleEvents() {
+
+        this.html.find('input[type="text"]').change(evt => {
+            this.activate = true;
+        });
+        this.html.find('select').change(evt => {
+            this.activate = true;
+        });
+
         this.html.find('input[name="flags.magicitems.enabled"]').click(evt => {
             this.magicItem.toggleEnabled(evt.target.checked);
             this.render();

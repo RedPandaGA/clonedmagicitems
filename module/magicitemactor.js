@@ -115,23 +115,23 @@ export class MagicItemActor {
      * Handle update events on this actor in order to rebuild the magic items.
      */
     handleEvents() {
-        Hooks.on(`updateActor`, (actor) => {
-            if(this.actor.id === actor.id) {
+        Hooks.on(`updateActor`, (actor, options, apps, userId) => {
+            if(this.actor.id === actor.id && userId === game.user._id ) {
                 this.buildItems();
             }
         });
-        Hooks.on(`createOwnedItem`, (actor) => {
-            if(this.actor.id === actor.id) {
+        Hooks.on(`createOwnedItem`, (actor, item, options, userId) => {
+            if(this.actor.id === actor.id && userId === game.user._id) {
                 this.buildItems();
             }
         });
-        Hooks.on(`updateOwnedItem`, (actor) => {
-            if(this.actor.id === actor.id) {
+        Hooks.on(`updateOwnedItem`, (actor, item, data, options, userId) => {
+            if(this.actor.id === actor.id && userId === game.user._id) {
                 this.buildItems();
             }
         });
-        Hooks.on(`deleteOwnedItem`, (actor, item) => {
-            if(this.actor.id === actor.id) {
+        Hooks.on(`deleteOwnedItem`, (actor, item, options, userId) => {
+            if(this.actor.id === actor.id && userId === game.user._id) {
                 this.actor.setFlag("magicitems", `-=${item.id}`, null);
                 this.buildItems();
             }
