@@ -101,10 +101,10 @@ export class MagicItemTab {
 
     handleEvents() {
 
-        this.html.find('input[type="text"]').change(evt => {
+        this.html.find('.magic-items-content input[type="text"]').change(evt => {
             this.activate = true;
         });
-        this.html.find('select').change(evt => {
+        this.html.find('.magic-items-content select').change(evt => {
             this.activate = true;
         });
 
