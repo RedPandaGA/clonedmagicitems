@@ -577,15 +577,20 @@ class AbstractOwnedEntry {
 }
 
 class OwnedMagicItemEntry extends AbstractOwnedEntry {
-
-    async roll() {
-        if(!this.ownedItem) {
-            let data = await this.item.data();
-            if(data.type === 'spell' && typeof data.data.save.scaling === 'undefined') {
-                data = mergeObject(data, { "data.save.scaling" : "spell" } );
-            }
-            this.ownedItem = Item.createOwned(data, this.magicItem.actor);
+constructor(magicItem, item) {
+		super(magicItem, item)
+		this.init(magicItem, item)
+	}
+	
+	async init(magicItem, item) {        
+        let data = await this.item.data();
+        if(data.type === 'spell' && typeof data.data.save.scaling === 'undefined') {
+            data = mergeObject(data, { "data.save.scaling" : "spell" } );s
         }
+        this.ownedItem = Item.createOwned(data, this.magicItem.actor);
+    }
+	
+    async roll() {        
 
         let item = this.ownedItem;
         let level = this.item.level;
