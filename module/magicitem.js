@@ -570,19 +570,37 @@ class AbstractOwnedEntry {
         }
     }
 
-    showNoChargesMessage() {
+    showNoChargesMessage(callback) {
         const message = game.i18n.localize("MAGICITEMS.SheetNoChargesMessage");
-        ui.notifications.warn(`<b>'${this.magicItem.name}'</b> ${message} <b>'${this.item.name}'</b>`);
+        let d = new Dialog({
+            title: "Test Dialog",
+            content: `<b>'${this.magicItem.name}'</b> - ${message} <b>'${this.item.name}'</b><br>`,
+            buttons: {
+                use: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: game.i18n.localize("MAGICITEMS.SheetDialogUseAnyway"),
+                    callback: () => callback()
+                },
+                close: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: game.i18n.localize("MAGICITEMS.SheetDialogClose"),
+                    callback: () => d.close()
+                }
+            },
+            default: "close"
+        });
+        d.render(true);
     }
 }
 
 class OwnedMagicItemEntry extends AbstractOwnedEntry {
-constructor(magicItem, item) {
-		super(magicItem, item)
-		this.init(magicItem, item)
+
+    constructor(magicItem, item) {
+		super(magicItem, item);
+		this.init();
 	}
 	
-	async init(magicItem, item) {        
+	async init() {
         let data = await this.item.data();
         if(data.type === 'spell' && typeof data.data.save.scaling === 'undefined') {
             data = mergeObject(data, { "data.save.scaling" : "spell" } );s
@@ -612,7 +630,9 @@ constructor(magicItem, item) {
             item.roll();
             this.consume(consumption);
         } else {
-            this.showNoChargesMessage();
+            this.showNoChargesMessage(() => {
+                item.roll();
+            });
         }
     }
 }
@@ -620,12 +640,15 @@ constructor(magicItem, item) {
 class OwnedMagicItemTable extends AbstractOwnedEntry {
 
     async roll() {
-        let consumption = this.item.consumption;
+        let item = this.item;
+        let consumption = item.consumption;
         if(this.hasCharges(consumption)) {
-            await this.item.roll();
+            await item.roll();
             this.consume(consumption);
         } else {
-            this.showNoChargesMessage();
+            this.showNoChargesMessage(() => {
+                item.roll();
+            });
         }
     }
 }

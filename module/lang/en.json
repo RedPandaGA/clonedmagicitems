@@ -28,6 +28,8 @@
     "MAGICITEMS.SheetCost": "Cost/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Not Rechargeable",
     "MAGICITEMS.SheetNoChargesMessage": "does not have enough charge for",
+    "MAGICITEMS.SheetDialogClose": "Close",
+    "MAGICITEMS.SheetDialogUseAnyway": "Use Anyway",
     "MAGICITEMS.SheetDragContent": "Drag spells/feats here",
     "MAGICITEMS.SheetCanUpcast": "Upcast",
     "MAGICITEMS.SheetCanUpcastYes": "yes",
