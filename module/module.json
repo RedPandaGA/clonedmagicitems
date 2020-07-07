@@ -24,7 +24,12 @@
 		"lang": "ko",
 		"name": "Korean",
 		"path": "./lang/ko.json"
-	}],
+	},
+	{ 
+	    "lang": "pt-BR", 
+	    "name": "Português (Brasil)",
+	    "path": "./lang/pt-BR.json"}
+	],
 	"url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
 	"manifest": "https://gitlab.com/riccisi/foundryvtt-magic-items/raw/master/module/module.json",
 	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/1.15/raw/magic-items.zip?job=build"
