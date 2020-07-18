@@ -79,6 +79,10 @@ Hooks.on("hotbarDrop", async (bar, data, slot) => {
 
 window.MagicItems = {
 
+    actor: function(id) {
+        return MagicItemActor.get(id);
+    },
+
     roll: function(magicItemName, itemName) {
 
         const speaker = ChatMessage.getSpeaker();
