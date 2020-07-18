@@ -6,7 +6,7 @@ const magicItemTabs = [];
 export class MagicItemTab {
 
     static bind(app, html, data) {
-        let acceptedTypes = ['weapon', 'equipment', 'consumable'];
+        let acceptedTypes = ['weapon', 'equipment', 'consumable', 'tool'];
         if(acceptedTypes.includes(data.entity.type)) {
             let tab = magicItemTabs[app.id];
             if(!tab) {
