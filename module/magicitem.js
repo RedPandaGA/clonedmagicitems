@@ -572,9 +572,10 @@ class AbstractOwnedEntry {
 
     showNoChargesMessage(callback) {
         const message = game.i18n.localize("MAGICITEMS.SheetNoChargesMessage");
+        const title = game.i18n.localize("MAGICITEMS.SheetDialogTitle");
         let d = new Dialog({
-            title: "Warning!",
-            content: `<b>'${this.magicItem.name}'</b> - ${message} <b>'${this.item.name}'</b><br>`,
+            title: title,
+            content: `<b>'${this.magicItem.name}'</b> - ${message} <b>'${this.item.name}'</b><br><br>`,
             buttons: {
                 use: {
                     icon: '<i class="fas fa-check"></i>',
@@ -597,7 +598,6 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
 
     constructor(magicItem, item) {
 		super(magicItem, item);
-		this.init();
 	}
 	
 	async init() {
@@ -608,7 +608,11 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
         this.ownedItem = Item.createOwned(data, this.magicItem.actor);
     }
 	
-    async roll() {        
+    async roll() {
+
+        if(!this.ownedItem) {
+            await this.init();
+        }
 
         let item = this.ownedItem;
         let level = this.item.level;

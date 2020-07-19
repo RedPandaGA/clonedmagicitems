@@ -28,6 +28,7 @@
     "MAGICITEMS.SheetCost": "Costo/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Non Ricaricabile",
     "MAGICITEMS.SheetNoChargesMessage": "Non ha sufficiente carica per",
+    "MAGICITEMS.SheetDialogTitle": "Attenzione!",
     "MAGICITEMS.SheetDialogClose": "Chiudi",
     "MAGICITEMS.SheetDialogUseAnyway": "Usa Comunque",
     "MAGICITEMS.SheetDragContent": "Trascina qui gli incantesimi/privilegi",
