@@ -573,7 +573,7 @@ class AbstractOwnedEntry {
     showNoChargesMessage(callback) {
         const message = game.i18n.localize("MAGICITEMS.SheetNoChargesMessage");
         let d = new Dialog({
-            title: "Test Dialog",
+            title: "Warning!",
             content: `<b>'${this.magicItem.name}'</b> - ${message} <b>'${this.item.name}'</b><br>`,
             buttons: {
                 use: {
@@ -603,7 +603,7 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
 	async init() {
         let data = await this.item.data();
         if(data.type === 'spell' && typeof data.data.save.scaling === 'undefined') {
-            data = mergeObject(data, { "data.save.scaling" : "spell" } );s
+            data = mergeObject(data, { "data.save.scaling" : "spell" } );
         }
         this.ownedItem = Item.createOwned(data, this.magicItem.actor);
     }
