@@ -100,8 +100,11 @@ window.MagicItems = {
         magicItemActor.rollByName(magicItemName, itemName);
     },
 
-    hooks: {
-        MagicItemTab,
-        MagicItemSheet,
+    bindItemSheet: function(app, html, data) {
+        MagicItemTab.bind(app, html, data);
+    },
+
+    bindCharacterSheet: function(app, html, data) {
+        MagicItemSheet.bind(app, html, data);
     }
 };
