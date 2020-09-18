@@ -98,5 +98,13 @@ window.MagicItems = {
         if ( !magicItemActor ) return ui.notifications.warn(game.i18n.localize("MAGICITEMS.WarnNoActor"));
 
         magicItemActor.rollByName(magicItemName, itemName);
+    },
+
+    bindItemSheet: function(app, html, data) {
+        MagicItemTab.bind(app, html, data);
+    },
+
+    bindCharacterSheet: function(app, html, data) {
+        MagicItemSheet.bind(app, html, data);
     }
 };
