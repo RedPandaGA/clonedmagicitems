@@ -71,6 +71,30 @@ From here you can cast spells or use feats provided by the items and monitor the
 
 Tested on 0.4.7 version.
 
+### Sheet Integration
+
+The following are added to `window.MagicItems` to facilitate custom sheet integration:
+- `bindCharacterSheet`
+- `bindItemSheet`
+
+To implement Magic Items within a character sheet, do this:
+```js
+Hooks.on(`renderMyCoolCharacterSheet`, (app, html, data) => {
+  if (window.MagicItems && window.MagicItems.bindCharacterSheet) {
+    window.MagicItems.bindCharacterSheet(app, html, data);
+  }
+});
+```
+
+To implement Magic Items within an item sheet, do this:
+```js
+Hooks.on(`renderMyCoolItemSheet`, (app, html, data) => {
+  if (window.MagicItems && window.MagicItems.bindItemSheet) {
+    window.MagicItems.bindItemSheet(app, html, data);
+  }
+});
+```
+
 ## Feedback
 
 Every suggestions/feedback are appreciated, if so, please contact me on discord (Simone#6710)
