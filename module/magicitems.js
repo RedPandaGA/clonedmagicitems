@@ -18,47 +18,7 @@ Hooks.on(`renderItemSheet5e`, (app, html, data) => {
     MagicItemTab.bind(app, html, data);
 });
 
-Hooks.on(`renderItemSheet5eDark`, (app, html, data) => {
-    MagicItemTab.bind(app, html, data);
-});
-
-Hooks.on(`renderDarkItemSheet5e`, (app, html, data) => {
-    MagicItemTab.bind(app, html, data);
-});
-
-Hooks.on(`renderTidy5eItemSheet`, (app, html, data) => {
-    MagicItemTab.bind(app, html, data);
-});
-
 Hooks.on(`renderActorSheet5eCharacter`, (app, html, data) => {
-    MagicItemSheet.bind(app, html, data);
-});
-
-Hooks.on(`renderActorSheet5eCharacterDark`, (app, html, data) => {
-    MagicItemSheet.bind(app, html, data);
-});
-
-Hooks.on(`renderDarkSheet`, (app, html, data) => {
-    MagicItemSheet.bind(app, html, data);
-});
-
-Hooks.on(`renderActorSheet5eNPC`, (app, html, data) => {
-    MagicItemSheet.bind(app, html, data);
-});
-
-Hooks.on(`renderActorSheet5eNPCDark`, (app, html, data) => {
-    MagicItemSheet.bind(app, html, data);
-});
-
-Hooks.on(`renderAlt5eSheet`, (app, html, data) => {
-    MagicItemSheet.bind(app, html, data);
-});
-
-Hooks.on(`renderDNDBeyondCharacterSheet5e`, (app, html, data) => {
-    MagicItemSheet.bind(app, html, data);
-});
-
-Hooks.on(`renderTidy5eSheet`, (app, html, data) => {
     MagicItemSheet.bind(app, html, data);
 });
 
