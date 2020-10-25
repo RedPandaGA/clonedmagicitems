@@ -28,8 +28,20 @@ export class MagicItemTab {
 
     init(html) {
 
-        this.app.form.ondragover = (ev) => this._onDragOver(ev);
-        this.app.form.ondrop = (ev) => this._onDrop(ev);
+        if(!this.app.form.ondrop) {
+            this.app.form.ondragover = (ev) => this._onDragOver(ev);
+            this.app.form.ondrop = (ev) => this._onDrop(ev);
+        } else {
+            let me  = this;
+            let originalDrop = this.app._onDrop;
+            this.app._onDrop = function (evt) {
+                if(me.isActive()) {
+                    return me._onDrop(evt);
+                } else {
+                    return originalDrop.apply(me.app, arguments);
+                }
+            };
+        }
 
         this.magicItem = new MagicItem(this.item.data.flags.magicitems);
 
@@ -189,10 +201,6 @@ export class MagicItemTab {
     }
 
     async _onDrop(evt) {
-        if(!this.isActive()) {
-            return;
-        }
-
         evt.preventDefault();
 
         let data;
