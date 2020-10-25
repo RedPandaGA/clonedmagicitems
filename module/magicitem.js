@@ -476,7 +476,13 @@ export class OwnedMagicItem extends MagicItem {
     }
 
     onLongRest() {
-        if([MAGICITEMS.LONG_REST, MAGICITEMS.SHORT_REST, MAGICITEMS.DAILY].includes(this.rechargeUnit)) {
+        if([MAGICITEMS.LONG_REST, MAGICITEMS.SHORT_REST].includes(this.rechargeUnit)) {
+            return this.doRecharge();
+        }
+    }
+
+    onNewDay() {
+        if (this.rechargeUnit == MAGICITEMS.DAILY) {
             return this.doRecharge();
         }
     }

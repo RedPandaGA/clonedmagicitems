@@ -158,6 +158,8 @@ export class MagicItemActor {
         if(result) {
             this.items.forEach(item => {
                 item.onShortRest();
+                if (result.newDay)
+                    item.onNewDay();
             });
             this.fireChange();
         }
@@ -173,6 +175,8 @@ export class MagicItemActor {
         if(result) {
             this.items.forEach(item => {
                 item.onLongRest();
+                if (result.newDay)
+                    item.onNewDay();
             });
             this.fireChange();
         }
