@@ -13,10 +13,15 @@
 
     "MAGICITEMS.DestroyCheckAlways": "Sempre",
     "MAGICITEMS.DestroyCheck1D20":  "1 su d20",
+    "MAGICITEMS.JusDestroyType": "Distruggi",
+    "MAGICITEMS.LoosePowersType":  "Perde i Poteri",
 
     "MAGICITEMS.SheetEnabled": "E' un Oggetto Magico?",
     "MAGICITEMS.SheetCharges": "Numero di Cariche Massime",
-    "MAGICITEMS.SheetDestroy": "Distruggi a 0 cariche",
+    "MAGICITEMS.SheetDestroyPre": "Distruggi",
+    "MAGICITEMS.SheetDestroyPost": "a 0 Cariche",
+    "MAGICITEMS.SheetObjectTarget": "Oggetto",
+    "MAGICITEMS.SheetSpellTarget": "Incantesimo",
     "MAGICITEMS.SheetRechargeable": "Ricaricable",
     "MAGICITEMS.SheetRecharge": "Ricarica",
     "MAGICITEMS.SheetSpell": "Incantesimo",
@@ -36,6 +41,9 @@
     "MAGICITEMS.SheetCanUpcastYes": "si",
     "MAGICITEMS.SheetCanUpcastNo": "no",
     "MAGICITEMS.SheetUsage": "Utilizzo",
+    "MAGICITEMS.SheetSortingMode": "Tipo Ordinamento",
+    "MAGICITEMS.SheetSortByLevel": "Livello",
+    "MAGICITEMS.SheetSortAlphabetically": "Alfabetico",
 
     "MAGICITEMS.UpcastDialogLevel": "Lancia al livello",
     "MAGICITEMS.UpcastDialogConsumption": "Consumo",

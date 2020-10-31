@@ -72,6 +72,9 @@ export class MagicItemTab {
     }
 
     async render() {
+
+        this.magicItem.sort();
+
         let template = await renderTemplate('modules/magicitems/templates/magic-item-tab.html', this.magicItem);
         let el = this.html.find(`.magic-items-content`);
         if(el.length) {
@@ -87,11 +90,23 @@ export class MagicItemTab {
             magicItemEnabled.hide();
         }
 
+        let magicItemDestroyType = this.html.find('select[name="flags.magicitems.destroyType"]');
+        if(this.magicItem.chargeType === 'c1') {
+            magicItemDestroyType.show();
+        } else {
+            magicItemDestroyType.hide();
+        }
+
         let magicItemDestroyCheck = this.html.find('select[name="flags.magicitems.destroyCheck"]');
+        let magicItemFlavorText = this.html.find('.magic-item-destroy-flavor-text');
         if(this.magicItem.destroy) {
             magicItemDestroyCheck.prop("disabled", false);
+            magicItemDestroyType.prop("disabled", false);
+            magicItemFlavorText.show();
         } else {
             magicItemDestroyCheck.prop("disabled", true);
+            magicItemDestroyType.prop("disabled", true);
+            magicItemFlavorText.hide();
         }
 
         let magicItemRecharge = this.html.find('.form-group.magic-item-recharge');
@@ -127,8 +142,10 @@ export class MagicItemTab {
         this.html.find('input[name="flags.magicitems.charges"]').change(evt => {
             this.magicItem.charges = MAGICITEMS.numeric(evt.target.value, this.magicItem.charges);
         });
-        this.html.find('input[name="flags.magicitems.chargeType"]').change(evt => {
-            this.magicItem.chargeType = MAGICITEMS.numeric(evt.target.value, this.magicItem.chargeType);
+        this.html.find('select[name="flags.magicitems.chargeType"]').change(evt => {
+            this.magicItem.chargeType = evt.target.value;
+            this.magicItem.updateDestroyTarget();
+            this.render();
         });
         this.html.find('input[name="flags.magicitems.rechargeable"]').change(evt => {
             this.magicItem.toggleRechargeable(evt.target.checked);
@@ -139,12 +156,30 @@ export class MagicItemTab {
         });
         this.html.find('select[name="flags.magicitems.rechargeType"]').change(evt => {
             this.magicItem.rechargeType = evt.target.value;
+            this.render();
         });
         this.html.find('select[name="flags.magicitems.rechargeUnit"]').change(evt => {
             this.magicItem.rechargeUnit = evt.target.value;
         });
         this.html.find('input[name="flags.magicitems.destroy"]').change(evt => {
             this.magicItem.destroy = evt.target.checked;
+            this.render();
+        });
+        this.html.find('select[name="flags.magicitems.destroyCheck"]').change(evt => {
+            this.magicItem.destroyCheck = evt.target.value;
+            this.render();
+        });
+        this.html.find('select[name="flags.magicitems.destroyType"]').change(evt => {
+            this.magicItem.destroyType = evt.target.value;
+            this.render();
+        });
+        this.html.find('input[name="flags.magicitems.destroyFlavorText"]').change(evt => {
+            this.magicItem.destroyFlavorText = evt.target.value;
+            this.render();
+        });
+        this.html.find('input[name="flags.magicitems.sorting"]').change(evt => {
+            this.magicItem.sorting = evt.target.value;
+            this.magicItem.sort();
             this.render();
         });
         this.html.find('.item-delete.item-spell').click(evt => {

@@ -60,10 +60,10 @@ export class MagicItemSheet {
         }
 
         this.actor.items.forEach(item => {
-            let itemEl = this.html.find(`.inventory .inventory-list .item-list .item[data-item-id="${item.id}"]`);
+            let itemEl = this.html.find(`.inventory-list .item-list .item[data-item-id="${item.id}"]`);
             let h4 = itemEl.find('h4');
             if(!h4.find('i.fa-magic').length) {
-                h4.append('<i class="fas fa-magic attuned" title="Magic Item"></i>');
+                h4.append('<i class="fas fa-magic attuned" style="margin-left: 5px;" title="Magic Item"></i>');
             }
         });
 

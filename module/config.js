@@ -25,6 +25,11 @@ MAGICITEMS.destroyChecks = {
     "d2": "MAGICITEMS.DestroyCheck1D20"
 };
 
+MAGICITEMS.destroyTypes = {
+    "dt1": "MAGICITEMS.JusDestroyType",
+    "dt2": "MAGICITEMS.LoosePowersType"
+};
+
 MAGICITEMS.chargeTypes = {
     "c1": "MAGICITEMS.ChargeTypeWholeItem",
     "c2": "MAGICITEMS.ChargeTypePerSpells"

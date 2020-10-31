@@ -22,6 +22,10 @@ Hooks.on(`renderActorSheet5eCharacter`, (app, html, data) => {
     MagicItemSheet.bind(app, html, data);
 });
 
+Hooks.on(`renderActorSheet5eNPC`, (app, html, data) => {
+    MagicItemSheet.bind(app, html, data);
+});
+
 Hooks.on("hotbarDrop", async (bar, data, slot) => {
     if ( data.type !== "MagicItem" ) return;
 

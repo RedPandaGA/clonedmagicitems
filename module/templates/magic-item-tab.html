@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label>{{localize "MAGICITEMS.SheetDestroy"}}</label>
+        <label>{{localize "MAGICITEMS.SheetDestroyPre"}} {{destroyTarget}} {{localize "MAGICITEMS.SheetDestroyPost"}}</label>
         <input type="checkbox" name="flags.magicitems.destroy" {{checked destroy}} style="margin: 3px 10px;">
         <select name="flags.magicitems.destroyCheck" class="magic-item-destroy-check">
             {{#select destroyCheck}}
@@ -27,6 +27,17 @@
             {{/each}}
             {{/select}}
         </select>
+        <select name="flags.magicitems.destroyType" class="magic-item-destroy-type">
+            {{#select destroyType}}
+            {{#each destroyTypes as |name key|}}
+            <option value="{{key}}">{{name}}</option>
+            {{/each}}
+            {{/select}}
+        </select>
+    </div>
+    <div class="form-group stacked magic-item-destroy-flavor-text">
+        <label>{{localize "MAGICITEMS.SheetDestroyFlavorText"}}</label>
+        <input type="text" name="flags.magicitems.destroyFlavorText" value="{{destroyFlavorText}}">
     </div>
     <div class="form-group">
         <label>{{localize "MAGICITEMS.SheetRechargeable"}}</label>
@@ -50,6 +61,12 @@
                 {{/each}}
                 {{/select}}
             </select>
+        </div>
+    </div>
+    <div class="form-group magic-item-sort">
+        <label>{{localize "MAGICITEMS.SheetSortingMode"}}</label>
+        <div class="form-fields" style="justify-content: flex-end">
+            {{radioBoxes "flags.magicitems.sorting" sortingModes checked=sorting localize=true}}
         </div>
     </div>
 

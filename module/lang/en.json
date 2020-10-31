@@ -13,10 +13,16 @@
 
     "MAGICITEMS.DestroyCheckAlways": "Always",
     "MAGICITEMS.DestroyCheck1D20":  "1 on d20",
+    "MAGICITEMS.JusDestroyType": "Just Destroy",
+    "MAGICITEMS.LoosePowersType":  "Loose Powers",
 
     "MAGICITEMS.SheetEnabled": "Is a Magic Item?",
     "MAGICITEMS.SheetCharges": "Max Number of Charges",
-    "MAGICITEMS.SheetDestroy": "Destroy At 0 Charges",
+    "MAGICITEMS.SheetDestroyPre": "Destroy",
+    "MAGICITEMS.SheetDestroyPost": "At 0 Charges",
+    "MAGICITEMS.SheetObjectTarget": "Item",
+    "MAGICITEMS.SheetSpellTarget": "Spell",
+    "MAGICITEMS.SheetDestroyFlavorText": "Chat Message Flavor",
     "MAGICITEMS.SheetRechargeable": "Rechargeable",
     "MAGICITEMS.SheetRecharge": "Recharge",
     "MAGICITEMS.SheetSpell": "Spell",
@@ -36,6 +42,9 @@
     "MAGICITEMS.SheetCanUpcastYes": "yes",
     "MAGICITEMS.SheetCanUpcastNo": "no",
     "MAGICITEMS.SheetUsage": "Usage",
+    "MAGICITEMS.SheetSortingMode": "Sorting Mode",
+    "MAGICITEMS.SheetSortByLevel": "Level",
+    "MAGICITEMS.SheetSortAlphabetically": "Alphabetically",
 
     "MAGICITEMS.UpcastDialogLevel": "Cast at Level",
     "MAGICITEMS.UpcastDialogConsumption": "Consumption",

@@ -15,6 +15,11 @@ export class MagicItem {
         this.rechargeUnit = this.data.rechargeUnit;
         this.destroy = this.data.destroy;
         this.destroyCheck = this.data.destroyCheck;
+        this.destroyType = this.data.destroyType;
+        this.destroyFlavorText = this.data.destroyFlavorText;
+        this.sorting =  this.data.sorting;
+        this.sortingModes = {"l": "MAGICITEMS.SheetSortByLevel", "a": "MAGICITEMS.SheetSortAlphabetically"};
+        this.updateDestroyTarget();
 
         this.spells = Object.values(this.data.spells ? this.data.spells : {})
             .filter(spell => spell !== 'null')
@@ -37,6 +42,31 @@ export class MagicItem {
         this.savedTables = this.tables.length;
     }
 
+    static sortByName(a, b) {
+        if(a.name < b.name) { return -1; }
+        if(a.name > b.name) { return 1; }
+        return 0;
+    }
+
+    static sortByLevel(a, b) {
+        return a.level === b.level ? MagicItem.sortByName(a, b) : a.level - b.level;
+    }
+
+    sort() {
+        if(this.sorting === "a") {
+            this.spells = this.spells.sort(MagicItem.sortByName);
+        }
+        if(this.sorting === "l") {
+            this.spells = this.spells.sort(MagicItem.sortByLevel);
+        }
+    }
+
+    updateDestroyTarget() {
+        this.destroyTarget = this.chargeType === "c1" ?
+                game.i18n.localize("MAGICITEMS.SheetObjectTarget") :
+                game.i18n.localize("MAGICITEMS.SheetSpellTarget");
+    }
+
     defaultData() {
         return {
             enabled: false,
@@ -48,10 +78,40 @@ export class MagicItem {
             rechargeUnit: '',
             destroy: false,
             destroyCheck: 'd1',
+            destroyType: 'dt1',
+            destroyFlavorText: game.i18n.localize("MAGICITEMS.MagicItemDestroy"),
+            sorting: 'l',
             spells: {},
             feats: {},
             tables: {}
         }
+    }
+
+    serializeData() {
+        return {
+            enabled: this.enabled,
+            charges: this.charges,
+            chargeType: this.chargeType,
+            rechargeable: this.rechargeable,
+            recharge: this.recharge,
+            rechargeType: this.rechargeType,
+            rechargeUnit: this.rechargeUnit,
+            destroy: this.destroy,
+            destroyCheck: this.destroyCheck,
+            destroyType: this.destroyType,
+            destroyFlavorText: this.destroyFlavorText,
+            sorting: this.sorting,
+            spells: this.serializeEntries(this.spells, this.spellsGarbage),
+            feats: this.serializeEntries(this.feats, this.featsGarbage),
+            tables: this.serializeEntries(this.tables, this.tablesGarbage)
+        }
+    }
+
+    serializeEntries(entries, trash) {
+        let data = {};
+        entries.forEach((spell, idx) => data[""+idx] = spell.serializeData());
+        trash.forEach(index => data["-="+index] = null);
+        return data;
     }
 
     get chargeTypes() {
@@ -60,6 +120,10 @@ export class MagicItem {
 
     get destroyChecks() {
         return MAGICITEMS.localized(MAGICITEMS.destroyChecks);
+    }
+
+    get destroyTypes() {
+        return MAGICITEMS.localized(MAGICITEMS.destroyTypes);
     }
 
     get rechargeUnits() {
@@ -312,6 +376,12 @@ class MagicItemEntry {
 }
 
 class MagicItemFeat extends MagicItemEntry {
+
+    serializeData() {
+        return {
+
+        };
+    }
 }
 
 class MagicItemTable extends MagicItemEntry {
@@ -327,6 +397,12 @@ class MagicItemTable extends MagicItemEntry {
     async roll() {
         let entity = await this.entity();
         entity.draw();
+    }
+
+    serializeData() {
+        return {
+
+        };
     }
 }
 
@@ -388,6 +464,19 @@ class MagicItemSpell extends MagicItemEntry {
         return this.consumption + this.upcastCost * (level - this.level);
     }
 
+    serializeData() {
+        return {
+            baseLevel: this.baseLevel,
+            consumption: this.consumption,
+            id: this.id,
+            img: this.img,
+            level: this.level,
+            name: this.name,
+            pack: this.pack,
+            upcast: this.upcast,
+            upcastCost: this.upcastCost
+        };
+    }
 }
 
 export class OwnedMagicItem extends MagicItem {
@@ -443,7 +532,12 @@ export class OwnedMagicItem extends MagicItem {
     consume(consumption) {
         this.uses = this.uses - consumption;
         if(this.destroyed()) {
-            this.magicItemActor.destroyItem(this);
+            if(this.destroyType === "dt1") {
+                this.magicItemActor.destroyItem(this);
+            } else {
+                this.toggleEnabled(false);
+                this.update();
+            }
         }
     }
 
@@ -463,26 +557,26 @@ export class OwnedMagicItem extends MagicItem {
             ChatMessage.create({
                 user: game.user._id,
                 speaker: ChatMessage.getSpeaker({actor: this.actor}),
-                content: `<b>${this.name}</b> ${game.i18n.localize("MAGICITEMS.MagicItemDestroy")}`
+                content: `<b>${this.name}</b> ${this.destroyFlavorText}`
             });
         }
         return destroyed;
     }
 
     onShortRest() {
-        if(this.rechargeUnit === MAGICITEMS.SHORT_REST) {
+        if(this.rechargeable && this.rechargeUnit === MAGICITEMS.SHORT_REST) {
             return this.doRecharge();
         }
     }
 
     onLongRest() {
-        if([MAGICITEMS.LONG_REST, MAGICITEMS.SHORT_REST].includes(this.rechargeUnit)) {
+        if(this.rechargeable && [MAGICITEMS.LONG_REST, MAGICITEMS.SHORT_REST].includes(this.rechargeUnit)) {
             return this.doRecharge();
         }
     }
 
     onNewDay() {
-        if (this.rechargeUnit == MAGICITEMS.DAILY) {
+        if (this.rechargeable && this.rechargeUnit === MAGICITEMS.DAILY) {
             return this.doRecharge();
         }
     }
@@ -502,6 +596,9 @@ export class OwnedMagicItem extends MagicItem {
         }
 
         if(this.chargesOnWholeItem) {
+            if(this.uses === this.charges) {
+                return
+            }
             let updated = Math.min(this.uses + amount, parseInt(this.charges));
             this.setUses(updated);
         } else {
@@ -529,6 +626,21 @@ export class OwnedMagicItem extends MagicItem {
 
     triggerTables() {
         this.triggeredTables.forEach(table => table.roll());
+    }
+
+    destroyItemEntry(entry) {
+        if(this.hasSpell(entry.id)) {
+            this.removeSpell(this.spells.findIndex(spell => spell.id === entry.id));
+            this.update();
+        }
+    }
+
+    update() {
+        this.item.update({
+            flags: {
+                magicitems: this.serializeData()
+            }
+        });
     }
 
 }
@@ -573,7 +685,32 @@ class AbstractOwnedEntry {
             this.magicItem.consume(consumption);
         } else {
             this.uses = this.uses - consumption;
+            if(this.destroyed()) {
+                this.magicItem.destroyItemEntry(this.item);
+            }
         }
+    }
+
+    destroyed() {
+        let destroyed = this.uses === 0 && this.magicItem.destroy;
+        if(destroyed && this.magicItem.destroyCheck === 'd2') {
+            let r = new Roll('1d20');
+            r.roll();
+            destroyed = r.total === 1;
+            r.toMessage({
+                flavor: `<b>${this.name}</b>> ${game.i18n.localize("MAGICITEMS.MagicItemDestroyCheck")} 
+            - ${destroyed ? "failure!" : "success!"}`,
+                speaker: ChatMessage.getSpeaker({actor: this.actor, token: this.actor.token})
+            });
+        }
+        if(destroyed) {
+            ChatMessage.create({
+               user: game.user._id,
+               speaker: ChatMessage.getSpeaker({actor: this.actor}),
+               content: `<b>${this.name}</b> ${this.destroyFlavorText}`
+           });
+        }
+        return destroyed;
     }
 
     showNoChargesMessage(callback) {
