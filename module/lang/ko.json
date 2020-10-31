@@ -28,6 +28,7 @@
     "MAGICITEMS.SheetCost": "비용/Lvl",
     "MAGICITEMS.SheetNoRecharge": "재충전 불가능",
     "MAGICITEMS.SheetNoChargesMessage": "아이템은 다음 기능을 위한 충분한 차지를 가지고 있지 않습니다. : ",
+    "MAGICITEMS.SheetDialogTitle": "주의!",
     "MAGICITEMS.SheetDialogClose": "닫기",
     "MAGICITEMS.SheetDialogUseAnyway": "항상 사용",
     "MAGICITEMS.SheetDragContent": "주문/피트를 이곳에 드래그 하세요",
