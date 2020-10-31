@@ -46,7 +46,7 @@
     <div class="form-group magic-item-recharge" >
         <label>{{localize "MAGICITEMS.SheetRecharge"}}</label>
         <div class="form-fields">
-            <input type="text" name="flags.magicitems.recharge" value="{{recharge}}">
+            <input type="text" name="flags.magicitems.recharge" value="{{recharge}}" class="magic-item-recharge">
             <select name="flags.magicitems.rechargeType">
                 {{#select rechargeType}}
                 {{#each rechargeTypes as |name key|}}

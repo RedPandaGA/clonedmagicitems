@@ -134,6 +134,12 @@ export class MagicItem {
         return MAGICITEMS.localized(MAGICITEMS.rechargeTypes);
     }
 
+    get rechargeText() {
+        return this.rechargeType === 't3' ?
+                game.i18n.localize("MAGICITEMS.RechargeTypeFullText") :
+                this.recharge
+    }
+
     get empty() {
         return this.spells.length === 0 && this.feats.length === 0;
     }
@@ -490,9 +496,11 @@ export class OwnedMagicItem extends MagicItem {
         this.img = item.img;
         this.itemFlags = (actor.data.flags.magicitems || {})[item.id] || {};
         this.uses = parseInt(this.itemFlags.uses || this.charges);
+
         this.rechargeableLabel = this.rechargeable ?
-            `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.recharge} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
+            `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.rechargeText} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
             game.i18n.localize("MAGICITEMS.SheetNoRecharge");
+
         this.magicItemActor = magicItemActor;
 
         this.ownedEntries = this.spells.concat(this.feats).map(item => new OwnedMagicItemEntry(this, item));
@@ -599,7 +607,13 @@ export class OwnedMagicItem extends MagicItem {
             if(this.uses === this.charges) {
                 return
             }
-            let updated = Math.min(this.uses + amount, parseInt(this.charges));
+            let updated;
+            if(this.rechargeType === MAGICITEMS.FORMULA_FULL) {
+                updated = this.charges;
+                msg += game.i18n.localize("MAGICITEMS.RechargeTypeFullText")
+            } else {
+                updated = Math.min(this.uses + amount, parseInt(this.charges));
+            }
             this.setUses(updated);
         } else {
             this.ownedEntries.forEach(entry => {

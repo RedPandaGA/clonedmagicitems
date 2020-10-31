@@ -17,7 +17,8 @@ MAGICITEMS.LONG_REST = 'r5';
 
 MAGICITEMS.rechargeTypes = {
     "t1": "MAGICITEMS.RechargeTypeNumeric",
-    "t2": "MAGICITEMS.RechargeTypeFormula"
+    "t2": "MAGICITEMS.RechargeTypeFormula",
+    "t3": "MAGICITEMS.RechargeTypeFull"
 };
 
 MAGICITEMS.destroyChecks = {
@@ -40,6 +41,7 @@ MAGICITEMS.CHARGE_TYPE_PER_SPELL = "c2";
 
 MAGICITEMS.NUMERIC_RECHARGE = 't1';
 MAGICITEMS.FORMULA_RECHARGE = 't2';
+MAGICITEMS.FORMULA_FULL = 't3';
 
 MAGICITEMS.tableUsages = {
     "u1": "MAGICITEMS.TableUsageAsSpell",

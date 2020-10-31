@@ -194,6 +194,11 @@
 .dnd5e.sheet.item .magic-items-content select.magic-item-destroy-check:disabled {
     color: #9a9a9a;
 }
+
 .dnd5e.sheet.item .magic-items-content select.magic-item-destroy-type:disabled {
+    color: #9a9a9a;
+}
+
+.dnd5e.sheet.item .magic-items-content input.magic-item-recharge:disabled {
     color: #9a9a9a;
 }

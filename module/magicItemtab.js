@@ -116,6 +116,13 @@ export class MagicItemTab {
             magicItemRecharge.hide();
         }
 
+        let rechargeField = this.html.find('input[name="flags.magicitems.recharge"]');
+        if(this.magicItem.rechargeType === MAGICITEMS.FORMULA_FULL) {
+            rechargeField.prop("disabled", true);
+        } else {
+            rechargeField.prop("disabled", false);
+        }
+
         this.handleEvents();
 
         this.app.setPosition();
@@ -141,6 +148,7 @@ export class MagicItemTab {
         });
         this.html.find('input[name="flags.magicitems.charges"]').change(evt => {
             this.magicItem.charges = MAGICITEMS.numeric(evt.target.value, this.magicItem.charges);
+            this.render();
         });
         this.html.find('select[name="flags.magicitems.chargeType"]').change(evt => {
             this.magicItem.chargeType = evt.target.value;
@@ -153,6 +161,7 @@ export class MagicItemTab {
         });
         this.html.find('input[name="flags.magicitems.recharge"]').change(evt => {
             this.magicItem.recharge = evt.target.value;
+            this.render();
         });
         this.html.find('select[name="flags.magicitems.rechargeType"]').change(evt => {
             this.magicItem.rechargeType = evt.target.value;
@@ -160,6 +169,7 @@ export class MagicItemTab {
         });
         this.html.find('select[name="flags.magicitems.rechargeUnit"]').change(evt => {
             this.magicItem.rechargeUnit = evt.target.value;
+            this.render();
         });
         this.html.find('input[name="flags.magicitems.destroy"]').change(evt => {
             this.magicItem.destroy = evt.target.checked;

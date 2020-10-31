@@ -10,6 +10,8 @@
 
     "MAGICITEMS.RechargeTypeNumeric": "Numeric",
     "MAGICITEMS.RechargeTypeFormula": "Formula",
+    "MAGICITEMS.RechargeTypeFull": "Maximum Charges",
+    "MAGICITEMS.RechargeTypeFullText": "Full",
 
     "MAGICITEMS.DestroyCheckAlways": "Always",
     "MAGICITEMS.DestroyCheck1D20":  "1 on d20",
