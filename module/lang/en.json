@@ -1,4 +1,11 @@
 {
+    "MAGICITEMS.SheetActivation": "Activation Options",
+    "MAGICITEMS.SheetActivationEquipped": "Equipped",
+    "MAGICITEMS.SheetActivationAttuned": "Attuned",
+
+    "MAGICITEMS.SheetTot": "tot",
+    "MAGICITEMS.SheetActives": "actives",
+
     "MAGICITEMS.RechargeUnitDaily": "Daily",
     "MAGICITEMS.RechargeUnitDawn": "At Dawn",
     "MAGICITEMS.RechargeUnitSunset": "At Sunset",

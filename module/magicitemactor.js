@@ -186,15 +186,25 @@ export class MagicItemActor {
     }
 
     /**
+     * Returns the number of magic items owned by the actor.
+     */
+    get magicItemsCount() {
+        return this.items.length;
+    }
+
+    /**
+     * returns the number of actives magic items owned by the actor.
+     */
+    get magicItemsActiveCount() {
+        return this.items.reduce((actives, item) => actives + item.isActive, 0);
+    }
+
+    /**
      *
      * @returns {boolean}
      */
     hasItemsSpells() {
-        return this.items
-            .reduce(
-                (hasSpells, item) => hasSpells || item.hasSpells,
-                false
-            );
+        return this.items.reduce((hasSpells, item) => hasSpells || item.hasSpells, false);
     }
 
     /**

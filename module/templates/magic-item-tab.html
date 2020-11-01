@@ -1,9 +1,16 @@
 <div class="magic-items-content">
-    <div class="form-group input-select">
+    <div class="form-group">
         <label>{{localize "MAGICITEMS.SheetEnabled"}}</label>
         <input type="checkbox" name="flags.magicitems.enabled" {{checked enabled}}>
     </div>
     <div class="magic-item-enabled">
+    <div class="form-group">
+        <label>{{localize "MAGICITEMS.SheetActivation"}}</label>
+        {{localize "MAGICITEMS.SheetActivationEquipped"}}
+        <input type="checkbox" name="flags.magicitems.equipped" {{checked equipped}} style="margin-right: 5px;">
+        {{localize "MAGICITEMS.SheetActivationAttuned"}}
+        <input type="checkbox" name="flags.magicitems.attuned" {{checked attuned}}>
+    </div>
     <div class="form-group">
         <label>{{localize "MAGICITEMS.SheetCharges"}}</label>
         <div class="form-fields" style="flex: 1">

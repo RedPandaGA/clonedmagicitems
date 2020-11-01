@@ -3,7 +3,7 @@
 	    <label><h3>Magic Items</h3></label>
 	</div>
 	{{#each items as |item i|}}
-	{{#if hasFeats}}
+	{{#if (and hasFeats isActive)}}
 	<li class="item flexrow inventory-header spellbook-header">
 	    <div class="item-name flexrow">
 	        <h3>{{name}}</h3>

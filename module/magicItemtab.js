@@ -146,6 +146,14 @@ export class MagicItemTab {
             this.magicItem.toggleEnabled(evt.target.checked);
             this.render();
         });
+        this.html.find('input[name="flags.magicitems.equipped"]').click(evt => {
+            this.magicItem.equipped = evt.target.checked;
+            this.render();
+        });
+        this.html.find('input[name="flags.magicitems.attuned"]').click(evt => {
+            this.magicItem.attuned = evt.target.checked;
+            this.render();
+        });
         this.html.find('input[name="flags.magicitems.charges"]').change(evt => {
             this.magicItem.charges = MAGICITEMS.numeric(evt.target.value, this.magicItem.charges);
             this.render();

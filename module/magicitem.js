@@ -7,6 +7,8 @@ export class MagicItem {
         this.data = mergeObject(this.defaultData(), flags || {}, { inplace: false });
 
         this.enabled = this.data.enabled;
+        this.equipped = this.data.equipped;
+        this.attuned = this.data.attuned;
         this.charges = parseInt(this.data.charges);
         this.chargeType = this.data.chargeType;
         this.rechargeable = this.data.rechargeable;
@@ -70,6 +72,8 @@ export class MagicItem {
     defaultData() {
         return {
             enabled: false,
+            equipped: false,
+            attuned: false,
             charges: 0,
             chargeType: 'c1',
             rechargeable: false,
@@ -509,8 +513,25 @@ export class OwnedMagicItem extends MagicItem {
         this.instrument();
     }
 
+    /**
+     *
+     */
     instrument() {
         this.item.roll = this.itemRoll(this.item.roll, this);
+    }
+
+    /**
+     * Tests if the owned magic items is active.
+     */
+    get isActive() {
+        let active = true;
+        if(this.equipped) {
+            active = active && this.item.data.data.equipped;
+        }
+        if(this.attuned) {
+            active = active && this.item.data.data.attuned;
+        }
+        return active;
     }
 
     itemRoll(original, me) {

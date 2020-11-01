@@ -1,4 +1,11 @@
 {
+    "MAGICITEMS.SheetActivation": "Opzioni di Attivazione",
+    "MAGICITEMS.SheetActivationEquipped": "Equipaggiato",
+    "MAGICITEMS.SheetActivationAttuned": "In Sintonia",
+
+    "MAGICITEMS.SheetTot": "totali",
+    "MAGICITEMS.SheetActives": "attivi",
+
     "MAGICITEMS.RechargeUnitDaily": "Giornaliero",
     "MAGICITEMS.RechargeUnitDawn": "All'Alba",
     "MAGICITEMS.RechargeUnitSunset": "Al Tramonto",
