@@ -521,9 +521,17 @@ export class OwnedMagicItem extends MagicItem {
     }
 
     /**
+     * Tests if the owned magic items can visualize his powers.
+     */
+    get visible() {
+        let identifiedOnly = game.settings.get("magicitems", "identifiedOnly");
+        return !identifiedOnly || this.item.data.data.identified;
+    }
+
+    /**
      * Tests if the owned magic items is active.
      */
-    get isActive() {
+    get active() {
         let active = true;
         if(this.equipped) {
             active = active && this.item.data.data.equipped;

@@ -1,4 +1,7 @@
 {
+    "MAGICITEMS.SettingIdentifiedOnly": "Solo identificati",
+    "MAGICITEMS.SettingIdentifiedOnlyHint": "Mostra i poteri dei soli oggetti magici identificati",
+
     "MAGICITEMS.SheetActivation": "Opzioni di Attivazione",
     "MAGICITEMS.SheetActivationEquipped": "Equipaggiato",
     "MAGICITEMS.SheetActivationAttuned": "In Sintonia",

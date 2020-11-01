@@ -179,24 +179,39 @@ export class MagicItemActor {
 
     /**
      *
+     * @returns {*}
+     */
+    get visibleItems() {
+        return this.items.filter(item => item.visible);
+    }
+
+    /**
+     *
      * @returns {boolean}
      */
     hasMagicItems() {
-        return this.items.length > 0;
+        return this.hasVisibleItems;
     }
 
     /**
-     * Returns the number of magic items owned by the actor.
+     *
+     */
+    get hasVisibleItems() {
+        return this.items.reduce((visible, item) => visible || item.visible, false);
+    }
+
+    /**
+     * Returns the number of visible magic items owned by the actor.
      */
     get magicItemsCount() {
-        return this.items.length;
+        return this.visibleItems.length;
     }
 
     /**
-     * returns the number of actives magic items owned by the actor.
+     * returns the number of visible actives magic items owned by the actor.
      */
     get magicItemsActiveCount() {
-        return this.items.reduce((actives, item) => actives + item.isActive, 0);
+        return this.visibleItems.reduce((actives, item) => actives + item.active, 0);
     }
 
     /**
@@ -204,7 +219,7 @@ export class MagicItemActor {
      * @returns {boolean}
      */
     hasItemsSpells() {
-        return this.items.reduce((hasSpells, item) => hasSpells || item.hasSpells, false);
+        return this.visibleItems.reduce((hasSpells, item) => hasSpells || item.hasSpells, false);
     }
 
     /**
@@ -212,11 +227,7 @@ export class MagicItemActor {
      * @returns {boolean}
      */
     hasItemsFeats() {
-        return this.items
-            .reduce(
-                (hasFeats, item) => hasFeats || item.hasFeats,
-                false
-            );
+        return this.visibleItems.reduce((hasFeats, item) => hasFeats || item.hasFeats, false);
     }
 
     /**

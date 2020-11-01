@@ -1,10 +1,11 @@
+{{#if hasVisibleItems}}
 <div class="magic-items-spells-content">
 	<div class="inventory-filters spellbook-filters magic-items-head">
 		<label><h3>Magic Items - {{localize "MAGICITEMS.SheetTot"}}: {{magicItemsCount}}, {{localize "MAGICITEMS.SheetActives"}}:
 			{{magicItemsActiveCount}}</h3></label>
 	</div>
 	{{#each items as |item i|}}
-	{{#if (and hasSpells isActive)}}
+	{{#if (and visible active hasSpells)}}
 	<li class="item flexrow inventory-header spellbook-header">
 	    <div class="item-name flexrow">
 	        <h3>{{name}}</h3>
@@ -68,3 +69,4 @@
 	{{/if}}
 	{{/each}}
 </div>
+{{/if}}

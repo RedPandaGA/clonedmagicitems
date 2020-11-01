@@ -59,7 +59,7 @@ export class MagicItemSheet {
             await this.renderTemplate('magic-item-spell-sheet', 'magic-items-spells-content', 'spellbook');
         }
 
-        this.actor.items.forEach(item => {
+        this.actor.items.filter(item => item.visible).forEach(item => {
             let itemEl = this.html.find(`.inventory-list .item-list .item[data-item-id="${item.id}"]`);
             let h4 = itemEl.find('h4');
             if(!h4.find('i.fa-magic').length) {

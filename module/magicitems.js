@@ -4,6 +4,18 @@ import {MagicItemTab} from "./magicItemtab.js";
 
 //CONFIG.debug.hooks = true;
 
+Hooks.once('init', () => {
+
+    game.settings.register("magicitems", "identifiedOnly", {
+        name: "MAGICITEMS.SettingIdentifiedOnly",
+        hint: "MAGICITEMS.SettingIdentifiedOnlyHint",
+        scope: "world",
+        type: Boolean,
+        default: true,
+        config: true,
+    });
+});
+
 Hooks.once('ready', () => {
     game.actors.entities.forEach(actor => {
         MagicItemActor.bind(actor);

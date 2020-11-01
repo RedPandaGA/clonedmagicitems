@@ -1,4 +1,7 @@
 {
+    "MAGICITEMS.SettingIdentifiedOnly": "Only identified",
+    "MAGICITEMS.SettingIdentifiedOnlyHint": "Show Magic powers only for identified items",
+
     "MAGICITEMS.SheetActivation": "Activation Options",
     "MAGICITEMS.SheetActivationEquipped": "Equipped",
     "MAGICITEMS.SheetActivationAttuned": "Attuned",
