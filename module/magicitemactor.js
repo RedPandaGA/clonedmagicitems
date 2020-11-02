@@ -116,17 +116,17 @@ export class MagicItemActor {
      */
     handleEvents() {
         Hooks.on(`createOwnedItem`, (actor, item, options, userId) => {
-            if(this.actor.id === actor.id && userId === game.user._id) {
+            if(this.actor.id === actor.id) {
                 this.buildItems();
             }
         });
         Hooks.on(`updateOwnedItem`, (actor, item, data, options, userId) => {
-            if(this.actor.id === actor.id && userId === game.user._id) {
+            if(this.actor.id === actor.id) {
                 setTimeout(this.buildItems.bind(this), 500);
             }
         });
         Hooks.on(`deleteOwnedItem`, (actor, item, options, userId) => {
-            if(this.actor.id === actor.id && userId === game.user._id) {
+            if(this.actor.id === actor.id) {
                 this.actor.setFlag("magicitems", `-=${item.id}`, null);
                 this.buildItems();
             }

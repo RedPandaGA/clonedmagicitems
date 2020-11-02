@@ -107,7 +107,8 @@ export class MagicItem {
             sorting: this.sorting,
             spells: this.serializeEntries(this.spells, this.spellsGarbage),
             feats: this.serializeEntries(this.feats, this.featsGarbage),
-            tables: this.serializeEntries(this.tables, this.tablesGarbage)
+            tables: this.serializeEntries(this.tables, this.tablesGarbage),
+            uses: this.uses
         }
     }
 
@@ -487,7 +488,8 @@ class MagicItemSpell extends MagicItemEntry {
             upcast: this.upcast,
             upcastCost: this.upcastCost,
             flatDc: this.flatDc,
-            dc: this.dc
+            dc: this.dc,
+            uses: this.uses
         };
     }
 }
@@ -501,8 +503,7 @@ export class OwnedMagicItem extends MagicItem {
         this.actor = actor;
         this.name = item.name;
         this.img = item.img;
-        this.itemFlags = (actor.data.flags.magicitems || {})[item.id] || {};
-        this.uses = parseInt(this.itemFlags.uses || this.charges);
+        this.uses = parseInt(item.data.flags.magicitems.uses || this.charges);
 
         this.rechargeableLabel = this.rechargeable ?
             `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.rechargeText} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
@@ -677,7 +678,6 @@ export class OwnedMagicItem extends MagicItem {
     destroyItemEntry(entry) {
         if(this.hasSpell(entry.id)) {
             this.removeSpell(this.spells.findIndex(spell => spell.id === entry.id));
-            this.update();
         }
     }
 
@@ -697,8 +697,7 @@ class AbstractOwnedEntry {
         this.magicItem = magicItem;
         this.item = item;
         this.ownedItem = null;
-        this.entryFlags = this.magicItem.itemFlags[this.item.id] || {};
-        this.uses = parseInt(this.entryFlags.uses || this.magicItem.charges);
+        this.uses = parseInt(this.item.uses || this.magicItem.charges);
     }
 
     get id() {
@@ -839,6 +838,8 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
                 item.roll();
             });
         }
+
+        this.magicItem.update();
     }
 
     computeSpellcastingDC(item) {

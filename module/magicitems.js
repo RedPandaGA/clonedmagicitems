@@ -21,13 +21,15 @@ Hooks.once('init', () => {
 });
 
 Hooks.once('ready', () => {
-    game.actors.entities.forEach(actor => {
+    game.actors.entities.filter(actor => actor.permission >= 2).forEach(actor => {
         MagicItemActor.bind(actor);
     });
 });
 
 Hooks.once('createActor', (actor) => {
-    MagicItemActor.bind(actor);
+    if(actor.permission >= 2) {
+        MagicItemActor.bind(actor);
+    }
 });
 
 Hooks.on(`renderItemSheet5e`, (app, html, data) => {

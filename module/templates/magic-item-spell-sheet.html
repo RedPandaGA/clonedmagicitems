@@ -12,7 +12,7 @@
 	    </div>
 		{{#if chargesOnWholeItem}}
 	    <div class="spell-slots">
-	        <input name="flags.magicitems.{{id}}.uses" type="text" value="{{uses}}" placeholder="0"/>
+	        <input type="text" value="{{uses}}" placeholder="0"/>
 	        <span class="sep"> / </span>
 	        <input type="text" value="{{charges}}" placeholder="0"/>
 	    </div>
@@ -31,7 +31,7 @@
 	            </div>
 				{{#if ../chargesPerSpell}}
 				<div class="spell-slots">
-					<input name="flags.magicitems.{{../id}}.{{spell.id}}.uses" type="text" value="{{spell.uses}}" placeholder="0"/>
+					<input type="text" value="{{spell.uses}}" placeholder="0"/>
 					<span class="sep"> / </span>
 					<input type="text" value="{{../charges}}" placeholder="0"/>
 				</div>
@@ -52,7 +52,7 @@
 			</div>
 			{{#if ../chargesPerSpell}}
 			<div class="spell-slots">
-				<input name="flags.magicitems.{{../id}}.{{table.id}}.uses" type="text" value="{{table.uses}}" placeholder="0"/>
+				<input type="text" value="{{table.uses}}" placeholder="0"/>
 				<span class="sep"> / </span>
 				<input type="text" value="{{../charges}}" placeholder="0"/>
 			</div>

@@ -15,7 +15,7 @@ export class MagicItemSheet {
      */
     static bind(app, html, data) {
         let sheet = magicItemSheets[app.id];
-        if(!sheet) {
+        if(!sheet && MagicItemActor.get(app.actor.id)) {
             sheet = new MagicItemSheet(app.actor.id);
             magicItemSheets[app.id] = sheet;
         }
