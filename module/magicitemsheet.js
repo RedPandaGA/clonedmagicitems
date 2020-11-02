@@ -95,14 +95,14 @@ export class MagicItemSheet {
         this.html.find('.item div.magic-item-image').click(evt => this.onItemRoll(evt));
         this.html.find('.item h4.spell-name').click(evt => this.onItemShow(evt));
         this.actor.items.forEach(item => {
-            this.html.find(`input[name="flags.magicitems.${item.id}.uses"]`).change(evt => {
+            this.html.find(`input[data-item-id="magicitems.${item.id}.uses"]`).change(evt => {
                 item.setUses(MAGICITEMS.numeric(evt.currentTarget.value, item.uses));
-                this.render();
+                item.update();
             });
             item.ownedEntries.forEach(entry => {
-                this.html.find(`input[name="flags.magicitems.${item.id}.${entry.id}.uses"]`).change(evt => {
+                this.html.find(`input[data-item-id="magicitems.${item.id}.${entry.id}.uses"]`).change(evt => {
                     entry.uses = MAGICITEMS.numeric(evt.currentTarget.value, entry.uses);
-                    this.render();
+                    item.update();
                 });
             });
         });

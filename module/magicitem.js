@@ -553,6 +553,10 @@ export class OwnedMagicItem extends MagicItem {
         }
     }
 
+    isFull() {
+        return this.uses === this.charges;
+    }
+
     setUses(uses) {
         this.uses = uses;
     }
@@ -571,7 +575,7 @@ export class OwnedMagicItem extends MagicItem {
     }
 
     consume(consumption) {
-        this.uses = this.uses - consumption;
+        this.uses = Math.max(this.uses - consumption, 0);
         if(this.destroyed()) {
             if(this.destroyType === "dt1") {
                 this.magicItemActor.destroyItem(this);
@@ -617,7 +621,7 @@ export class OwnedMagicItem extends MagicItem {
     }
 
     onNewDay() {
-        if (this.rechargeable && this.rechargeUnit === MAGICITEMS.DAILY) {
+        if (this.rechargeable && [MAGICITEMS.DAILY, MAGICITEMS.DAWN].includes(this.rechargeUnit)) {
             return this.doRecharge();
         }
     }
@@ -637,9 +641,10 @@ export class OwnedMagicItem extends MagicItem {
         }
 
         if(this.chargesOnWholeItem) {
-            if(this.uses === this.charges) {
-                return
+            if(this.isFull()) {
+                return;
             }
+
             let updated;
             if(this.rechargeType === MAGICITEMS.FORMULA_FULL) {
                 updated = this.charges;
@@ -649,12 +654,16 @@ export class OwnedMagicItem extends MagicItem {
             }
             this.setUses(updated);
         } else {
+            if(this.ownedEntries.filter(entry => !entry.isFull()).length === 0) {
+                return;
+            }
+
             this.ownedEntries.forEach(entry => {
                 entry.uses = Math.min(entry.uses + amount, parseInt(this.charges));
             });
         }
 
-        this.actor.sheet.render(true);
+        this.update();
 
         ChatMessage.create({
             speaker: { actor: this.actor },
@@ -720,6 +729,10 @@ class AbstractOwnedEntry {
         this.item.uses = uses;
     }
 
+    isFull() {
+        return this.uses === this.magicItem.charges;
+    }
+
     hasCharges(consumption) {
         let uses = this.magicItem.chargesOnWholeItem ? this.magicItem.uses : this.uses;
         return uses - consumption >= 0;
@@ -729,7 +742,7 @@ class AbstractOwnedEntry {
         if(this.magicItem.chargesOnWholeItem) {
             this.magicItem.consume(consumption);
         } else {
-            this.uses = this.uses - consumption;
+            this.uses = Math.max(this.uses - consumption, 0);
             if(this.destroyed()) {
                 this.magicItem.destroyItemEntry(this.item);
             }
@@ -752,7 +765,7 @@ class AbstractOwnedEntry {
             ChatMessage.create({
                user: game.user._id,
                speaker: ChatMessage.getSpeaker({actor: this.actor}),
-               content: `<b>${this.name}</b> ${this.destroyFlavorText}`
+               content: `<b>${this.name}</b> ${this.magicItem.destroyFlavorText}`
            });
         }
         return destroyed;
@@ -830,16 +843,19 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
             this.computeSpellcastingDC(item);
         }
 
-        if(this.hasCharges(consumption)) {
+        let proceed = () => {
             item.roll();
             this.consume(consumption);
-        } else {
-            this.showNoChargesMessage(() => {
-                item.roll();
-            });
+            this.magicItem.update();
         }
 
-        this.magicItem.update();
+        if(this.hasCharges(consumption)) {
+            proceed();
+        } else {
+            this.showNoChargesMessage(() => {
+                proceed();
+            });
+        }
     }
 
     computeSpellcastingDC(item) {
