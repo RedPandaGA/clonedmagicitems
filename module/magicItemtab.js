@@ -137,9 +137,11 @@ export class MagicItemTab {
 
         this.html.find('.magic-items-content input[type="text"]').change(evt => {
             this.activate = true;
+            this.render();
         });
         this.html.find('.magic-items-content select').change(evt => {
             this.activate = true;
+            this.render();
         });
 
         this.html.find('input[name="flags.magicitems.enabled"]').click(evt => {
@@ -219,12 +221,23 @@ export class MagicItemTab {
             });
             this.html.find(`input[name="flags.magicitems.spells.${idx}.consumption"]`).change(evt => {
                 spell.consumption = MAGICITEMS.numeric(evt.target.value, spell.consumption);
+                this.render();
             });
-            this.html.find(`input[name="flags.magicitems.spells.${idx}.upcast"]`).change(evt => {
+            this.html.find(`select[name="flags.magicitems.spells.${idx}.upcast"]`).change(evt => {
                 spell.upcast = parseInt(evt.target.value);
+                this.render();
             });
-            this.html.find(`input[name="flags.magicitems.spells.${idx}.cost"]`).change(evt => {
-                spell.cost = MAGICITEMS.numeric(evt.target.value, spell.cost);
+            this.html.find(`input[name="flags.magicitems.spells.${idx}.upcastCost"]`).change(evt => {
+                spell.upcastCost = MAGICITEMS.numeric(evt.target.value, spell.cost);
+                this.render();
+            });
+            this.html.find(`input[name="flags.magicitems.spells.${idx}.flatDc"]`).click(evt => {
+                spell.flatDc = evt.target.checked;
+                this.render();
+            });
+            this.html.find(`input[name="flags.magicitems.spells.${idx}.dc"]`).change(evt => {
+                spell.dc = evt.target.value;
+                this.render();
             });
             this.html.find(`a[data-spell-idx="${idx}"]`).click(evt => {
                 spell.renderSheet();

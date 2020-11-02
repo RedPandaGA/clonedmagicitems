@@ -4,6 +4,10 @@ import {MagicItemTab} from "./magicItemtab.js";
 
 //CONFIG.debug.hooks = true;
 
+Handlebars.registerHelper('enabled', function(value, options) {
+    return Boolean(value) ? "" : "disabled";
+});
+
 Hooks.once('init', () => {
 
     game.settings.register("magicitems", "identifiedOnly", {

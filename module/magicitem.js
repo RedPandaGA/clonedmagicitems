@@ -425,6 +425,7 @@ class MagicItemSpell extends MagicItemEntry {
         this.consumption = parseInt(this.consumption);
         this.upcast = this.upcast ? parseInt(this.upcast) : this.level;
         this.upcastCost = this.upcastCost ? parseInt(this.upcastCost) : 1;
+        this.dc = this.flatDc && this.dc ? this.dc : "";
     }
 
     get levels() {
@@ -484,7 +485,9 @@ class MagicItemSpell extends MagicItemEntry {
             name: this.name,
             pack: this.pack,
             upcast: this.upcast,
-            upcastCost: this.upcastCost
+            upcastCost: this.upcastCost,
+            flatDc: this.flatDc,
+            dc: this.dc
         };
     }
 }
@@ -788,8 +791,16 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
 	
 	async init() {
         let data = await this.item.data();
-        if(data.type === 'spell' && typeof data.data.save.scaling === 'undefined') {
-            data = mergeObject(data, { "data.save.scaling" : "spell" } );
+        if(data.type === 'spell') {
+            if(typeof data.data.save.scaling === 'undefined') {
+                data = mergeObject(data, { "data.save.scaling" : "spell" } );
+            }
+            if(this.item.flatDc) {
+                data = mergeObject(data, {
+                    "data.save.scaling" : "flat",
+                    "data.save.dc" : this.item.dc
+                });
+            }
         }
         this.ownedItem = Item.createOwned(data, this.magicItem.actor);
     }
@@ -816,6 +827,10 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
             );
         }
 
+        if(this.ownedItem.type === 'spell') {
+            this.computeSpellcastingDC(item);
+        }
+
         if(this.hasCharges(consumption)) {
             item.roll();
             this.consume(consumption);
@@ -823,6 +838,20 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
             this.showNoChargesMessage(() => {
                 item.roll();
             });
+        }
+    }
+
+    computeSpellcastingDC(item) {
+
+        const data = this.magicItem.actor.data.data;
+        data.attributes.spelldc = data.attributes.spellcasting ? data.abilities[data.attributes.spellcasting].dc : 10;
+
+        const save = item.data.data.save;
+        if ( save?.ability ) {
+            if ( save.scaling === "spell" ) save.dc = data.attributes.spelldc;
+            else if ( save.scaling !== "flat" ) save.dc = data.abilities[save.scaling]?.dc ?? 10;
+            const ability = CONFIG.DND5E.abilities[save.ability];
+            item.labels.save = game.i18n.format("DND5E.SaveDC", {dc: save.dc || "", ability});
         }
     }
 }

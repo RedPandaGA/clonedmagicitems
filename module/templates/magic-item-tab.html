@@ -87,6 +87,7 @@
                 <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
                 <div class="spell-upcast-head">{{localize "MAGICITEMS.SheetUpcast"}}</div>
                 <div class="spell-cost-head">{{localize "MAGICITEMS.SheetCost"}}</div>
+                <div class="spell-dc-head">Save DC</div>
                 <div class="spell-controls-head">&nbsp;</div>
             </li>
 
@@ -118,6 +119,10 @@
                         {{/select}}
                     </select>
                     <input class="spell-cost" type="text" name="flags.magicitems.spells.{{i}}.upcastCost" value="{{item.upcastCost}}">
+
+                    <input class="spell-flat-dc" type="checkbox" name="flags.magicitems.spells.{{i}}.flatDc" {{checked item.flatDc}}>
+                    <input class="spell-dc" type="text" name="flags.magicitems.spells.{{i}}.dc" value="{{item.dc}}" {{enabled item.flatDc}}>
+
                     <div class="item-controls">
                         <a class="item-control item-delete item-spell" title="Delete Item">
                             <i class="fas fa-trash" data-spell-idx="{{i}}"></i>
