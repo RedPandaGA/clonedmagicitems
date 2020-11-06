@@ -18,6 +18,15 @@ Hooks.once('init', () => {
         default: true,
         config: true,
     });
+
+    game.settings.register("magicitems", "hideFromPlayers", {
+        name: "MAGICITEMS.SettingHideFromPlayers",
+        hint: "MAGICITEMS.SettingHideFromPlayersHint",
+        scope: "world",
+        type: Boolean,
+        default: false,
+        config: true,
+    });
 });
 
 Hooks.once('ready', () => {
@@ -33,6 +42,9 @@ Hooks.once('createActor', (actor) => {
 });
 
 Hooks.on(`renderItemSheet5e`, (app, html, data) => {
+    if(!game.user.isGM && game.settings.get("magicitems", "hideFromPlayers")) {
+        return;
+    }
     MagicItemTab.bind(app, html, data);
 });
 

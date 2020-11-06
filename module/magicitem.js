@@ -141,12 +141,12 @@ export class MagicItem {
 
     get rechargeText() {
         return this.rechargeType === 't3' ?
-                game.i18n.localize("MAGICITEMS.RechargeTypeFullText") :
+                game.i18n.localize("MAGICITEMS.RechargeTypeFull") :
                 this.recharge
     }
 
     get empty() {
-        return this.spells.length === 0 && this.feats.length === 0;
+        return this.spells.length === 0 && this.feats.length === 0 && this.tables.length === 0;
     }
 
     get chargesOnWholeItem() {
@@ -297,7 +297,7 @@ export class MagicItem {
             this.addTable({
                 id: entity.id,
                 name: entity.name,
-                img: 'icons/svg/d20-grey.svg',
+                img: entity.data.img,
                 pack: pack,
                 consumption: 1
             });
@@ -405,9 +405,26 @@ class MagicItemTable extends MagicItemEntry {
         return MAGICITEMS.localized(MAGICITEMS.tableUsages);
     }
 
-    async roll() {
+    async roll(actor) {
         let entity = await this.entity();
-        entity.draw();
+        let result = await entity.draw();
+        if(result && result.results && result.results.length === 1 && result.results[0].collection) {
+            let collection = result.results[0].collection;
+            let id = result.results[0].resultId;
+            const pack = game.packs.find(p => p.collection === collection);
+            pack.getEntity(id).then(entity => {
+                let item = Item.createOwned(entity.data, actor);
+                item.roll({
+                    createMessage: false
+                }).then(chatData => {
+                    ChatMessage.create(
+                        mergeObject(chatData, {
+                            "flags.dnd5e.itemData": item.data
+                        })
+                    );
+                });
+            });
+        }
     }
 
     serializeData() {
@@ -581,7 +598,6 @@ export class OwnedMagicItem extends MagicItem {
                 this.magicItemActor.destroyItem(this);
             } else {
                 this.toggleEnabled(false);
-                this.update();
             }
         }
     }
@@ -602,7 +618,7 @@ export class OwnedMagicItem extends MagicItem {
             ChatMessage.create({
                 user: game.user._id,
                 speaker: ChatMessage.getSpeaker({actor: this.actor}),
-                content: `<b>${this.name}</b> ${this.destroyFlavorText}`
+                content: this.formatMessage(`<b>${this.name}</b> ${this.destroyFlavorText}`)
             });
         }
         return destroyed;
@@ -621,23 +637,30 @@ export class OwnedMagicItem extends MagicItem {
     }
 
     onNewDay() {
-        if (this.rechargeable && [MAGICITEMS.DAILY, MAGICITEMS.DAWN].includes(this.rechargeUnit)) {
+        if (this.rechargeable && [MAGICITEMS.DAILY, MAGICITEMS.DAWN, MAGICITEMS.SUNSET].includes(this.rechargeUnit)) {
             return this.doRecharge();
         }
     }
 
     doRecharge() {
-        let amount = 0,
-            msg = `<b>Magic Item: ${this.name}</b><br>${game.i18n.localize("MAGICITEMS.SheetRecharge")}: `;
+
+        let amount = 0, updated = 0,
+            msg = `<b>Magic Item:</b> ${this.rechargeableLabel}<br>`;
+
+        let prefix = game.i18n.localize("MAGICITEMS.SheetRechargedBy");
+        let postfix = game.i18n.localize("MAGICITEMS.SheetChargesLabel");
         if(this.rechargeType === MAGICITEMS.NUMERIC_RECHARGE) {
             amount = parseInt(this.recharge);
-            msg += `${this.recharge}`;
+            msg += `<b>${prefix}</b>: ${this.recharge} ${postfix}`;
         }
         if(this.rechargeType === MAGICITEMS.FORMULA_RECHARGE) {
             let r = new Roll(this.recharge);
             r.roll();
             amount = r.total;
-            msg += `${r.result} = ${r.total}`;
+            msg += `<b>${prefix}</b>: ${r.result} = ${r.total} ${postfix}`;
+        }
+        if(this.rechargeType === MAGICITEMS.FORMULA_FULL) {
+            msg += `<b>${game.i18n.localize("MAGICITEMS.RechargeTypeFullText")}</b>`;
         }
 
         if(this.chargesOnWholeItem) {
@@ -645,13 +668,12 @@ export class OwnedMagicItem extends MagicItem {
                 return;
             }
 
-            let updated;
             if(this.rechargeType === MAGICITEMS.FORMULA_FULL) {
                 updated = this.charges;
-                msg += game.i18n.localize("MAGICITEMS.RechargeTypeFullText")
             } else {
                 updated = Math.min(this.uses + amount, parseInt(this.charges));
             }
+
             this.setUses(updated);
         } else {
             if(this.ownedEntries.filter(entry => !entry.isFull()).length === 0) {
@@ -659,7 +681,11 @@ export class OwnedMagicItem extends MagicItem {
             }
 
             this.ownedEntries.forEach(entry => {
-                entry.uses = Math.min(entry.uses + amount, parseInt(this.charges));
+                if(this.rechargeType === MAGICITEMS.FORMULA_FULL) {
+                    entry.uses = this.charges;
+                } else {
+                    entry.uses = Math.min(entry.uses + amount, parseInt(this.charges));
+                }
             });
         }
 
@@ -668,7 +694,7 @@ export class OwnedMagicItem extends MagicItem {
         ChatMessage.create({
             speaker: { actor: this.actor },
             type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-            content: msg
+            content: this.formatMessage(msg)
         });
     }
 
@@ -691,11 +717,26 @@ export class OwnedMagicItem extends MagicItem {
     }
 
     update() {
+        this.magicItemActor.suspendListening();
         this.item.update({
             flags: {
                 magicitems: this.serializeData()
             }
+        }).then(() => {
+            this.magicItemActor.resumeListening();
         });
+    }
+
+    formatMessage(msg) {
+        return `
+            <div class="dnd5e chat-card item-card">
+                <header class="card-header flexrow">
+                    <img src="${this.img}" title="Palla di Fuoco" width="36" height="36" />
+                    <h3 class="item-name">${this.name}</h3>
+                </header>
+    
+                <div class="card-content">${msg}</div>
+            </div>`
     }
 
 }
@@ -765,7 +806,7 @@ class AbstractOwnedEntry {
             ChatMessage.create({
                user: game.user._id,
                speaker: ChatMessage.getSpeaker({actor: this.actor}),
-               content: `<b>${this.name}</b> ${this.magicItem.destroyFlavorText}`
+               content: this.magicItem.formatMessage(`<b>${this.name}</b> ${this.magicItem.destroyFlavorText}`)
            });
         }
         return destroyed;
@@ -839,18 +880,23 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
             );
         }
 
-        if(this.ownedItem.type === 'spell') {
-            this.computeSpellcastingDC(item);
-        }
+        this.computeSpellcastingDC(item);
 
-        let proceed = () => {
-            item.roll();
+        let proceed = async () => {
+            let chatData = await item.roll({
+                createMessage: false
+            });
+            ChatMessage.create(
+                mergeObject(chatData, {
+                    "flags.dnd5e.itemData": item.data
+                })
+            );
             this.consume(consumption);
             this.magicItem.update();
         }
 
         if(this.hasCharges(consumption)) {
-            proceed();
+            await proceed();
         } else {
             this.showNoChargesMessage(() => {
                 proceed();
@@ -879,11 +925,11 @@ class OwnedMagicItemTable extends AbstractOwnedEntry {
         let item = this.item;
         let consumption = item.consumption;
         if(this.hasCharges(consumption)) {
-            await item.roll();
+            await item.roll(this.magicItem.actor);
             this.consume(consumption);
         } else {
             this.showNoChargesMessage(() => {
-                item.roll();
+                item.roll(this.magicItem.actor);
             });
         }
     }

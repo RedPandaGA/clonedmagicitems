@@ -56,6 +56,7 @@ export class MagicItemActor {
         this.listeners.forEach(listener => listener());
     }
 
+
     /**
      * Apply the aspects on the necessary actor pointcuts.
      */
@@ -115,22 +116,37 @@ export class MagicItemActor {
      * Handle update events on this actor in order to rebuild the magic items.
      */
     handleEvents() {
+        this.listening = true;
         Hooks.on(`createOwnedItem`, (actor, item, options, userId) => {
-            if(this.actor.id === actor.id) {
+            if(this.listening && this.actor.id === actor.id) {
                 this.buildItems();
             }
         });
         Hooks.on(`updateOwnedItem`, (actor, item, data, options, userId) => {
-            if(this.actor.id === actor.id) {
+            if(this.listening && this.actor.id === actor.id) {
                 setTimeout(this.buildItems.bind(this), 500);
             }
         });
         Hooks.on(`deleteOwnedItem`, (actor, item, options, userId) => {
-            if(this.actor.id === actor.id) {
-                this.actor.setFlag("magicitems", `-=${item.id}`, null);
+            if(this.listening && this.actor.id === actor.id) {
                 this.buildItems();
             }
         });
+    }
+
+    /**
+     * Temporarily suspends the interception of events, used for example to avoid intercepting a change
+     * made by the client itself.
+     */
+    suspendListening() {
+        this.listening = false;
+    }
+
+    /**
+     * Resume a temporarily suspended interception of events.
+     */
+    resumeListening() {
+        this.listening  = true;
     }
 
     /**

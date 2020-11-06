@@ -1,6 +1,8 @@
 {
     "MAGICITEMS.SettingIdentifiedOnly": "Only identified",
     "MAGICITEMS.SettingIdentifiedOnlyHint": "Show Magic powers only for identified items",
+    "MAGICITEMS.SettingHideFromPlayers": "Hide Settings Tab From Players",
+    "MAGICITEMS.SettingHideFromPlayersHint": "Hide the magic items settings tab for players",
 
     "MAGICITEMS.SheetActivation": "Activation Options",
     "MAGICITEMS.SheetActivationEquipped": "Equipped",
@@ -20,8 +22,8 @@
 
     "MAGICITEMS.RechargeTypeNumeric": "Numeric",
     "MAGICITEMS.RechargeTypeFormula": "Formula",
-    "MAGICITEMS.RechargeTypeFull": "Maximum Charges",
-    "MAGICITEMS.RechargeTypeFullText": "Full",
+    "MAGICITEMS.RechargeTypeFull": "Full",
+    "MAGICITEMS.RechargeTypeFullText": "Recharged to maximum charges",
 
     "MAGICITEMS.DestroyCheckAlways": "Always",
     "MAGICITEMS.DestroyCheck1D20":  "1 on d20",
@@ -37,11 +39,13 @@
     "MAGICITEMS.SheetDestroyFlavorText": "Chat Message Flavor",
     "MAGICITEMS.SheetRechargeable": "Rechargeable",
     "MAGICITEMS.SheetRecharge": "Recharge",
+    "MAGICITEMS.SheetRechargedBy": "Recharge by",
+    "MAGICITEMS.SheetChargesLabel": "charges",
     "MAGICITEMS.SheetSpell": "Spell",
     "MAGICITEMS.SheetFeat": "Feat",
     "MAGICITEMS.SheetTable": "Table",
     "MAGICITEMS.SheetLevel": "Level",
-    "MAGICITEMS.SheetConsumption": "Consumption",
+    "MAGICITEMS.SheetConsumption": "Consumpt.",
     "MAGICITEMS.SheetUpcast": "Upcast",
     "MAGICITEMS.SheetCost": "Cost/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Not Rechargeable",
@@ -88,7 +92,7 @@
 
     "MAGICITEMS.TableUsageAsSpell": "As spell",
     "MAGICITEMS.TableUsageAsFeat": "As Feat",
-    "MAGICITEMS.TableUsageTriggerOnUsage": "Trigger on usage",
+    "MAGICITEMS.TableUsageTriggerOnUsage": "on usage",
 
     "MAGICITEMS.WarnNoActor": "you have no controlled actor, select an actor and retry.",
     "MAGICITEMS.WarnNoMagicItem": "Your controlled Actor does not have an item named ",

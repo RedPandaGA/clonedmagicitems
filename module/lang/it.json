@@ -1,6 +1,8 @@
 {
     "MAGICITEMS.SettingIdentifiedOnly": "Solo identificati",
     "MAGICITEMS.SettingIdentifiedOnlyHint": "Mostra i poteri dei soli oggetti magici identificati",
+    "MAGICITEMS.SettingHideFromPlayers": "Nascondi Impastazioni ai Giocatori",
+    "MAGICITEMS.SettingHideFromPlayersHint": "Nascondi ai giocatori il tab di impostazioni per gli oggetti magici",
 
     "MAGICITEMS.SheetActivation": "Opzioni di Attivazione",
     "MAGICITEMS.SheetActivationEquipped": "Equipaggiato",
@@ -20,8 +22,8 @@
 
     "MAGICITEMS.RechargeTypeNumeric": "Numerico",
     "MAGICITEMS.RechargeTypeFormula": "Formula",
-    "MAGICITEMS.RechargeTypeFull": "Al Massimo",
-    "MAGICITEMS.RechargeTypeFullText": "Completa",
+    "MAGICITEMS.RechargeTypeFull": "Completa",
+    "MAGICITEMS.RechargeTypeFullText": "Ricaricato al massimo delle cariche",
 
     "MAGICITEMS.DestroyCheckAlways": "Sempre",
     "MAGICITEMS.DestroyCheck1D20":  "1 su d20",
@@ -36,6 +38,8 @@
     "MAGICITEMS.SheetSpellTarget": "Incantesimo",
     "MAGICITEMS.SheetRechargeable": "Ricaricable",
     "MAGICITEMS.SheetRecharge": "Ricarica",
+    "MAGICITEMS.SheetRechargedBy": "Ricarica di",
+    "MAGICITEMS.SheetChargesLabel": "cariche",
     "MAGICITEMS.SheetSpell": "Incantesimo",
     "MAGICITEMS.SheetFeat": "Privilegio",
     "MAGICITEMS.SheetTable": "Tabella",

@@ -173,8 +173,8 @@
                 <div class="item-name flexrow">
                     <h3>{{localize "MAGICITEMS.SheetTable"}}</h3>
                 </div>
-                <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetUsage"}}</div>
-                <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
+                <div class="table-usage-head">{{localize "MAGICITEMS.SheetUsage"}}</div>
+                <div class="table-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
                 <div class="spell-controls-head">&nbsp;</div>
             </li>
 
@@ -189,14 +189,14 @@
                         <input type="hidden" name="flags.magicitems.tables.{{i}}.pack" value="{{item.pack}}">
                         <input type="hidden" name="flags.magicitems.tables.{{i}}.img" value="{{item.img}}">
                     </div>
-                    <select class="spell-upcast" name="flags.magicitems.tables.{{i}}.usage">
+                    <select class="table-usage" name="flags.magicitems.tables.{{i}}.usage">
                         {{#select item.usage}}
                         {{#each item.usages as |name key|}}
                         <option value="{{key}}">{{name}}</option>
                         {{/each}}
                         {{/select}}
                     </select>
-                    <input class="feat-consumption" type="text" name="flags.magicitems.tables.{{i}}.consumption" value="{{item.consumption}}">
+                    <input class="table-consumption" type="text" name="flags.magicitems.tables.{{i}}.consumption" value="{{item.consumption}}">
                     <div class="item-controls">
                         <a class="item-control item-delete item-table" title="Delete Roll Table">
                             <i class="fas fa-trash" data-table-idx="{{i}}"></i>
