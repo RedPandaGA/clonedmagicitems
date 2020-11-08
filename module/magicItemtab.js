@@ -26,21 +26,25 @@ export class MagicItemTab {
         this.activate = false;
     }
 
-    init(html) {
+    init(html, data) {
 
-        if(!this.app.form.ondrop) {
-            this.app.form.ondragover = (ev) => this._onDragOver(ev);
-            this.app.form.ondrop = (ev) => this._onDrop(ev);
-        } else {
-            let me  = this;
-            let originalDrop = this.app._onDrop;
-            this.app._onDrop = function (evt) {
-                if(me.isActive()) {
-                    return me._onDrop(evt);
-                } else {
-                    return originalDrop.apply(me.app, arguments);
-                }
-            };
+        this.editable = data.editable;
+
+        if(this.editable) {
+            if(!this.app.form.ondrop) {
+                this.app.form.ondragover = (ev) => this._onDragOver(ev);
+                this.app.form.ondrop = (ev) => this._onDrop(ev);
+            } else {
+                let me  = this;
+                let originalDrop = this.app._onDrop;
+                this.app._onDrop = function (evt) {
+                    if(me.isActive()) {
+                        return me._onDrop(evt);
+                    } else {
+                        return originalDrop.apply(me.app, arguments);
+                    }
+                };
+            }
         }
 
         this.magicItem = new MagicItem(this.item.data.flags.magicitems);
@@ -123,7 +127,12 @@ export class MagicItemTab {
             rechargeField.prop("disabled", false);
         }
 
-        this.handleEvents();
+        if(this.editable) {
+            this.handleEvents();
+        } else {
+            this.html.find('input').prop("disabled", true);
+            this.html.find('select').prop("disabled", true);
+        }
 
         this.app.setPosition();
 

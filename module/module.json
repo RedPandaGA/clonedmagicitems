@@ -30,6 +30,25 @@
 	    "name": "Português (Brasil)",
 	    "path": "./lang/pt-BR.json"}
 	],
+	"packs": [{
+		"name": "magicitems",
+		"label": "Magic Items",
+		"system": "dnd5e",
+		"path": "./packs/magic-items.db",
+		"entity": "Item"
+	}, {
+		"name": "magicitem-feats",
+		"label": "Magic Items: Item Feats",
+		"system": "dnd5e",
+		"path": "./packs/magic-items-item-feats.db",
+		"entity": "Item"
+	}, {
+		"name": "magicitem-tables",
+		"label": "Magic Items: Item Tables",
+		"system": "dnd5e",
+		"path": "./packs/magic-items-item-tables.db",
+		"entity": "RollTable"
+	}],
 	"url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
 	"manifest": "https://gitlab.com/riccisi/foundryvtt-magic-items/raw/master/module/module.json",
 	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/1.22/raw/magic-items.zip?job=build"
