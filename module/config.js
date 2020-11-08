@@ -38,6 +38,11 @@ MAGICITEMS.chargeTypes = {
     "c2": "MAGICITEMS.ChargeTypePerSpells"
 };
 
+MAGICITEMS.effects = {
+    "e1": "MAGICITEMS.EffectTypeConsume",
+    "e2": "MAGICITEMS.EffectTypeDestroy"
+};
+
 MAGICITEMS.CHARGE_TYPE_WHOLE_ITEM = "c1";
 MAGICITEMS.CHARGE_TYPE_PER_SPELL = "c2";
 

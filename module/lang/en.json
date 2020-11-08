@@ -30,6 +30,9 @@
     "MAGICITEMS.JusDestroyType": "Just Destroy",
     "MAGICITEMS.LoosePowersType":  "Loose Powers",
 
+    "MAGICITEMS.EffectTypeConsume": "Consume",
+    "MAGICITEMS.EffectTypeDestroy": "Destroy",
+
     "MAGICITEMS.SheetEnabled": "Is a Magic Item?",
     "MAGICITEMS.SheetCharges": "Max Number of Charges",
     "MAGICITEMS.SheetDestroyPre": "Destroy",
@@ -46,6 +49,7 @@
     "MAGICITEMS.SheetTable": "Table",
     "MAGICITEMS.SheetLevel": "Level",
     "MAGICITEMS.SheetConsumption": "Consumpt.",
+    "MAGICITEMS.SheetEffect": "Effect.",
     "MAGICITEMS.SheetUpcast": "Upcast",
     "MAGICITEMS.SheetCost": "Cost/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Not Rechargeable",
@@ -60,7 +64,11 @@
     "MAGICITEMS.SheetUsage": "Usage",
     "MAGICITEMS.SheetSortingMode": "Sorting Mode",
     "MAGICITEMS.SheetSortByLevel": "Level",
+    "MAGICITEMS.SheetFeatOnUsage": "On Usage",
     "MAGICITEMS.SheetSortAlphabetically": "Alphabetically",
+    "MAGICITEMS.SheetConsumptionConsume": "Consume",
+    "MAGICITEMS.SheetConsumptionDestroy": "Destroy item",
+    "MAGICITEMS.SheetConsumptionDestroyMessage": "After its use, the object is destroyed.",
 
     "MAGICITEMS.UpcastDialogLevel": "Cast at Level",
     "MAGICITEMS.UpcastDialogConsumption": "Consumption",
@@ -93,6 +101,9 @@
     "MAGICITEMS.TableUsageAsSpell": "As spell",
     "MAGICITEMS.TableUsageAsFeat": "As Feat",
     "MAGICITEMS.TableUsageTriggerOnUsage": "on usage",
+
+    "MAGICITEMS.SheetFeatEffect0": "Consume",
+    "MAGICITEMS.SheetFeatEffect1": "Destroy",
 
     "MAGICITEMS.WarnNoActor": "you have no controlled actor, select an actor and retry.",
     "MAGICITEMS.WarnNoMagicItem": "Your controlled Actor does not have an item named ",

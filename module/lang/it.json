@@ -30,6 +30,9 @@
     "MAGICITEMS.JusDestroyType": "Distruggi",
     "MAGICITEMS.LoosePowersType":  "Perde i Poteri",
 
+    "MAGICITEMS.EffectTypeConsume": "Consuma",
+    "MAGICITEMS.EffectTypeDestroy": "Distruggi",
+
     "MAGICITEMS.SheetEnabled": "E' un Oggetto Magico?",
     "MAGICITEMS.SheetCharges": "Numero di Cariche Massime",
     "MAGICITEMS.SheetDestroyPre": "Distruggi",
@@ -60,6 +63,9 @@
     "MAGICITEMS.SheetSortingMode": "Tipo Ordinamento",
     "MAGICITEMS.SheetSortByLevel": "Livello",
     "MAGICITEMS.SheetSortAlphabetically": "Alfabetico",
+    "MAGICITEMS.SheetConsumptionConsume": "Consumo",
+    "MAGICITEMS.SheetConsumptionDestroy": "Distruggi Oggetto",
+    "MAGICITEMS.SheetConsumptionDestroyMessage": "Dopo il suo utilizzo l’oggetto viene distrutto.",
 
     "MAGICITEMS.UpcastDialogLevel": "Lancia al livello",
     "MAGICITEMS.UpcastDialogConsumption": "Consumo",

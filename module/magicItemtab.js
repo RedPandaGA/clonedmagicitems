@@ -244,8 +244,13 @@ export class MagicItemTab {
             });
         });
         this.magicItem.feats.forEach((feat, idx) => {
+            this.html.find(`select[name="flags.magicitems.feats.${idx}.effect"]`).change(evt => {
+                feat.effect = evt.target.value;
+                this.render();
+            });
             this.html.find(`input[name="flags.magicitems.feats.${idx}.consumption"]`).change(evt => {
                 feat.consumption = MAGICITEMS.numeric(evt.target.value, feat.consumption);
+                this.render();
             });
             this.html.find(`a[data-feat-idx="${idx}"]`).click(evt => {
                 feat.renderSheet();

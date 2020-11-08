@@ -29,7 +29,7 @@ export class MagicItem {
 
         this.feats = Object.values(this.data.feats ? this.data.feats : {})
             .filter(feat => feat !== 'null')
-            .map(spell => new MagicItemFeat(spell));
+            .map(feat => new MagicItemFeat(feat));
 
         this.tables = Object.values(this.data.tables ? this.data.tables : {})
             .filter(table => table !== 'null')
@@ -269,10 +269,11 @@ export class MagicItem {
     }
 
     addEntity(entity, pack) {
+        let name = entity.getFlag('babele','hasTranslation') ? entity.getFlag('babele','originalName') : entity.name;
         if(entity.type === "spell") {
             this.addSpell({
                 id: entity.id,
-                name: entity.name,
+                name: name,
                 img: entity.img,
                 pack: pack,
                 baseLevel: entity.data.data.level,
@@ -286,9 +287,10 @@ export class MagicItem {
         if(entity.type === "feat") {
             this.addFeat({
                 id: entity.id,
-                name: entity.name,
+                name: name,
                 img: entity.img,
                 pack: pack,
+                effect: 'e1',
                 consumption: 1
             });
             return true;
@@ -296,7 +298,7 @@ export class MagicItem {
         if(entity.entity === "RollTable") {
             this.addTable({
                 id: entity.id,
-                name: entity.name,
+                name: name,
                 img: entity.data.img,
                 pack: pack,
                 consumption: 1
@@ -347,6 +349,14 @@ class MagicItemEntry {
         mergeObject(this, data);
     }
 
+    get displayName() {
+        if(this.pack !== 'world' && game.packs.get(this.pack).translated) {
+            return game.packs.get(this.pack).translate({ name: this.name }, true)["name"];
+        } else {
+            return this.name;
+        }
+    }
+
     renderSheet() {
         this.entity().then(entity => {
             const sheet = entity.sheet;
@@ -388,10 +398,31 @@ class MagicItemEntry {
 
 class MagicItemFeat extends MagicItemEntry {
 
+    constructor(data) {
+        super(data);
+        this.effect = this.effect ? this.effect : 'e1';
+    }
+
+    consumptionLabel() {
+        return this.effect === 'e1' ?
+                `${game.i18n.localize("MAGICITEMS.SheetConsumptionConsume")}: ${this.consumption}`:
+                game.i18n.localize(`MAGICITEMS.SheetConsumptionDestroy`);
+    }
+
     serializeData() {
         return {
-
+            consumption: this.consumption,
+            id: this.id,
+            img: this.img,
+            name: this.name,
+            pack: this.pack,
+            uses: this.uses,
+            effect: this.effect
         };
+    }
+
+    get effects() {
+        return MAGICITEMS.localized(MAGICITEMS.effects);
     }
 }
 
@@ -413,16 +444,18 @@ class MagicItemTable extends MagicItemEntry {
             let id = result.results[0].resultId;
             const pack = game.packs.find(p => p.collection === collection);
             pack.getEntity(id).then(entity => {
-                let item = Item.createOwned(entity.data, actor);
-                item.roll({
-                    createMessage: false
-                }).then(chatData => {
-                    ChatMessage.create(
-                        mergeObject(chatData, {
-                            "flags.dnd5e.itemData": item.data
-                        })
-                    );
-                });
+                if(entity) {
+                    let item = Item.createOwned(entity.data, actor);
+                    item.roll({
+                        createMessage: false
+                    }).then(chatData => {
+                        ChatMessage.create(
+                            mergeObject(chatData, {
+                                "flags.dnd5e.itemData": item.data
+                            })
+                        );
+                    });
+                }
             });
         }
     }
@@ -528,7 +561,8 @@ export class OwnedMagicItem extends MagicItem {
 
         this.magicItemActor = magicItemActor;
 
-        this.ownedEntries = this.spells.concat(this.feats).map(item => new OwnedMagicItemEntry(this, item));
+        this.ownedEntries = this.spells.map(item => new OwnedMagicItemSpell(this, item));
+        this.ownedEntries = this.ownedEntries.concat(this.feats.map(item => new OwnedMagicItemFeat(this, item)));
         this.ownedEntries = this.ownedEntries.concat(this.tables.map(table => new OwnedMagicItemTable(this, table)));
 
         this.instrument();
@@ -591,11 +625,15 @@ export class OwnedMagicItem extends MagicItem {
         found[0].roll();
     }
 
+    destroyItem() {
+        this.magicItemActor.destroyItem(this);
+    }
+
     consume(consumption) {
         this.uses = Math.max(this.uses - consumption, 0);
         if(this.destroyed()) {
             if(this.destroyType === "dt1") {
-                this.magicItemActor.destroyItem(this);
+                this.destroyItem();
             } else {
                 this.toggleEnabled(false);
             }
@@ -702,10 +740,6 @@ export class OwnedMagicItem extends MagicItem {
         return this.ownedEntries.filter(entry => entry.id === itemId)[0];
     }
 
-    ownedItemBy(itemId) {
-        return this.entryBy(itemId).ownedItem;
-    }
-
     triggerTables() {
         this.triggeredTables.forEach(table => table.roll());
     }
@@ -746,7 +780,6 @@ class AbstractOwnedEntry {
     constructor(magicItem, item) {
         this.magicItem = magicItem;
         this.item = item;
-        this.ownedItem = null;
         this.uses = parseInt(this.item.uses || this.magicItem.charges);
     }
 
@@ -807,7 +840,7 @@ class AbstractOwnedEntry {
                user: game.user._id,
                speaker: ChatMessage.getSpeaker({actor: this.actor}),
                content: this.magicItem.formatMessage(`<b>${this.name}</b> ${this.magicItem.destroyFlavorText}`)
-           });
+            });
         }
         return destroyed;
     }
@@ -834,77 +867,8 @@ class AbstractOwnedEntry {
         });
         d.render(true);
     }
-}
 
-class OwnedMagicItemEntry extends AbstractOwnedEntry {
-
-    constructor(magicItem, item) {
-		super(magicItem, item);
-	}
-	
-	async init() {
-        let data = await this.item.data();
-        if(data.type === 'spell') {
-            if(typeof data.data.save.scaling === 'undefined') {
-                data = mergeObject(data, { "data.save.scaling" : "spell" } );
-            }
-            if(this.item.flatDc) {
-                data = mergeObject(data, {
-                    "data.save.scaling" : "flat",
-                    "data.save.dc" : this.item.dc
-                });
-            }
-        }
-        this.ownedItem = Item.createOwned(data, this.magicItem.actor);
-    }
-	
-    async roll() {
-
-        if(!this.ownedItem) {
-            await this.init();
-        }
-
-        let item = this.ownedItem;
-        let level = this.item.level;
-        let consumption = this.item.consumption;
-        if(this.ownedItem.type === 'spell' && this.item.canUpcast()) {
-            const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
-            level = parseInt(spellFormData.get("level"));
-            consumption = parseInt(spellFormData.get("consumption"));
-        }
-
-        if(level !== this.ownedItem.data.data.level) {
-            item = Item.createOwned(
-                mergeObject(this.ownedItem.data, {"data.level": level}, {inplace: false}),
-                this.magicItem.actor
-            );
-        }
-
-        this.computeSpellcastingDC(item);
-
-        let proceed = async () => {
-            let chatData = await item.roll({
-                createMessage: false
-            });
-            ChatMessage.create(
-                mergeObject(chatData, {
-                    "flags.dnd5e.itemData": item.data
-                })
-            );
-            this.consume(consumption);
-            this.magicItem.update();
-        }
-
-        if(this.hasCharges(consumption)) {
-            await proceed();
-        } else {
-            this.showNoChargesMessage(() => {
-                proceed();
-            });
-        }
-    }
-
-    computeSpellcastingDC(item) {
+    computeSaveDC(item) {
 
         const data = this.magicItem.actor.data.data;
         data.attributes.spelldc = data.attributes.spellcasting ? data.abilities[data.attributes.spellcasting].dc : 10;
@@ -917,6 +881,103 @@ class OwnedMagicItemEntry extends AbstractOwnedEntry {
             item.labels.save = game.i18n.format("DND5E.SaveDC", {dc: save.dc || "", ability});
         }
     }
+}
+
+class OwnedMagicItemSpell extends AbstractOwnedEntry {
+
+	async roll() {
+        let data = await this.item.data();
+        let consumption = this.item.consumption;
+
+        if(typeof data.data.save.scaling === 'undefined') {
+            data = mergeObject(data, { "data.save.scaling" : "spell" });
+        }
+        if(this.item.flatDc) {
+            data = mergeObject(data, {
+                "data.save.scaling" : "flat",
+                "data.save.dc" : this.item.dc
+            });
+        }
+        if(this.item.canUpcast()) {
+            const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
+            let level = parseInt(spellFormData.get("level"));
+            consumption = parseInt(spellFormData.get("consumption"));
+            data = mergeObject(data, { "data.level": level}, { inplace: false });
+        }
+
+        let item = Item.createOwned(data, this.magicItem.actor);
+        this.computeSaveDC(item);
+
+        let proceed = async () => {
+            let chatData = await item.roll({
+                createMessage: false
+            });
+            ChatMessage.create(
+                mergeObject(chatData, {
+                    "flags.dnd5e.itemData": item.data
+                })
+            );
+
+            this.consume(consumption);
+            this.magicItem.update();
+        }
+
+        if(this.hasCharges(consumption)) {
+            await proceed();
+        } else {
+            this.showNoChargesMessage(() => {
+                proceed();
+            });
+        }
+    }
+}
+
+class OwnedMagicItemFeat extends AbstractOwnedEntry {
+
+    async roll() {
+        let data = await this.item.data();
+        let consumption = this.item.consumption;
+
+        let item = Item.createOwned(data, this.magicItem.actor);
+        this.computeSaveDC(item);
+
+        let onUsage = this.item.effect === 'e1' ?
+        () => { this.consume(consumption) } :
+        () => {
+            ChatMessage.create({
+                user: game.user._id,
+                speaker: ChatMessage.getSpeaker({actor: this.magicItem.actor}),
+                content: this.magicItem.formatMessage(
+                    `<b>${this.name}</b>: ${game.i18n.localize("MAGICITEMS.SheetConsumptionDestroyMessage")}`
+                )
+            });
+
+            this.magicItem.destroyItem();
+        };
+
+        let proceed = async () => {
+            let chatData = await item.roll({
+                createMessage: false
+            });
+            ChatMessage.create(
+                mergeObject(chatData, {
+                    "flags.dnd5e.itemData": item.data
+                })
+            );
+
+            onUsage();
+            this.magicItem.update();
+        };
+
+        if(this.item.effect === 'e2' || this.hasCharges(consumption)) {
+            await proceed();
+        } else {
+            this.showNoChargesMessage(() => {
+                proceed();
+            });
+        }
+    }
+
 }
 
 class OwnedMagicItemTable extends AbstractOwnedEntry {

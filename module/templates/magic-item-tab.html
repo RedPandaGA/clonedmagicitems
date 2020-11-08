@@ -96,7 +96,7 @@
                 <li class="item flexrow">
                     <div class="item-name flexrow">
                         <div class="item-image" style="background-image: url({{item.img}})"></div>
-                        <h4><a data-spell-idx="{{i}}">{{item.name}}</a></h4>
+                        <h4><a data-spell-idx="{{i}}">{{item.displayName}}</a></h4>
                         <input type="hidden" name="flags.magicitems.spells.{{i}}.id" value="{{item.id}}">
                         <input type="hidden" name="flags.magicitems.spells.{{i}}.name" value="{{item.name}}">
                         <input type="hidden" name="flags.magicitems.spells.{{i}}.pack" value="{{item.pack}}">
@@ -140,7 +140,8 @@
                 <div class="item-name flexrow">
                     <h3>{{localize "MAGICITEMS.SheetFeat"}}</h3>
                 </div>
-                <div class="spell-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
+                <div class="feat-effect-head">{{localize "MAGICITEMS.SheetEffect"}}</div>
+                <div class="feat-consumption-head">{{localize "MAGICITEMS.SheetConsumption"}}</div>
                 <div class="spell-controls-head">&nbsp;</div>
             </li>
 
@@ -149,12 +150,19 @@
                 <li class="item flexrow">
                     <div class="item-name flexrow">
                         <div class="item-image" style="background-image: url({{item.img}})"></div>
-                        <h4><a data-feat-idx="{{i}}">{{item.name}}</a></h4>
+                        <h4><a data-feat-idx="{{i}}">{{item.displayName}}</a></h4>
                         <input type="hidden" name="flags.magicitems.feats.{{i}}.id" value="{{item.id}}">
                         <input type="hidden" name="flags.magicitems.feats.{{i}}.name" value="{{item.name}}">
                         <input type="hidden" name="flags.magicitems.feats.{{i}}.pack" value="{{item.pack}}">
                         <input type="hidden" name="flags.magicitems.feats.{{i}}.img" value="{{item.img}}">
                     </div>
+                    <select class="feat-effect" name="flags.magicitems.feats.{{i}}.effect">
+                        {{#select item.effect}}
+                        {{#each item.effects as |name key|}}
+                        <option value="{{key}}">{{name}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <input class="feat-consumption" type="text" name="flags.magicitems.feats.{{i}}.consumption" value="{{item.consumption}}">
                     <div class="item-controls">
                         <a class="item-control item-delete item-feat" title="Delete Item">
@@ -183,7 +191,7 @@
                 <li class="item flexrow">
                     <div class="item-name flexrow">
                         <div class="item-image" style="background-image: url({{item.img}})"></div>
-                        <h4><a data-table-idx="{{i}}">{{item.name}}</a></h4>
+                        <h4><a data-table-idx="{{i}}">{{item.displayName}}</a></h4>
                         <input type="hidden" name="flags.magicitems.tables.{{i}}.id" value="{{item.id}}">
                         <input type="hidden" name="flags.magicitems.tables.{{i}}.name" value="{{item.name}}">
                         <input type="hidden" name="flags.magicitems.tables.{{i}}.pack" value="{{item.pack}}">
