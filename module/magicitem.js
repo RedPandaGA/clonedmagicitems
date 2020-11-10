@@ -269,7 +269,9 @@ export class MagicItem {
     }
 
     addEntity(entity, pack) {
-        let name = entity.getFlag('babele','hasTranslation') ? entity.getFlag('babele','originalName') : entity.name;
+        let name = game.modules.has('babele') && entity.getFlag('babele','hasTranslation') ?
+                entity.getFlag('babele','originalName') :
+                entity.name;
         if(entity.type === "spell") {
             this.addSpell({
                 id: entity.id,
