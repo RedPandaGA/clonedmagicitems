@@ -556,7 +556,8 @@ export class OwnedMagicItem extends MagicItem {
         this.actor = actor;
         this.name = item.name;
         this.img = item.img;
-        this.uses = parseInt(item.data.flags.magicitems.uses || this.charges);
+
+        this.uses = parseInt(('uses' in item.data.flags.magicitems) ? item.data.flags.magicitems.uses : this.charges);
 
         this.rechargeableLabel = this.rechargeable ?
             `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.rechargeText} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
@@ -783,7 +784,7 @@ class AbstractOwnedEntry {
     constructor(magicItem, item) {
         this.magicItem = magicItem;
         this.item = item;
-        this.uses = parseInt(this.item.uses || this.magicItem.charges);
+        this.uses = parseInt(('uses' in this.item) ? this.item.uses : this.magicItem.charges);
     }
 
     get id() {
