@@ -351,7 +351,8 @@ class MagicItemEntry {
 
     get displayName() {
         if(this.pack !== 'world' && game.packs.get(this.pack).translated) {
-            return game.packs.get(this.pack).translate({ name: this.name }, true)["name"];
+            let translated = game.packs.get(this.pack).translate({ name: this.name }, true)["name"];
+            return translated || this.name;
         } else {
             return this.name;
         }
@@ -892,18 +893,21 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
         if(typeof data.data.save.scaling === 'undefined') {
             data = mergeObject(data, { "data.save.scaling" : "spell" });
         }
+
         if(this.item.flatDc) {
             data = mergeObject(data, {
                 "data.save.scaling" : "flat",
                 "data.save.dc" : this.item.dc
             });
         }
+
+        let level = this.item.level;
         if(this.item.canUpcast()) {
             const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
-            let level = parseInt(spellFormData.get("level"));
+            level = parseInt(spellFormData.get("level"));
             consumption = parseInt(spellFormData.get("consumption"));
-            data = mergeObject(data, { "data.level": level}, { inplace: false });
         }
+        data = mergeObject(data, { "data.level": level}, { inplace: false });
 
         let item = Item.createOwned(data, this.magicItem.actor);
         this.computeSaveDC(item);

@@ -4,7 +4,7 @@
 	"description": "Module that adds the ability to create magical items with spells or feats that belong to the item itself, such as staffs or magic wands, which will be automatically inherited from the character who owns the item.",
 	"version": "1.22",
 	"minimumCoreVersion" : "0.7.3",
-	"compatibleCoreVersion" : "0.7.5",
+	"compatibleCoreVersion" : "0.7.6",
 	"systems": ["dnd5e"],
 	"author": "Simone",
 	"esmodules": ["magicitems.js"],
@@ -24,12 +24,11 @@
 		"lang": "ko",
 		"name": "Korean",
 		"path": "./lang/ko.json"
-	},
-	{ 
+	}, {
 	    "lang": "pt-BR", 
 	    "name": "Português (Brasil)",
-	    "path": "./lang/pt-BR.json"}
-	],
+	    "path": "./lang/pt-BR.json"
+	}],
 	"packs": [{
 		"name": "magicitems",
 		"label": "Magic Items",

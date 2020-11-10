@@ -27,6 +27,15 @@ Hooks.once('init', () => {
         default: false,
         config: true,
     });
+
+    if(typeof Babele !== 'undefined') {
+
+        Babele.get().register({
+            module: 'magicitems',
+            lang: 'it',
+            dir: 'lang/packs/it'
+        });
+    }
 });
 
 Hooks.once('ready', () => {

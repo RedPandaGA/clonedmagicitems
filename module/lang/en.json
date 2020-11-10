@@ -49,7 +49,7 @@
     "MAGICITEMS.SheetTable": "Table",
     "MAGICITEMS.SheetLevel": "Level",
     "MAGICITEMS.SheetConsumption": "Consumpt.",
-    "MAGICITEMS.SheetEffect": "Effect.",
+    "MAGICITEMS.SheetEffect": "Effect",
     "MAGICITEMS.SheetUpcast": "Upcast",
     "MAGICITEMS.SheetCost": "Cost/Lvl",
     "MAGICITEMS.SheetNoRecharge": "Not Rechargeable",
@@ -64,7 +64,7 @@
     "MAGICITEMS.SheetUsage": "Usage",
     "MAGICITEMS.SheetSortingMode": "Sorting Mode",
     "MAGICITEMS.SheetSortByLevel": "Level",
-    "MAGICITEMS.SheetFeatOnUsage": "On Usage",
+    "MAGICITEMS.SheetFeatOnUsage": "At Use",
     "MAGICITEMS.SheetSortAlphabetically": "Alphabetically",
     "MAGICITEMS.SheetConsumptionConsume": "Consume",
     "MAGICITEMS.SheetConsumptionDestroy": "Destroy item",
@@ -100,7 +100,7 @@
 
     "MAGICITEMS.TableUsageAsSpell": "As spell",
     "MAGICITEMS.TableUsageAsFeat": "As Feat",
-    "MAGICITEMS.TableUsageTriggerOnUsage": "on usage",
+    "MAGICITEMS.TableUsageTriggerOnUsage": "At Use",
 
     "MAGICITEMS.SheetFeatEffect0": "Consume",
     "MAGICITEMS.SheetFeatEffect1": "Destroy",
