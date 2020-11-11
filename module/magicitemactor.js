@@ -61,7 +61,7 @@ export class MagicItemActor {
      * Apply the aspects on the necessary actor pointcuts.
      */
     instrument() {
-        //this.actor.getOwnedItem = this.getOwnedItem(this.actor.getOwnedItem, this);
+        this.actor.getOwnedItem = this.getOwnedItem(this.actor.getOwnedItem, this);
         this.actor.shortRest = this.shortRest(this.actor.shortRest, this);
         this.actor.longRest = this.longRest(this.actor.longRest, this);
     }

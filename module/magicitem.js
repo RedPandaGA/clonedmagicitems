@@ -744,6 +744,10 @@ export class OwnedMagicItem extends MagicItem {
         return this.ownedEntries.filter(entry => entry.id === itemId)[0];
     }
 
+    ownedItemBy(itemId) {
+        return this.entryBy(itemId).ownedItem;
+    }
+
     triggerTables() {
         this.triggeredTables.forEach(table => table.roll());
     }
@@ -912,19 +916,19 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
         }
         data = mergeObject(data, { "data.level": level}, { inplace: false });
 
-        let item = Item.createOwned(data, this.magicItem.actor);
-        this.computeSaveDC(item);
+        this.ownedItem = Item.createOwned(data, this.magicItem.actor);
+        this.computeSaveDC(this.ownedItem);
 
         let proceed = async () => {
-            let chatData = await item.roll({
+            /*let chatData = await this.ownedItem.roll({
                 createMessage: false
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": item.data
+                    "flags.dnd5e.itemData": this.ownedItem.data
                 })
-            );
-
+            );*/
+            await this.ownedItem.roll();
             this.consume(consumption);
             this.magicItem.update();
         }
@@ -945,8 +949,8 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
         let data = await this.item.data();
         let consumption = this.item.consumption;
 
-        let item = Item.createOwned(data, this.magicItem.actor);
-        this.computeSaveDC(item);
+        this.ownedItem = Item.createOwned(data, this.magicItem.actor);
+        this.computeSaveDC(this.ownedItem);
 
         let onUsage = this.item.effect === 'e1' ?
         () => { this.consume(consumption) } :
@@ -963,15 +967,15 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
         };
 
         let proceed = async () => {
-            let chatData = await item.roll({
+            /*let chatData = await this.ownedItem.roll({
                 createMessage: false
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": item.data
+                    "flags.dnd5e.itemData": this.ownedItem.data
                 })
-            );
-
+            );*/
+            await this.ownedItem.roll();
             onUsage();
             this.magicItem.update();
         };
