@@ -35,8 +35,8 @@ export class MagicItemActor {
         this.id = actor.id;
         this.listeners = [];
         this.destroyed = [];
+        this.listening = true;
         this.instrument();
-        this.handleEvents();
         this.buildItems();
     }
 
@@ -110,28 +110,6 @@ export class MagicItemActor {
             me.onLongRest(result);
             return result;
         }
-    }
-
-    /**
-     * Handle update events on this actor in order to rebuild the magic items.
-     */
-    handleEvents() {
-        this.listening = true;
-        Hooks.on(`createOwnedItem`, (actor, item, options, userId) => {
-            if(this.listening && this.actor.id === actor.id) {
-                this.buildItems();
-            }
-        });
-        Hooks.on(`updateOwnedItem`, (actor, item, data, options, userId) => {
-            if(this.listening && this.actor.id === actor.id) {
-                setTimeout(this.buildItems.bind(this), 500);
-            }
-        });
-        Hooks.on(`deleteOwnedItem`, (actor, item, options, userId) => {
-            if(this.listening && this.actor.id === actor.id) {
-                this.buildItems();
-            }
-        });
     }
 
     /**

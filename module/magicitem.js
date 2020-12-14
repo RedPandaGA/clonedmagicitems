@@ -352,7 +352,7 @@ class MagicItemEntry {
     }
 
     get displayName() {
-        if(this.pack !== 'world' && game.packs.get(this.pack).translated) {
+        if(this.pack !== 'world' && game.packs.get(this.pack)?.translated) {
             let translated = game.packs.get(this.pack).translate({ name: this.name }, true)["name"];
             return translated || this.name;
         } else {
@@ -596,7 +596,9 @@ export class OwnedMagicItem extends MagicItem {
             active = active && this.item.data.data.equipped;
         }
         if(this.attuned) {
-            active = active && this.item.data.data.attuned;
+            let isAttuned = this.item.data.data.attunement  ?
+                    this.item.data.data.attunement === 2 : this.item.data.data.attuned;
+            active = active && isAttuned;
         }
         return active;
     }
