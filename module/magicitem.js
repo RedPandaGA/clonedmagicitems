@@ -916,7 +916,7 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
             level = parseInt(spellFormData.get("level"));
             consumption = parseInt(spellFormData.get("consumption"));
         }
-        data = mergeObject(data, { "data.level": level}, { inplace: false });
+        data = mergeObject(data, { "data.level": level, "data.preparation": { "mode": "magicitem" } }, { inplace: false });
 
         this.ownedItem = Item.createOwned(data, this.magicItem.actor);
         this.computeSaveDC(this.ownedItem);
@@ -930,7 +930,9 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
                     "flags.dnd5e.itemData": this.ownedItem.data
                 })
             );*/
-            await this.ownedItem.roll();
+            await this.ownedItem.roll({
+                "configureDialog": false
+            });
             this.consume(consumption);
             this.magicItem.update();
         }
@@ -977,7 +979,9 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
                     "flags.dnd5e.itemData": this.ownedItem.data
                 })
             );*/
-            await this.ownedItem.roll();
+            await this.ownedItem.roll({
+                "configureDialog": false
+            });
             onUsage();
             this.magicItem.update();
         };
