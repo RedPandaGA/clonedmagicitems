@@ -54,5 +54,5 @@
 	}],
 	"url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
 	"manifest": "https://gitlab.com/riccisi/foundryvtt-magic-items/raw/master/module/module.json",
-	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/2.0.5/raw/magic-items.zip?job=build"
+	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/2.0.6/raw/magic-items.zip?job=build"
 }
