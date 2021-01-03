@@ -14,12 +14,14 @@ export class MagicItemSheet {
      * @param data
      */
     static bind(app, html, data) {
-        let sheet = magicItemSheets[app.id];
-        if(!sheet && MagicItemActor.get(app.actor.id)) {
-            sheet = new MagicItemSheet(app.actor.id);
-            magicItemSheets[app.id] = sheet;
+        if(MagicItemActor.get(app.actor.id)) {
+            let sheet = magicItemSheets[app.id];
+            if(!sheet) {
+                sheet = new MagicItemSheet(app.actor.id);
+                magicItemSheets[app.id] = sheet;
+            }
+            sheet.init(html, data);
         }
-        sheet.init(html, data);
     }
 
     /**

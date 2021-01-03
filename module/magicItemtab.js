@@ -68,9 +68,9 @@ export class MagicItemTab {
     }
 
     hack(app) {
+        let tab = this;
         app.setPosition = function(position={}) {
-            position.height = this._sheetTab === "details" || "magicitems" ? "auto" : this.options.height;
-            position.width = 600;
+            position.height = tab.isActive() && !position.height ? "auto" : position.height;
             return this.__proto__.__proto__.setPosition.apply(this, [position])
         };
     }
@@ -310,6 +310,6 @@ export class MagicItemTab {
     }
 
     isActive() {
-        return $('a.item[data-tab="magicitems"]').hasClass("active");
+        return $(this.html).find('a.item[data-tab="magicitems"]').hasClass("active");
     }
 }
