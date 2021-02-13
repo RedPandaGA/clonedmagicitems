@@ -14,6 +14,7 @@ build:
   artifacts:
     name: magic-items
     when: on_success
+    expire_in: never
     paths:
       - magic-items.zip
   when: on_success

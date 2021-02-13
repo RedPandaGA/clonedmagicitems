@@ -28,6 +28,24 @@ export class MagicItemTab {
 
     init(html, data) {
 
+        if(html[0].localName !== "div") {
+            html = $(html[0].parentElement.parentElement);
+        }
+
+        let tabs = html.find(`form nav.sheet-navigation.tabs`);
+        if(tabs.find('a[data-tab=magicitems]').length > 0) {
+            return; // already initialized, duplication bug!
+        }
+
+        tabs.append($(
+            '<a class="item" data-tab="magicitems">Magic Item</a>'
+        ));
+
+        $(html.find(`.sheet-body`)).append($(
+            '<div class="tab magic-items" data-group="primary" data-tab="magicitems"></div>'
+        ));
+
+        this.html = html;
         this.editable = data.editable;
 
         if(this.editable) {
@@ -48,21 +66,6 @@ export class MagicItemTab {
         }
 
         this.magicItem = new MagicItem(this.item.data.flags.magicitems);
-
-        if (html[0].localName !== "div") {
-            this.html = $(html[0].parentElement.parentElement);
-        } else {
-            this.html = html;
-        }
-
-        let tabs = this.html.find(`form nav.sheet-navigation.tabs`);
-        tabs.append($(
-            '<a class="item" data-tab="magicitems">Magic Item</a>'
-        ));
-
-        $(this.html.find(`.sheet-body`)).append($(
-            '<div class="tab magic-items" data-group="primary" data-tab="magicitems"></div>'
-        ));
 
         this.render();
     }
