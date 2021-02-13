@@ -32,6 +32,10 @@
 	    "lang": "fr",
 	    "name": "Francais",
 	    "path": "./lang/fr.json"
+	}, {
+	    "lang": "de",
+	    "name": "Deutsch",
+	    "path": "./lang/de.json"
 	}],
 	"packs": [{
 		"name": "magicitems",
