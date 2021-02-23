@@ -5,15 +5,15 @@ const magicItemTabs = [];
 
 export class MagicItemTab {
 
-    static bind(app, html, data) {
+    static bind(app, html, item) {
         let acceptedTypes = ['weapon', 'equipment', 'consumable', 'tool', 'backpack', 'feat'];
-        if(acceptedTypes.includes(data.entity.type)) {
+        if(acceptedTypes.includes(item.document.type)) {
             let tab = magicItemTabs[app.id];
             if(!tab) {
                 tab = new MagicItemTab(app);
                 magicItemTabs[app.id] = tab;
             }
-            tab.init(html, data);
+            tab.init(html, item);
         }
     }
 

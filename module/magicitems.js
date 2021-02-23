@@ -84,21 +84,21 @@ Hooks.on("hotbarDrop", async (bar, data, slot) => {
     return false;
 });
 
-Hooks.on(`createOwnedItem`, (actor) => {
+Hooks.on(`createItem`, (actor) => {
     const miActor = MagicItemActor.get(actor.id);
     if(miActor && miActor.listening && miActor.actor.id === actor.id) {
         miActor.buildItems();
     }
 });
 
-Hooks.on(`updateOwnedItem`, (actor) => {
+Hooks.on(`updateItem`, (actor) => {
     const miActor = MagicItemActor.get(actor.id);
     if(miActor && miActor.listening && miActor.actor.id === actor.id) {
         setTimeout(miActor.buildItems.bind(miActor), 500);
     }
 });
 
-Hooks.on(`deleteOwnedItem`, (actor) => {
+Hooks.on(`deleteItem`, (actor) => {
     const miActor = MagicItemActor.get(actor.id);
     if(miActor && miActor.listening && miActor.actor.id === actor.id) {
         miActor.buildItems();
