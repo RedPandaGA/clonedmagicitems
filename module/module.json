@@ -36,6 +36,10 @@
 	    "lang": "de",
 	    "name": "Deutsch",
 	    "path": "./lang/de.json"
+	}, {
+	    "lang": "cn",
+	    "name": "中文",
+	    "path": "./lang/cn.json"
 	}],
 	"packs": [{
 		"name": "magicitems",
