@@ -84,24 +84,33 @@ Hooks.on("hotbarDrop", async (bar, data, slot) => {
     return false;
 });
 
-Hooks.on(`createOwnedItem`, (actor) => {
-    const miActor = MagicItemActor.get(actor.id);
-    if(miActor && miActor.listening && miActor.actor.id === actor.id) {
-        miActor.buildItems();
+Hooks.on(`createItem`, (item) => {
+    if(item.actor) {
+        const actor = item.actor;
+        const miActor = MagicItemActor.get(actor.id);
+        if(miActor && miActor.listening && miActor.actor.id === actor.id) {
+            miActor.buildItems();
+        }
     }
 });
 
-Hooks.on(`updateOwnedItem`, (actor) => {
-    const miActor = MagicItemActor.get(actor.id);
-    if(miActor && miActor.listening && miActor.actor.id === actor.id) {
-        setTimeout(miActor.buildItems.bind(miActor), 500);
+Hooks.on(`updateItem`, (item) => {
+    if (item.actor) {
+        const actor = item.actor;
+        const miActor = MagicItemActor.get(actor.id);
+        if (miActor && miActor.listening && miActor.actor.id === actor.id) {
+            setTimeout(miActor.buildItems.bind(miActor), 500);
+        }
     }
 });
 
-Hooks.on(`deleteOwnedItem`, (actor) => {
-    const miActor = MagicItemActor.get(actor.id);
-    if(miActor && miActor.listening && miActor.actor.id === actor.id) {
-        miActor.buildItems();
+Hooks.on(`deleteItem`, (item) => {
+    if (item.actor) {
+        const actor = item.actor;
+        const miActor = MagicItemActor.get(actor.id);
+        if (miActor && miActor.listening && miActor.actor.id === actor.id) {
+            miActor.buildItems();
+        }
     }
 });
 

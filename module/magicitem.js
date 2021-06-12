@@ -45,8 +45,8 @@ export class MagicItem {
     }
 
     static sortByName(a, b) {
-        if(a.name < b.name) { return -1; }
-        if(a.name > b.name) { return 1; }
+        if(a.displayName < b.displayName) { return -1; }
+        if(a.displayName > b.displayName) { return 1; }
         return 0;
     }
 
@@ -352,9 +352,8 @@ class MagicItemEntry {
     }
 
     get displayName() {
-        if(this.pack !== 'world' && game.packs.get(this.pack)?.translated) {
-            let translated = game.packs.get(this.pack).translate({ name: this.name }, true)["name"];
-            return translated || this.name;
+        if(this.pack !== 'world' && game.babele?.isTranslated(this.pack)) {
+            return game.babele.translateField("name", this.pack, { name: this.name });
         } else {
             return this.name;
         }
@@ -375,11 +374,11 @@ class MagicItemEntry {
     entity() {
         return new Promise((resolve, reject) => {
             if(this.pack === 'world') {
-                let entity = this.entityCls().collection.get(this.id);
+                let entity = this.entityCls().collection.instance.get(this.id);
                 resolve(entity);
             } else {
                 const pack = game.packs.find(p => p.collection === this.pack);
-                pack.getEntity(this.id).then(entity => {
+                pack.getDocument(this.id).then(entity => {
                     resolve(entity);
                 });
             }
@@ -387,13 +386,13 @@ class MagicItemEntry {
     }
 
     entityCls() {
-        return CONFIG['Item'].entityClass;
+        return CONFIG['Item'];
     }
 
     data() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.entity().then(entity => {
-                resolve(entity.data);
+                resolve(entity.toJSON());
             })
         });
     }
@@ -432,7 +431,7 @@ class MagicItemFeat extends MagicItemEntry {
 class MagicItemTable extends MagicItemEntry {
 
     entityCls() {
-        return CONFIG['RollTable'].entityClass;
+        return CONFIG['RollTable'];
     }
 
     get usages() {
@@ -448,7 +447,8 @@ class MagicItemTable extends MagicItemEntry {
             const pack = game.packs.find(p => p.collection === collection);
             pack.getEntity(id).then(entity => {
                 if(entity) {
-                    let item = Item.createOwned(entity.data, actor);
+                    let item = actor.createEmbeddedDocuments("Item", [entity.data]);
+                    //let item = Item.createOwned(entity.data, actor);
                     item.roll({
                         createMessage: false
                     }).then(chatData => {
@@ -918,7 +918,8 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
         }
         data = mergeObject(data, { "data.level": level, "data.preparation": { "mode": "magicitem" } }, { inplace: false });
 
-        this.ownedItem = Item.createOwned(data, this.magicItem.actor);
+        const cls = CONFIG.Item.documentClass;
+        this.ownedItem = new cls(data, { parent: this.magicItem.actor });
         this.computeSaveDC(this.ownedItem);
 
         let proceed = async () => {
@@ -953,7 +954,8 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
         let data = await this.item.data();
         let consumption = this.item.consumption;
 
-        this.ownedItem = Item.createOwned(data, this.magicItem.actor);
+        const cls = CONFIG.Item.documentClass;
+        this.ownedItem = new cls(data, { parent: this.magicItem.actor });
         this.computeSaveDC(this.ownedItem);
 
         let onUsage = this.item.effect === 'e1' ?
