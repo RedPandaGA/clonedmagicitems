@@ -45,8 +45,8 @@ export class MagicItem {
     }
 
     static sortByName(a, b) {
-        if(a.name < b.name) { return -1; }
-        if(a.name > b.name) { return 1; }
+        if(a.displayName < b.displayName) { return -1; }
+        if(a.displayName > b.displayName) { return 1; }
         return 0;
     }
 
@@ -352,9 +352,8 @@ class MagicItemEntry {
     }
 
     get displayName() {
-        if(this.pack !== 'world' && game.packs.get(this.pack)?.translated) {
-            let translated = game.packs.get(this.pack).translate({ name: this.name }, true)["name"];
-            return translated || this.name;
+        if(this.pack !== 'world' && game.babele?.isTranslated(this.pack)) {
+            return game.babele.translateField("name", this.pack, { name: this.name });
         } else {
             return this.name;
         }
@@ -375,7 +374,7 @@ class MagicItemEntry {
     entity() {
         return new Promise((resolve, reject) => {
             if(this.pack === 'world') {
-                let entity = this.entityCls().collection.get(this.id);
+                let entity = this.entityCls().collection.instance.get(this.id);
                 resolve(entity);
             } else {
                 const pack = game.packs.find(p => p.collection === this.pack);
@@ -387,7 +386,7 @@ class MagicItemEntry {
     }
 
     entityCls() {
-        return CONFIG['Item'].entityClass;
+        return CONFIG['Item'];
     }
 
     data() {
@@ -432,7 +431,7 @@ class MagicItemFeat extends MagicItemEntry {
 class MagicItemTable extends MagicItemEntry {
 
     entityCls() {
-        return CONFIG['RollTable'].entityClass;
+        return CONFIG['RollTable'];
     }
 
     get usages() {
@@ -955,7 +954,8 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
         let data = await this.item.data();
         let consumption = this.item.consumption;
 
-        this.ownedItem = Item.createOwned(data, this.magicItem.actor);
+        const cls = CONFIG.Item.documentClass;
+        this.ownedItem = new cls(data, { parent: this.magicItem.actor });
         this.computeSaveDC(this.ownedItem);
 
         let onUsage = this.item.effect === 'e1' ?

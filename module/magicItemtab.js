@@ -302,8 +302,8 @@ export class MagicItemTab {
             entity = await MAGICITEMS.fromCollection(pack, data.id);
         } else {
             pack = 'world';
-            const cls = CONFIG[data.type].entityClass;
-            entity = cls.collection.get(data.id);
+            const cls = CONFIG[data.type];
+            entity = cls.collection.instance.get(data.id);
         }
 
         if(entity && this.magicItem.compatible(entity)) {

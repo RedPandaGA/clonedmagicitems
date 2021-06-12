@@ -246,3 +246,7 @@
     color: #9a9a9a;
     border-color: #dad9d9;
 }
+
+.dnd5e.sheet .items-list .item .item-name .item-image .fa-dice-d20 {
+    display: none;
+}
