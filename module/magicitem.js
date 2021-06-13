@@ -923,17 +923,15 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
         this.computeSaveDC(this.ownedItem);
 
         let proceed = async () => {
-            /*let chatData = await this.ownedItem.roll({
-                createMessage: false
+            let chatData = await this.ownedItem.roll({
+                "configureDialog": false,
+                "createMessage": false
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": this.ownedItem.data
+                    "flags.dnd5e.itemData": this.ownedItem.data.toJSON()
                 })
-            );*/
-            await this.ownedItem.roll({
-                "configureDialog": false
-            });
+            );
             this.consume(consumption);
             this.magicItem.update();
         }
@@ -973,17 +971,15 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
         };
 
         let proceed = async () => {
-            /*let chatData = await this.ownedItem.roll({
-                createMessage: false
+            let chatData = await this.ownedItem.roll({
+                "createMessage": false,
+                "configureDialog": false
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": this.ownedItem.data
+                    "flags.dnd5e.itemData": this.ownedItem.data.toJSON()
                 })
-            );*/
-            await this.ownedItem.roll({
-                "configureDialog": false
-            });
+            );
             onUsage();
             this.magicItem.update();
         };
