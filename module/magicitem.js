@@ -897,6 +897,7 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
 
 	async roll() {
         let data = await this.item.data();
+        let originalData = data;
         let consumption = this.item.consumption;
 
         if(typeof data.data.save.scaling === 'undefined') {
@@ -920,7 +921,7 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
 
         const cls = CONFIG.Item.documentClass;
         this.ownedItem = new cls(data, { parent: this.magicItem.actor });
-        this.computeSaveDC(this.ownedItem);
+        this.ownedItem.prepareFinalAttributes();
 
         let proceed = async () => {
             let chatData = await this.ownedItem.roll({
@@ -929,7 +930,7 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": this.ownedItem.data.toJSON()
+                    "flags.dnd5e.itemData": originalData
                 })
             );
             this.consume(consumption);
@@ -950,11 +951,12 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
 
     async roll() {
         let data = await this.item.data();
+        let originalData = data;
         let consumption = this.item.consumption;
 
         const cls = CONFIG.Item.documentClass;
         this.ownedItem = new cls(data, { parent: this.magicItem.actor });
-        this.computeSaveDC(this.ownedItem);
+        this.ownedItem.prepareFinalAttributes();
 
         let onUsage = this.item.effect === 'e1' ?
         () => { this.consume(consumption) } :
@@ -977,7 +979,7 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": this.ownedItem.data.toJSON()
+                    "flags.dnd5e.itemData": originalData
                 })
             );
             onUsage();
