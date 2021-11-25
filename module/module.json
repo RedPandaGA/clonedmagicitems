@@ -37,10 +37,6 @@
 	    "name": "Deutsch",
 	    "path": "./lang/de.json"
 	}, {
-	    "lang": "cn",
-	    "name": "中文",
-	    "path": "./lang/cn.json"
-	}, {
 		"lang": "cs",
 		"name": "Česky",
 		"path": "./lang/cs.json"
