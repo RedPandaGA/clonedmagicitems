@@ -39,7 +39,7 @@ Hooks.once('init', () => {
 });
 
 Hooks.once('ready', () => {
-    game.actors.entities.filter(actor => actor.permission >= 1).forEach(actor => {
+    Array.from(game.actors).filter(actor => actor.permission >= 1).forEach(actor => {
         MagicItemActor.bind(actor);
     });
 });

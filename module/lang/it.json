@@ -73,7 +73,9 @@
     "MAGICITEMS.UpcastDialogLevel": "Lancia al livello",
     "MAGICITEMS.UpcastDialogConsumption": "Consumo",
 
-    "MAGICITEMS.MagicItemDestroyCheck": "verifica autodistruzione",
+    "MAGICITEMS.MagicItemDestroyCheck": "verifica se si auto-distrugge",
+    "MAGICITEMS.MagicItemDestroyCheckSuccess": "passata!",
+    "MAGICITEMS.MagicItemDestroyCheckFailure": "fallita!",
     "MAGICITEMS.MagicItemDestroy": "ha esaurito le cariche: si sbriciola in cenere e viene distrutto.",
 
     "MAGICITEMS.SheetSpellLevel0": "trucchetto",

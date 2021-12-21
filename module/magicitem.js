@@ -375,7 +375,12 @@ class MagicItemEntry {
         return new Promise((resolve, reject) => {
             if(this.pack === 'world') {
                 let entity = this.entityCls().collection.instance.get(this.id);
-                resolve(entity);
+                if(entity) {
+                    resolve(entity);
+                } else {
+                    ui.notifications.warn(game.i18n.localize("MAGICITEMS.WarnNoMagicItemSpell") + itemName);
+                    reject();
+                }
             } else {
                 const pack = game.packs.find(p => p.collection === this.pack);
                 pack.getDocument(this.id).then(entity => {
@@ -445,7 +450,7 @@ class MagicItemTable extends MagicItemEntry {
             let collection = result.results[0].collection;
             let id = result.results[0].resultId;
             const pack = game.packs.find(p => p.collection === collection);
-            pack.getEntity(id).then(entity => {
+            pack.getDocument(id).then(entity => {
                 if(entity) {
                     let item = actor.createEmbeddedDocuments("Item", [entity.data]);
                     //let item = Item.createOwned(entity.data, actor);
@@ -650,11 +655,11 @@ export class OwnedMagicItem extends MagicItem {
         let destroyed = this.uses === 0 && this.destroy;
         if(destroyed && this.destroyCheck === 'd2') {
             let r = new Roll('1d20');
-            r.roll();
+            r.evaluate({ async: false});
             destroyed = r.total === 1;
             r.toMessage({
-                flavor: `<b>${this.name}</b>> ${game.i18n.localize("MAGICITEMS.MagicItemDestroyCheck")} 
-                        - ${destroyed ? "failure!" : "success!"}`,
+                flavor: `<b>${this.name}</b> ${game.i18n.localize("MAGICITEMS.MagicItemDestroyCheck")} 
+                        - ${destroyed ? game.i18n.localize("MAGICITEMS.MagicItemDestroyCheckFailure") : game.i18n.localize("MAGICITEMS.MagicItemDestroyCheckSuccess")}`,
                 speaker: ChatMessage.getSpeaker({actor: this.actor, token: this.actor.token})
             });
         }
@@ -699,7 +704,7 @@ export class OwnedMagicItem extends MagicItem {
         }
         if(this.rechargeType === MAGICITEMS.FORMULA_RECHARGE) {
             let r = new Roll(this.recharge);
-            r.roll();
+            r.evaluate({ async: false});
             amount = r.total;
             msg += `<b>${prefix}</b>: ${r.result} = ${r.total} ${postfix}`;
         }
@@ -837,11 +842,11 @@ class AbstractOwnedEntry {
         let destroyed = this.uses === 0 && this.magicItem.destroy;
         if(destroyed && this.magicItem.destroyCheck === 'd2') {
             let r = new Roll('1d20');
-            r.roll();
+            r.evaluate({ async: false});
             destroyed = r.total === 1;
             r.toMessage({
-                flavor: `<b>${this.name}</b>> ${game.i18n.localize("MAGICITEMS.MagicItemDestroyCheck")} 
-            - ${destroyed ? "failure!" : "success!"}`,
+                flavor: `<b>${this.name}</b> ${game.i18n.localize("MAGICITEMS.MagicItemDestroyCheck")} 
+            - ${destroyed ? game.i18n.localize("MAGICITEMS.MagicItemDestroyCheckFailure") : game.i18n.localize("MAGICITEMS.MagicItemDestroyCheckSuccess")}`,
                 speaker: ChatMessage.getSpeaker({actor: this.actor, token: this.actor.token})
             });
         }
@@ -896,41 +901,56 @@ class AbstractOwnedEntry {
 class OwnedMagicItemSpell extends AbstractOwnedEntry {
 
 	async roll() {
-        let data = await this.item.data();
-        let originalData = data;
+        let upcastLevel = this.item.level;
         let consumption = this.item.consumption;
 
-        if(typeof data.data.save.scaling === 'undefined') {
-            data = mergeObject(data, { "data.save.scaling" : "spell" });
-        }
+        if (!this.ownedItem) {
 
-        if(this.item.flatDc) {
+            let data = await this.item.data();
+
+            if (typeof data.data.save.scaling === 'undefined') {
+                data = mergeObject(data, {
+                    "data.save.scaling": "spell"
+                });
+            }
+
+            if (this.item.flatDc) {
+                data = mergeObject(data, {
+                    "data.save.scaling": "flat",
+                    "data.save.dc": this.item.dc
+                });
+            }
+
             data = mergeObject(data, {
-                "data.save.scaling" : "flat",
-                "data.save.dc" : this.item.dc
+                "data.preparation": {"mode": "magicitems"}
             });
+
+            const cls = CONFIG.Item.documentClass;
+            this.ownedItem = new cls(data, {parent: this.magicItem.actor});
+            this.ownedItem.prepareFinalAttributes();
         }
 
-        let level = this.item.level;
         if(this.item.canUpcast()) {
             const spellFormData = await MagicItemUpcastDialog.create(this.magicItem, this.item);
-            level = parseInt(spellFormData.get("level"));
+            upcastLevel = parseInt(spellFormData.get("level"));
             consumption = parseInt(spellFormData.get("consumption"));
         }
-        data = mergeObject(data, { "data.level": level, "data.preparation": { "mode": "magicitem" } }, { inplace: false });
-
-        const cls = CONFIG.Item.documentClass;
-        this.ownedItem = new cls(data, { parent: this.magicItem.actor });
-        this.ownedItem.prepareFinalAttributes();
 
         let proceed = async () => {
-            let chatData = await this.ownedItem.roll({
+
+            let spell = this.ownedItem;
+            if(upcastLevel !== spell.data.data.level) {
+                spell = spell.clone({"data.level": upcastLevel}, {keepId: true});
+                spell.prepareFinalAttributes();
+            }
+
+            let chatData = await spell.roll({
                 "configureDialog": false,
                 "createMessage": false
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": originalData
+                    "flags.dnd5e.itemData": this.ownedItem.data.toJSON()
                 })
             );
             this.consume(consumption);
@@ -950,13 +970,20 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
 class OwnedMagicItemFeat extends AbstractOwnedEntry {
 
     async roll() {
-        let data = await this.item.data();
-        let originalData = data;
         let consumption = this.item.consumption;
 
-        const cls = CONFIG.Item.documentClass;
-        this.ownedItem = new cls(data, { parent: this.magicItem.actor });
-        this.ownedItem.prepareFinalAttributes();
+        if(!this.ownedItem) {
+            let data = await this.item.data();
+
+            data = mergeObject(data, {
+                "data.uses": null
+
+            });
+
+            const cls = CONFIG.Item.documentClass;
+            this.ownedItem = new cls(data, { parent: this.magicItem.actor });
+            this.ownedItem.prepareFinalAttributes();
+        }
 
         let onUsage = this.item.effect === 'e1' ?
         () => { this.consume(consumption) } :
@@ -979,7 +1006,7 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": originalData
+                    "flags.dnd5e.itemData": this.ownedItem.data.toJSON()
                 })
             );
             onUsage();
