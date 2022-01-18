@@ -291,6 +291,6 @@ export class MagicItemActor {
         });
         this.items.splice(idx, 1);
         this.destroyed.push(item);
-        this.actor.deleteOwnedItem(item.id);
+        this.actor.deleteEmbeddedDocuments("Item", [item.id]);
     }
 }
