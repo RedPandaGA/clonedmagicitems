@@ -75,10 +75,3 @@ MAGICITEMS.numeric = function(value, fallback) {
         return fallback;
     }
 };
-
-MAGICITEMS.fromCollection = function(collection, entryId) {
-    const pack = game.packs.find(p => p.collection === collection);
-    return pack.getDocument(entryId).then(ent => {
-        return ent;
-    });
-};

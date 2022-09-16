@@ -132,7 +132,7 @@ export class MagicItemActor {
      */
     buildItems() {
         this.items = this.actor.items
-            .filter(item => typeof item.data.flags.magicitems !== 'undefined' && item.data.flags.magicitems.enabled)
+            .filter(item => typeof item.flags.magicitems !== 'undefined' && item.flags.magicitems.enabled)
             .map(item => new OwnedMagicItem(item, this.actor, this));
         this.fireChange();
     }

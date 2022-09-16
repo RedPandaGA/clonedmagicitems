@@ -4,34 +4,34 @@ import {MagicItemUpcastDialog} from "./magicitemupcastdialog.js";
 export class MagicItem {
 
     constructor(flags) {
-        this.data = mergeObject(this.defaultData(), flags || {}, { inplace: false });
+        const data = mergeObject(this.defaultData(), flags || {}, { inplace: false });
 
-        this.enabled = this.data.enabled;
-        this.equipped = this.data.equipped;
-        this.attuned = this.data.attuned;
-        this.charges = parseInt(this.data.charges);
-        this.chargeType = this.data.chargeType;
-        this.rechargeable = this.data.rechargeable;
-        this.recharge = this.data.recharge;
-        this.rechargeType = this.data.rechargeType;
-        this.rechargeUnit = this.data.rechargeUnit;
-        this.destroy = this.data.destroy;
-        this.destroyCheck = this.data.destroyCheck;
-        this.destroyType = this.data.destroyType;
-        this.destroyFlavorText = this.data.destroyFlavorText;
-        this.sorting =  this.data.sorting;
+        this.enabled = data.enabled;
+        this.equipped = data.equipped;
+        this.attuned = data.attuned;
+        this.charges = parseInt(data.charges);
+        this.chargeType = data.chargeType;
+        this.rechargeable = data.rechargeable;
+        this.recharge = data.recharge;
+        this.rechargeType = data.rechargeType;
+        this.rechargeUnit = data.rechargeUnit;
+        this.destroy = data.destroy;
+        this.destroyCheck = data.destroyCheck;
+        this.destroyType = data.destroyType;
+        this.destroyFlavorText = data.destroyFlavorText;
+        this.sorting =  data.sorting;
         this.sortingModes = {"l": "MAGICITEMS.SheetSortByLevel", "a": "MAGICITEMS.SheetSortAlphabetically"};
         this.updateDestroyTarget();
 
-        this.spells = Object.values(this.data.spells ? this.data.spells : {})
+        this.spells = Object.values(data.spells ? data.spells : {})
             .filter(spell => spell !== 'null')
             .map(spell => new MagicItemSpell(spell));
 
-        this.feats = Object.values(this.data.feats ? this.data.feats : {})
+        this.feats = Object.values(data.feats ? data.feats : {})
             .filter(feat => feat !== 'null')
             .map(feat => new MagicItemFeat(feat));
 
-        this.tables = Object.values(this.data.tables ? this.data.tables : {})
+        this.tables = Object.values(data.tables ? data.tables : {})
             .filter(table => table !== 'null')
             .map(table => new MagicItemTable(table));
 
@@ -264,12 +264,12 @@ export class MagicItem {
     }
 
     compatible(entity) {
-        return (['spell', 'feat'].includes(entity.type) || entity.entity === 'RollTable')
+        return (['spell', 'feat'].includes(entity.type) || entity.documentName === 'RollTable')
             && !this.hasItem(entity.id);
     }
 
     addEntity(entity, pack) {
-        let name = game.modules.has('babele') && entity.getFlag('babele','hasTranslation') ?
+        let name = game.babele && entity.getFlag('babele','hasTranslation') ?
                 entity.getFlag('babele','originalName') :
                 entity.name;
         if(entity.type === "spell") {
@@ -278,10 +278,10 @@ export class MagicItem {
                 name: name,
                 img: entity.img,
                 pack: pack,
-                baseLevel: entity.data.data.level,
-                level: entity.data.data.level,
-                consumption: entity.data.data.level,
-                upcast: entity.data.data.level,
+                baseLevel: entity.system.level,
+                level: entity.system.level,
+                consumption: entity.system.level,
+                upcast: entity.system.level,
                 upcastCost: 1
             });
             return true;
@@ -297,11 +297,11 @@ export class MagicItem {
             });
             return true;
         }
-        if(entity.entity === "RollTable") {
+        if(entity.documentName === "RollTable") {
             this.addTable({
                 id: entity.id,
                 name: name,
-                img: entity.data.img,
+                img: entity.img,
                 pack: pack,
                 consumption: 1
             });
@@ -447,24 +447,20 @@ class MagicItemTable extends MagicItemEntry {
         let entity = await this.entity();
         let result = await entity.draw();
         if(result && result.results && result.results.length === 1 && result.results[0].collection) {
-            let collection = result.results[0].collection;
-            let id = result.results[0].resultId;
-            const pack = game.packs.find(p => p.collection === collection);
-            pack.getDocument(id).then(entity => {
-                if(entity) {
-                    let item = actor.createEmbeddedDocuments("Item", [entity.data]);
-                    //let item = Item.createOwned(entity.data, actor);
-                    item.roll({
-                        createMessage: false
-                    }).then(chatData => {
-                        ChatMessage.create(
-                            mergeObject(chatData, {
-                                "flags.dnd5e.itemData": item.data
-                            })
-                        );
-                    });
-                }
-            });
+            const collectionId = result.results[0].documentCollection;
+            const id = result.results[0].documentId;
+            const pack = game.collections.get(collectionId) || game.packs.get(collectionId);
+
+            const entity = pack.getDocument ? await pack.getDocument(id) : pack.get(id);
+            if(entity) {
+                let item = (await actor.createEmbeddedDocuments("Item", [entity]))[0];
+                const chatData = await item.roll({createMessage: false});
+                ChatMessage.create(
+                    mergeObject(chatData, {
+                        "flags.dnd5e.itemData": item
+                    })
+                );
+            }
         }
     }
 
@@ -555,14 +551,14 @@ class MagicItemSpell extends MagicItemEntry {
 export class OwnedMagicItem extends MagicItem {
 
     constructor(item, actor, magicItemActor) {
-        super(item.data.flags.magicitems);
+        super(item.flags.magicitems);
         this.id = item.id;
         this.item = item;
         this.actor = actor;
         this.name = item.name;
         this.img = item.img;
 
-        this.uses = parseInt(('uses' in item.data.flags.magicitems) ? item.data.flags.magicitems.uses : this.charges);
+        this.uses = parseInt(('uses' in item.flags.magicitems) ? item.flags.magicitems.uses : this.charges);
 
         this.rechargeableLabel = this.rechargeable ?
             `(${game.i18n.localize("MAGICITEMS.SheetRecharge")}: ${this.rechargeText} ${MAGICITEMS.localized(MAGICITEMS.rechargeUnits)[this.rechargeUnit]} )` :
@@ -589,7 +585,7 @@ export class OwnedMagicItem extends MagicItem {
      */
     get visible() {
         let identifiedOnly = game.settings.get("magicitems", "identifiedOnly");
-        return !identifiedOnly || this.item.data.data.identified;
+        return !identifiedOnly || this.item.system.identified;
     }
 
     /**
@@ -598,11 +594,11 @@ export class OwnedMagicItem extends MagicItem {
     get active() {
         let active = true;
         if(this.equipped) {
-            active = active && this.item.data.data.equipped;
+            active = active && this.item.system.equipped;
         }
         if(this.attuned) {
-            let isAttuned = this.item.data.data.attunement  ?
-                    this.item.data.data.attunement === 2 : this.item.data.data.attuned;
+            let isAttuned = this.item.system.attunement  ?
+                this.item.system.attunement === 2 : this.item.system.attuned;
             active = active && isAttuned;
         }
         return active;
@@ -885,10 +881,10 @@ class AbstractOwnedEntry {
 
     computeSaveDC(item) {
 
-        const data = this.magicItem.actor.data.data;
+        const data = this.magicItem.actor.system;
         data.attributes.spelldc = data.attributes.spellcasting ? data.abilities[data.attributes.spellcasting].dc : 10;
 
-        const save = item.data.data.save;
+        const save = item.system.save;
         if ( save?.ability ) {
             if ( save.scaling === "spell" ) save.dc = data.attributes.spelldc;
             else if ( save.scaling !== "flat" ) save.dc = data.abilities[save.scaling]?.dc ?? 10;
@@ -908,21 +904,21 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
 
             let data = await this.item.data();
 
-            if (typeof data.data.save.scaling === 'undefined') {
+            if (typeof data.system.save.scaling === 'undefined') {
                 data = mergeObject(data, {
-                    "data.save.scaling": "spell"
+                    "system.save.scaling": "spell"
                 });
             }
 
             if (this.item.flatDc) {
                 data = mergeObject(data, {
-                    "data.save.scaling": "flat",
-                    "data.save.dc": this.item.dc
+                    "system.save.scaling": "flat",
+                    "system.save.dc": this.item.dc
                 });
             }
 
             data = mergeObject(data, {
-                "data.preparation": {"mode": "magicitems"}
+                "system.preparation": {"mode": "magicitems"}
             });
 
             const cls = CONFIG.Item.documentClass;
@@ -939,8 +935,8 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
         let proceed = async () => {
 
             let spell = this.ownedItem;
-            if(upcastLevel !== spell.data.data.level) {
-                spell = spell.clone({"data.level": upcastLevel}, {keepId: true});
+            if(upcastLevel !== spell.system.level) {
+                spell = spell.clone({"system.level": upcastLevel}, {keepId: true});
                 spell.prepareFinalAttributes();
             }
 
@@ -950,7 +946,7 @@ class OwnedMagicItemSpell extends AbstractOwnedEntry {
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": this.ownedItem.data.toJSON()
+                    "flags.dnd5e.itemData": this.ownedItem.toJSON()
                 })
             );
             this.consume(consumption);
@@ -976,8 +972,7 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
             let data = await this.item.data();
 
             data = mergeObject(data, {
-                "data.uses": null
-
+                "system.uses": null
             });
 
             const cls = CONFIG.Item.documentClass;
@@ -1006,7 +1001,7 @@ class OwnedMagicItemFeat extends AbstractOwnedEntry {
             });
             ChatMessage.create(
                 mergeObject(chatData, {
-                    "flags.dnd5e.itemData": this.ownedItem.data.toJSON()
+                    "flags.dnd5e.itemData": this.ownedItem.toJSON()
                 })
             );
             onUsage();

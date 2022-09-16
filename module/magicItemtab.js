@@ -49,23 +49,24 @@ export class MagicItemTab {
         this.editable = data.editable;
 
         if(this.editable) {
-            if(!this.app.form.ondrop) {
-                this.app.form.ondragover = (ev) => this._onDragOver(ev);
-                this.app.form.ondrop = (ev) => this._onDrop(ev);
-            } else {
-                let me  = this;
-                let originalDrop = this.app._onDrop;
-                this.app._onDrop = function (evt) {
-                    if(me.isActive()) {
-                        return me._onDrop(evt);
-                    } else {
-                        return originalDrop.apply(me.app, arguments);
-                    }
-                };
-            }
+            const dragDrop = new DragDrop({
+                dropSelector: '.tab.magic-items',
+                permissions: {
+                    dragstart: this.app._canDragStart.bind(this.app),
+                    drop: this.app._canDragDrop.bind(this.app)
+                },
+                callbacks: {
+                    dragstart: this.app._onDragStart.bind(this.app),
+                    dragover: this.app._onDragOver.bind(this.app),
+                    drop: this._onDrop.bind(this)
+                }
+            });
+
+            this.app._dragDrop.push(dragDrop);
+            dragDrop.bind(this.app.form);
         }
 
-        this.magicItem = new MagicItem(this.item.data.flags.magicitems);
+        this.magicItem = new MagicItem(this.item.flags.magicitems);
 
         this.render();
     }
@@ -278,11 +279,6 @@ export class MagicItemTab {
         });
     }
 
-    _onDragOver(evt) {
-        evt.preventDefault();
-        return false;
-    }
-
     async _onDrop(evt) {
         evt.preventDefault();
 
@@ -296,15 +292,8 @@ export class MagicItemTab {
             return false;
         }
 
-        let pack = data.pack;
-        let entity;
-        if (pack) {
-            entity = await MAGICITEMS.fromCollection(pack, data.id);
-        } else {
-            pack = 'world';
-            const cls = CONFIG[data.type];
-            entity = cls.collection.instance.get(data.id);
-        }
+        const entity = await fromUuid(data.uuid);
+        const pack = entity.pack ? entity.pack : "world";
 
         if(entity && this.magicItem.compatible(entity)) {
             this.magicItem.addEntity(entity, pack);
