@@ -61,19 +61,19 @@
 		"label": "Magic Items",
 		"system": "dnd5e",
 		"path": "./packs/magic-items.db",
-		"entity": "Item"
+		"type": "Item"
 	}, {
 		"name": "magicitem-feats",
 		"label": "Magic Items: Item Feats",
 		"system": "dnd5e",
 		"path": "./packs/magic-items-item-feats.db",
-		"entity": "Item"
+		"type": "Item"
 	}, {
 		"name": "magicitem-tables",
 		"label": "Magic Items: Item Tables",
 		"system": "dnd5e",
 		"path": "./packs/magic-items-item-tables.db",
-		"entity": "RollTable"
+		"type": "RollTable"
 	}],
 	"url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
 	"manifest": "https://gitlab.com/riccisi/foundryvtt-magic-items/raw/master/module/module.json",
