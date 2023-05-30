@@ -56,8 +56,26 @@
 		"name": "Česky",
 		"path": "./lang/cs.json"
 	}],
-	
+	"packs": [{
+		"name": "magicitems",
+		"label": "Magic Items",
+		"system": "dnd5e",
+		"path": "./packs/magic-items.db",
+		"type": "Item"
+	}, {
+		"name": "magicitem-feats",
+		"label": "Magic Items: Item Feats",
+		"system": "dnd5e",
+		"path": "./packs/magic-items-item-feats.db",
+		"type": "Item"
+	}, {
+		"name": "magicitem-tables",
+		"label": "Magic Items: Item Tables",
+		"system": "dnd5e",
+		"path": "./packs/magic-items-item-tables.db",
+		"type": "RollTable"
+	}],
 	"url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
 	"manifest": "https://raw.github.com/RedPandaGA/clonedmagicitems/master/module/module.json",
-	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/3.0.0/raw/magic-items.zip?job=build"
+	"download": "https://raw.github.com/RedPandaGA/clonedmagicitems/master/magic-items.zip"
 }
