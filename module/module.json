@@ -76,6 +76,6 @@
 		"type": "RollTable"
 	}],
 	"url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
-	"manifest": "https://github.com/RedPandaGA/clonedmagicitems/blob/f799146df0727ba690318751c9a120e54d5a691b/module/module.json",
+	"manifest": "https://raw.github.com/RedPandaGA/clonedmagicitems/master/module/module.json",
 	"download": "https://gitlab.com/riccisi/foundryvtt-magic-items/-/jobs/artifacts/3.0.0/raw/magic-items.zip?job=build"
 }
